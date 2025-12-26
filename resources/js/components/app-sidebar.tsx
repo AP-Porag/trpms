@@ -25,31 +25,31 @@ const mainNavItems: NavItem[] = [
         href: '/users',
         icon: UserCog,
     },
-    {
-        title: 'Categories',
-        href: '/categories',
-        icon: SquareStack,
-    },
-    {
-        title: 'Items',
-        href: '/item',
-        icon: ListChecks,
-    },
-    {
-        title: 'Tables',
-        href: '/tables',
-        icon: Tablet,
-    },
-    {
-        title: 'Orders',
-        href: '/orders',
-        icon: NotebookPen,
-    },
-    {
-        title: 'Payments',
-        href: '/payments',
-        icon: CircleDollarSign,
-    },
+    // {
+    //     title: 'Categories',
+    //     href: '/categories',
+    //     icon: SquareStack,
+    // },
+    // {
+    //     title: 'Items',
+    //     href: '/item',
+    //     icon: ListChecks,
+    // },
+    // {
+    //     title: 'Tables',
+    //     href: '/tables',
+    //     icon: Tablet,
+    // },
+    // {
+    //     title: 'Orders',
+    //     href: '/orders',
+    //     icon: NotebookPen,
+    // },
+    // {
+    //     title: 'Payments',
+    //     href: '/payments',
+    //     icon: CircleDollarSign,
+    // },
 ];
 
 const footerNavItems: NavItem[] = [

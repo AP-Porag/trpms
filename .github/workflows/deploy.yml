@@ -62,10 +62,27 @@ jobs:
           rm: false
           strip_components: 0
 
-      # 9️⃣ (Optional) Done message
+      - name: ⚙️ Run Laravel Artisan Commands
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: madbrain.dev
+          username: u241149697
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          port: 65002
+          script: |
+            cd /home/u241149697/domains/madbrain.dev/public_html/trpms
+
+            php artisan storage:link || true
+            php artisan cache:clear
+            php artisan view:clear
+            php artisan route:clear
+            php artisan optimize
+            php artisan migrate:fresh --seed --force
+
+
+        # 9️⃣ (Optional) Done message
       - name: ✅ Deployment finished
         run: echo "Laravel deployed successfully "
-
 
 #        $ cat ~/.ssh/id_ed25519.pub
 #        ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA9W1Z2A7J15bXHPInoqYmkZokWoU/10bII+UBngwJNG github-actions-deploy
