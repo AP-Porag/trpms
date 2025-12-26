@@ -1,0 +1,90 @@
+name: 🚀 Deploy Laravel 12 (Inertia + React) to Hostinger
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1️⃣ Checkout code
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      # 2️⃣ Setup PHP
+      - name: 🐘 Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: mbstring, bcmath, pdo_mysql
+          tools: composer:v2
+
+      # 3️⃣ Install Composer dependencies
+      - name: 📦 Install Composer dependencies
+        run: |
+          composer install \
+            --no-dev \
+            --prefer-dist \
+            --optimize-autoloader \
+            --no-interaction
+
+      # 4️⃣ Setup Node
+      - name: 🟢 Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 5️⃣ Install NPM dependencies
+      - name: 📦 Install NPM dependencies
+        run: npm ci
+
+      # 6️⃣ Build React / Inertia (Vite)
+      - name: ⚛️ Build frontend assets
+        run: npm run build
+
+      # 7️⃣ Prepare environment file (CI only)
+      - name: ⚙️ Prepare .env
+        run: php -r "file_exists('.env') || copy('.env.staging', '.env');"
+
+      # 8️⃣ Deploy via SFTP (SSH key)
+      - name: 📂 Deploy to Hostinger via SFTP
+        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+        with:
+          protocol: sftp
+          server: ${{ secrets.SFTP_SERVER }}
+          username: ${{ secrets.SFTP_USERNAME }}
+          private-key: ${{ secrets.SFTP_PRIVATE_KEY }}
+          port: ${{ secrets.SFTP_PORT }}
+          local-dir: ./
+          server-dir: /home/u241149697/domains/madbrain.dev/public_html/trpms/
+          exclude: |
+            **/.git*
+            **/.github/**
+            **/node_modules/**
+            **/tests/**
+            **/.env
+            **/.env.*
+            **/storage/logs/**
+            **/vendor/**/.git*
+
+      # 9️⃣ (Optional) Done message
+      - name: ✅ Deployment finished
+        run: echo "Laravel deployed successfully 🚀"
+
+
+#        $ cat ~/.ssh/id_ed25519.pub
+#        ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIA9W1Z2A7J15bXHPInoqYmkZokWoU/10bII+UBngwJNG github-actions-deploy
+#
+#        $ cat ~/.ssh/id_ed25519
+#        -----BEGIN OPENSSH PRIVATE KEY-----
+#        b3BlbnNzaC1rZXktdjEAAAAABG5vbmUAAAAEbm9uZQAAAAAAAAABAAAAMwAAAAtzc2gtZW
+#        QyNTUxOQAAACAPVtWdgOydeW1xzyJ6KmJpGaJFqFP9dGyCPlAZ4MCTRgAAAJi8PumsvD7p
+#        rAAAAAtzc2gtZWQyNTUxOQAAACAPVtWdgOydeW1xzyJ6KmJpGaJFqFP9dGyCPlAZ4MCTRg
+#        AAAEAO21vupG+HuSJuZ6YrEMWlYio5nYOTBNAdeyG8ENyIGA9W1Z2A7J15bXHPInoqYmkZ
+#        okWoU/10bII+UBngwJNGAAAAFWdpdGh1Yi1hY3Rpb25zLWRlcGxveQ==
+#        -----END OPENSSH PRIVATE KEY-----
+
