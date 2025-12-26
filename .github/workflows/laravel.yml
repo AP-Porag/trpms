@@ -30,20 +30,20 @@ jobs:
       #      - name: Create storage symlink file
       #        run: php artisan storage:link
 
-      - name: Config Clearing
-        run: php artisan config:clear
-
-      - name: Cache Clearing
-        run: php artisan cache:clear
-
-      - name: Route Cache Clearing
-        run: php artisan route:clear
-
-      - name: View Cache Clearing
-        run: php artisan view:clear
-
-      - name: Clearing All Cache
-        run: php artisan optimize:clear
+#      - name: Config Clearing
+#        run: php artisan config:clear
+#
+#      - name: Cache Clearing
+#        run: php artisan cache:clear
+#
+#      - name: Route Cache Clearing
+#        run: php artisan route:clear
+#
+#      - name: View Cache Clearing
+#        run: php artisan view:clear
+#
+#      - name: Clearing All Cache
+#        run: php artisan optimize:clear
 
 
       - name: 📂 Sync files
