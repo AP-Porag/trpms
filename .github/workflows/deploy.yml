@@ -72,12 +72,12 @@ jobs:
           script: |
             cd /home/u241149697/domains/madbrain.dev/public_html/trpms
 
-            php artisan storage:link || true
-            php artisan cache:clear
-            php artisan view:clear
-            php artisan route:clear
-            php artisan optimize
-            php artisan migrate:fresh --seed --force
+            php8.4 artisan storage:link || true
+            php8.4 artisan cache:clear
+            php8.4 artisan view:clear
+            php8.4 artisan route:clear
+            php8.4 artisan optimize
+            php8.4 artisan migrate:fresh --seed --force
 
 
         # 9️⃣ (Optional) Done message
