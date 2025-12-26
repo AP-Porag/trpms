@@ -55,9 +55,9 @@ jobs:
         with:
           protocol: sftp
           server: madbrain.dev
-          username: ${{ secrets.SFTP_USERNAME }}
-          password: ${{ secrets.SFTP_PASSWORD }}
-          port: ${{ secrets.SFTP_PORT }}
+          username: u241149697
+          password: U241149697_trpms_ftp_ssap
+          port: 65002
           local-dir: ./
           server-dir: /home/u241149697/domains/madbrain.dev/public_html/trpms/
           exclude: |
