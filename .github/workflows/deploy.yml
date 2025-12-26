@@ -50,25 +50,17 @@ jobs:
       - name: ⚙️ Prepare .env
         run: php -r "file_exists('.env') || copy('.env.staging', '.env');"
 
-      - name: 📂 Deploy to Hostinger via SFTP
-        uses: SamKirkland/FTP-Deploy-Action@4.0.0
+      - name: 🚀 Deploy to Hostinger via SCP (SSH)
+        uses: appleboy/scp-action@v0.1.7
         with:
-          protocol: sftp
-          server: madbrain.dev
+          host: madbrain.dev
           username: u241149697
-          password: U241149697_trpms_ftp_ssap
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 65002
-          local-dir: ./
-          server-dir: /home/u241149697/domains/madbrain.dev/public_html/trpms/
-          exclude: |
-            **/.git*
-            **/.github/**
-            **/node_modules/**
-            **/tests/**
-            **/.env
-            **/.env.*
-            **/storage/logs/**
-            **/vendor/**/.git*
+          source: "."
+          target: "/home/u241149697/domains/madbrain.dev/public_html/trpms"
+          rm: false
+          strip_components: 0
 
       # 9️⃣ (Optional) Done message
       - name: ✅ Deployment finished
