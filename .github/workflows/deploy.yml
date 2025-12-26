@@ -50,14 +50,13 @@ jobs:
       - name: ⚙️ Prepare .env
         run: php -r "file_exists('.env') || copy('.env.staging', '.env');"
 
-      # 8️⃣ Deploy via SFTP (SSH key)
       - name: 📂 Deploy to Hostinger via SFTP
         uses: SamKirkland/FTP-Deploy-Action@4.0.0
         with:
           protocol: sftp
           server: ${{ secrets.SFTP_SERVER }}
           username: ${{ secrets.SFTP_USERNAME }}
-          private-key: ${{ secrets.SFTP_PRIVATE_KEY }}
+          password: ${{ secrets.SFTP_PASSWORD }}
           port: ${{ secrets.SFTP_PORT }}
           local-dir: ./
           server-dir: /home/u241149697/domains/madbrain.dev/public_html/trpms/
