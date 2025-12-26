@@ -26,11 +26,11 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory()->create([
-            'first_name' => 'Waiter',
+            'first_name' => 'Employee',
             'last_name' => 'Last',
-            'email' => 'waiter@app.com',
+            'email' => 'employee@app.com',
             'password' => Hash::make('12345678'),
-            'user_type' => 'waiter',
+            'user_type' => 'employee',
             'status' => true,
         ]);
     }
