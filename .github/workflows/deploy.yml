@@ -54,7 +54,7 @@ jobs:
         uses: SamKirkland/FTP-Deploy-Action@4.0.0
         with:
           protocol: sftp
-          server: ${{ secrets.SFTP_SERVER }}
+          server: madbrain.dev
           username: ${{ secrets.SFTP_USERNAME }}
           password: ${{ secrets.SFTP_PASSWORD }}
           port: ${{ secrets.SFTP_PORT }}
