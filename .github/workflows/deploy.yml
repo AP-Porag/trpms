@@ -46,6 +46,9 @@ jobs:
       - name: ⚛️ Build frontend assets
         run: npm run build
 
+      - name: Remove node_modules to save inodes
+        run: rm -rf node_modules
+
       # 7️⃣ Prepare environment file (CI only)
       - name: ⚙️ Prepare .env
         run: php -r "file_exists('.env') || copy('.env.staging', '.env');"
