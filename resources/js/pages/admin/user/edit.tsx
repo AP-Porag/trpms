@@ -152,7 +152,7 @@ export default function Edit({ item }: EditProps) {
                                 >
                                     <option value="">Select user type</option>
                                     <option value="admin">Admin</option>
-                                    <option value="waiter">Waiter</option>
+                                    <option value="user">User</option>
                                 </select>
                                 {errors.userType && (
                                     <span className="text-red-500">{errors.userType.message}</span>

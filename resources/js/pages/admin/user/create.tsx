@@ -30,7 +30,7 @@ const userSchema = z.object({
     firstName: z.string().min(3, { message: "First name must be at least 3 characters long" }),
     lastName: z.string().min(3, { message: "Last name must be at least 3 characters long" }),
     email: z.string().email(),
-    userType: z.enum(["admin", "waiter"], { message: "Please select a user type" }),
+    userType: z.enum(["admin", "user"], { message: "Please select a user type" }),
 });
 
 type FormFields = z.infer<typeof userSchema>;
@@ -123,7 +123,7 @@ export default function Create() {
                                 <Controller
                                     control={control}
                                     name="userType"
-                                    defaultValue=""
+                                    defaultValue="admin"
                                     render={({ field }) => (
                                         <Select
                                             onValueChange={field.onChange}
@@ -136,7 +136,7 @@ export default function Create() {
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value="admin">Admin</SelectItem>
-                                                <SelectItem value="waiter">Waiter</SelectItem>
+                                                <SelectItem value="user">User</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     )}
