@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         // User::factory(10)->create();
 
-        User::factory()->create([
+        User::create([
             'first_name' => 'Admin',
             'last_name' => 'Last',
             'email' => 'admin@app.com',
@@ -25,12 +25,12 @@ class DatabaseSeeder extends Seeder
             'status' => true,
         ]);
 
-        User::factory()->create([
-            'first_name' => 'Employee',
+        User::create([
+            'first_name' => 'User',
             'last_name' => 'Last',
-            'email' => 'employee@app.com',
+            'email' => 'user@app.com',
             'password' => Hash::make('12345678'),
-            'user_type' => 'employee',
+            'user_type' => 'user',
             'status' => true,
         ]);
     }
