@@ -7,7 +7,7 @@ import {
     DropdownMenuItem,
 } from "@/components/ui/dropdown-menu";
 import { Button } from "@/components/ui/button";
-import { MoreVertical, Edit, Trash2 } from 'lucide-react';
+import { MoreVertical, Edit, Trash2, EyeIcon } from 'lucide-react';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Input } from '@/components/ui/input.js';
 import {
@@ -17,13 +17,14 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select"
-import CustomDeleteModal from '@/components/CustomDeleteModal.jsx';
+import CustomDeleteModal from '@/components/common/CustomDeleteModal.jsx';
 import { toast } from 'sonner';
 
 export default function DataTable({
                                       data,
                                       columns,
                                       meta,
+                                      actions = { view: false, edit: true, delete: true },
                                       baseRoute,
                                       filters,
                                       onFilterChange,
@@ -36,6 +37,13 @@ export default function DataTable({
     //         onSuccess: () => setDeleteId(null),
     // });
     // };
+
+    const resolveActions = (row) => {
+        if (typeof actions === 'function') {
+            return actions(row);
+        }
+        return actions;
+    };
 
     const handleDeleteConfirm = () => {
         router.delete(route(`${baseRoute}.destroy`, deleteId), {
@@ -65,14 +73,15 @@ export default function DataTable({
         });
     };
 
+
     return (
-        <div className="space-y-4 rounded-xl bg-white dark:text-white p-4 text-black shadow">
+        <div className="space-y-4 rounded-xl bg-white p-4 text-black shadow dark:text-white">
             {/* Filters */}
             <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <Input
                     type="text"
                     name="search"
-                    placeholder="Search by name, email or role..."
+                    placeholder={meta.searchPlaceholderText}
                     value={filters.search}
                     onChange={handleFilterChange}
                     className="px-3 py-2 md:w-1/3"
@@ -82,9 +91,7 @@ export default function DataTable({
                     name="status"
                     value={filters.status}
                     // onChange={handleFilterChange}
-                    onValueChange={(value) =>
-                        handleFilterChange({ target: { name: 'status', value } })
-                    }
+                    onValueChange={(value) => handleFilterChange({ target: { name: 'status', value } })}
                     className="px-3 py-2 md:w-1/6"
                 >
                     <SelectTrigger className="w-[180px]">
@@ -100,9 +107,7 @@ export default function DataTable({
                 <Select
                     name="perPage"
                     value={Number(filters.perPage)}
-                    onValueChange={(value) =>
-                        handleFilterChange({ target: { name: 'perPage', value } })
-                    }
+                    onValueChange={(value) => handleFilterChange({ target: { name: 'perPage', value } })}
                     className="px-3 py-2 md:w-1/6"
                 >
                     <SelectTrigger className="w-[180px]">
@@ -110,7 +115,9 @@ export default function DataTable({
                     </SelectTrigger>
                     <SelectContent>
                         {perPageOptions.map((opt) => (
-                            <SelectItem key={opt} value={opt}>{opt} per page</SelectItem>
+                            <SelectItem key={opt} value={opt}>
+                                {opt} per page
+                            </SelectItem>
                             // <option key={opt} value={opt}>
                             //     {opt} per page
                             // </option>
@@ -157,17 +164,42 @@ export default function DataTable({
                                 <td className="px-4 py-2">
                                     <DropdownMenu>
                                         <DropdownMenuTrigger asChild>
-                                            <Button size="icon" className="text-white cursor-pointer">
+                                            <Button size="icon" className="cursor-pointer text-white">
                                                 <MoreVertical className="h-4 w-4" />
                                             </Button>
                                         </DropdownMenuTrigger>
                                         <DropdownMenuContent side="bottom" align="end" className="bg-white text-black">
-                                            <DropdownMenuItem onClick={() => router.visit(route(`${baseRoute}.edit`, row.id))} className="cursor-pointer">
-                                                <Edit className="mr-2 h-4 w-4" /> Edit
-                                            </DropdownMenuItem>
-                                            <DropdownMenuItem onClick={() => setDeleteId(row.id)} className="cursor-pointer">
-                                                <Trash2 className="mr-2 h-4 w-4 text-red-600" /> Delete
-                                            </DropdownMenuItem>
+                                            {(() => {
+                                                const rowActions = resolveActions(row);
+
+                                                return (
+                                                    <>
+                                                        {rowActions.edit && (
+                                                            <DropdownMenuItem
+                                                                onClick={() => router.visit(route(`${baseRoute}.edit`, row.id))}
+                                                                className="cursor-pointer"
+                                                            >
+                                                                <Edit className="mr-2 h-4 w-4" /> Edit
+                                                            </DropdownMenuItem>
+                                                        )}
+
+                                                        {rowActions.view && (
+                                                            <DropdownMenuItem
+                                                                onClick={() => router.visit(route(`${baseRoute}.show`, row.id))}
+                                                                className="cursor-pointer"
+                                                            >
+                                                                <EyeIcon className="mr-2 h-4 w-4" /> View
+                                                            </DropdownMenuItem>
+                                                        )}
+
+                                                        {rowActions.delete && (
+                                                            <DropdownMenuItem onClick={() => setDeleteId(row.id)} className="cursor-pointer">
+                                                                <Trash2 className="mr-2 h-4 w-4 text-red-600" /> Delete
+                                                            </DropdownMenuItem>
+                                                        )}
+                                                    </>
+                                                );
+                                            })()}
                                         </DropdownMenuContent>
                                     </DropdownMenu>
                                 </td>
@@ -190,7 +222,7 @@ export default function DataTable({
                         <button
                             onClick={() => goToPage(meta.current_page - 1)}
                             disabled={meta.current_page <= 1}
-                            className="rounded bg-gray-200 p-2 text-black hover:bg-gray-300 disabled:opacity-50 cursor-pointer"
+                            className="cursor-pointer rounded bg-gray-200 p-2 text-black hover:bg-gray-300 disabled:opacity-50"
                         >
                             <ChevronLeft className="h-4 w-4" />
                         </button>
@@ -202,7 +234,7 @@ export default function DataTable({
                                 <button
                                     key={page}
                                     onClick={() => goToPage(page)}
-                                    className={`rounded cursor-pointer px-3 py-1 ${
+                                    className={`cursor-pointer rounded px-3 py-1 ${
                                         page === meta.current_page ? 'bg-black text-white' : 'bg-gray-200 text-black hover:bg-gray-300'
                                     }`}
                                 >
@@ -215,7 +247,7 @@ export default function DataTable({
                         <button
                             onClick={() => goToPage(meta.current_page + 1)}
                             disabled={meta.current_page >= meta.last_page}
-                            className="rounded bg-gray-200 p-2 text-black hover:bg-gray-300 disabled:opacity-50 cursor-pointer"
+                            className="cursor-pointer rounded bg-gray-200 p-2 text-black hover:bg-gray-300 disabled:opacity-50"
                         >
                             <ChevronRight className="h-4 w-4" />
                         </button>

@@ -6,8 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 abstract class BaseService
 {
-    protected Model $model;
+    protected $model;
 
+    public function __construct($model)
+    {
+        $this->model = $model;
+    }
     public function all()
     {
         return $this->model->all();

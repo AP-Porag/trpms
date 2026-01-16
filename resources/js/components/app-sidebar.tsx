@@ -8,10 +8,14 @@ import {
     LayoutGrid,
     Shield,
     Users,
-    Upload,
-    Search,
-    Home,
-    TrendingUp,
+    Briefcase,
+    ClipboardList,
+    UserCheck,
+    CheckCircle,
+    Wallet,
+    FileText,
+    BarChart3,
+    Target,
 } from 'lucide-react';
 import AppLogo from './app-logo';
 
@@ -30,27 +34,48 @@ const mainNavItems: NavItem[] = [
                 href: '/users',
                 icon: Users,
             },
+        ],
+    },
+    {
+        title: 'Clients',
+        href: '/clients',
+        icon: Briefcase,
+    },
+    {
+        title: 'Jobs',
+        href: '/jobs',
+        icon: ClipboardList,
+    },
+    {
+        title: 'Candidates',
+        href: '/candidates',
+        icon: UserCheck,
+    },
+    {
+        title: 'Placements',
+        href: '/placements',
+        icon: CheckCircle,
+    },
+    {
+        title: 'Finance',
+        icon: Wallet,
+        children: [
             {
-                title: 'Data Import',
-                href: '/data-import',
-                icon: Upload,
+                title: 'Invoices',
+                href: '/invoices',
+                icon: FileText,
+            },
+            {
+                title: 'Revenue Reports',
+                href: '/revenue-reports',
+                icon: BarChart3,
             },
         ],
     },
     {
-        title: 'Search',
-        href: '/search',
-        icon: Search,
-    },
-    {
-        title: 'Properties',
-        href: '/properties',
-        icon: Home,
-    },
-    {
-        title: 'Market Insights',
-        href: '/market-insights',
-        icon: TrendingUp,
+        title: 'Prospects',
+        href: '/prospects',
+        icon: Target,
     },
 ];
 

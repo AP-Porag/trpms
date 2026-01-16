@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Head, router } from '@inertiajs/react';
 import { Button } from '@/components/ui/button';
 import { Plus } from 'lucide-react';
-import DataTable from '@/components/DataTable';
+import DataTable from '@/components/common/DataTable';
 import AppLayout from '@/layouts/app-layout.js';
 
 const breadcrumbs = [
@@ -66,12 +66,9 @@ export default function Index({ users, filters: initialFilters }) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Users" />
             <div className="p-4">
-                <div className="flex justify-between items-center my-4">
+                <div className="my-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Users</h1>
-                    <Button
-                        onClick={() => router.visit(route('users.create'))}
-                        className="bg-black text-white hover:bg-gray-800 cursor-pointer"
-                    >
+                    <Button onClick={() => router.visit(route('users.create'))} className="cursor-pointer bg-black text-white hover:bg-gray-800">
                         <Plus className="mr-2" /> Create User
                     </Button>
                 </div>
@@ -85,6 +82,12 @@ export default function Index({ users, filters: initialFilters }) {
                         current_page: users.current_page,
                         last_page: users.last_page,
                     }}
+                    // also we can -  edit: row.status === 'active',
+                    actions={(row) => ({
+                        view: false,
+                        edit: true,
+                        delete: row.user_type !== 'admin',
+                    })}
                     baseRoute="users"
                     filters={filters}
                     onFilterChange={setFilters}

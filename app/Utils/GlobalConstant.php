@@ -4,8 +4,6 @@ namespace App\Utils;
 
 class GlobalConstant
 {
-    public const OWNER_OCCUPIED = 'OWNER_OCCUPIED';
-    public const NON_OWNER_OCCUPIED = 'NON_OWNER_OCCUPIED';
 
     // Status
     public const STATUS_ACTIVE = 1;
@@ -25,4 +23,8 @@ class GlobalConstant
     // UI
     public const FLASH_SUCCESS = 'success';
     public const FLASH_ERROR = 'error';
+
+    // client type
+    public const CLIENT_TYPE_RETAINER = 'retainer';
+    public const CLIENT_TYPE_CONTINGENCY = 'contingency';
 }
