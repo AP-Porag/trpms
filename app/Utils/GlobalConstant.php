@@ -27,4 +27,8 @@ class GlobalConstant
     // client type
     public const CLIENT_TYPE_RETAINER = 'retainer';
     public const CLIENT_TYPE_CONTINGENCY = 'contingency';
+
+    // fee type
+    public const JOB_FEE_TYPE_PERCENTAGE = 'percentage';
+    public const JOB_FEE_TYPE_FIXED = 'fixed';
 }

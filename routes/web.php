@@ -1,8 +1,11 @@
 <?php
 
 use App\Http\Controllers\Admin\Client\ClientController;
+use App\Http\Controllers\Admin\Engagement\EngagementController;
+use App\Http\Controllers\Admin\Job\JobController;
 use App\Http\Controllers\Admin\Note\ClientNoteController;
 use App\Http\Controllers\Admin\User\UserController;
+use App\Http\Controllers\EditorController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -30,11 +33,19 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('clients', ClientController::class);
 
+    Route::resource('jobs', EngagementController::class);
+
     Route::post('clients/{client}/notes', [ClientNoteController::class, 'store'])
         ->name('clients.notes.store');
 
     Route::delete('notes/{note}', [ClientNoteController::class, 'destroy'])
         ->name('notes.destroy');
+
+    Route::post('/editor/image-upload', [EditorController::class, 'upload'])
+        ->name('editor.image.upload');
+
+    Route::post('/editor/finalize', [EditorController::class, 'finalize'])
+        ->name('editor.finalize');
 });
 
 require __DIR__.'/settings.php';

@@ -16,11 +16,13 @@ class Client extends BaseModel
         'client_type',
         'fee_percentage',
         'status',
+        'note',
+        'created_by',
     ];
 
-    protected $casts = [
-        'status' => 'integer',
-    ];
+//    protected $casts = [
+//        'status' => 'integer',
+//    ];
 
     // Notes (polymorphic)
     public function notes()
@@ -33,11 +35,10 @@ class Client extends BaseModel
         return $this->hasMany(Agreement::class,"client_id");
     }
 
-    // Future-safe relations
-//    public function jobs()
-//    {
-//        return $this->hasMany(Job::class);
-//    }
+    public function jobs()
+    {
+        return $this->hasMany(Job::class,"client_id");
+    }
 
 //    public function invoices()
 //    {

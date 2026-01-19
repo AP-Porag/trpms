@@ -1,5 +1,6 @@
 <?php
 
+use App\Utils\GlobalConstant;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -11,15 +12,16 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('agreements', function (Blueprint $table) {
+        Schema::create('engagements', function (Blueprint $table) {
             $table->id();
             $table->foreignId('client_id')
                 ->constrained('clients')
                 ->cascadeOnDelete();
-            $table->string('file_path')->nullable();
-            $table->string('original_name')->nullable();
-            $table->string('agreement_type')->nullable();
-            $table->string('signed_date')->nullable();
+            $table->string('title');
+            $table->text('description');
+            $table->string('fee_type')->default(GlobalConstant::JOB_FEE_TYPE_PERCENTAGE);
+            $table->string('fee_value');
+            $table->string('status')->default(GlobalConstant::STATUS_ACTIVE);
             $table->timestamps();
         });
     }
@@ -29,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('agreements');
+        Schema::dropIfExists('engagements');
     }
 };

@@ -3,11 +3,9 @@
 namespace App\Http\Controllers\Admin\Client;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Client\ClientRequest;
 use App\Models\Client;
-use App\Models\User;
-use App\Services\ClientService;
+use App\Services\Client\ClientService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -54,17 +52,24 @@ class ClientController extends BaseController
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Client $client)
     {
-        //
+        return inertia('admin/client/edit', [
+            'client' => $client,
+            'agreements' => $client->agreements()->get(),
+        ]);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(ClientRequest $request, Client $client)
     {
-        //
+        $this->service->update($client, $request);
+
+        return redirect()
+            ->route('clients.index')
+            ->with('success', 'Client updated successfully.');
     }
 
     /**

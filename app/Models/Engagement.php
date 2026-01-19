@@ -4,20 +4,19 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Agreement extends BaseModel
+class Engagement extends BaseModel
 {
     protected $fillable = [
         'client_id',
-        'file_path',
-        'original_name',
-        'agreement_type',
-        'signed_date'
+        'title',
+        'description',
+        'fee_type',
+        'fee_value',
+        'status',
     ];
 
     public function client()
     {
         return $this->belongsTo(Client::class,'client_id');
     }
-
-
 }

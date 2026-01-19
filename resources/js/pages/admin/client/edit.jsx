@@ -13,14 +13,14 @@ import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-const breadcrumbs = [{ title: 'Create Client', href: '/clients/create' }];
+const breadcrumbs = [{ title: 'Edit Client', href: '#' }];
 
-const clientSchema = z
-    .object({
-        name: z.string().min(3, { message: 'Name is Required!' }),
-        company_name: z.string().min(3, { message: 'Company name is required!' }),
+const clientSchema = (hasExistingAgreements) =>
+    z.object({
+        name: z.string().min(3),
+        company_name: z.string().min(3),
         email: z.string().email(),
-        phone: z.string().min(10),
+        phone: z.string().min(5),
         address: z.string().optional(),
         client_type: z.enum(['retainer', 'contingency']),
         fee_percentage: z.string().min(1),
@@ -29,116 +29,159 @@ const clientSchema = z
         signed_date: z.string().optional(),
         agreements: z.any().optional(),
     })
-    .superRefine((data, ctx) => {
-        const hasType = !!data.agreement_type;
-        const hasDate = !!data.signed_date;
-        const hasFiles = Array.isArray(data.agreements) && data.agreements.length > 0;
+        .superRefine((data, ctx) => {
+            const hasType = !!data.agreement_type;
+            const hasDate = !!data.signed_date;
 
-        const any = hasType || hasDate || hasFiles;
-        const all = hasType && hasDate && hasFiles;
+            const hasNewFiles =
+                Array.isArray(data.agreements) && data.agreements.length > 0;
 
-        if (any && !all) {
-            if (!hasType)
-                ctx.addIssue({
-                    path: ['agreement_type'],
-                    message: 'Agreement type is required',
-                });
-            if (!hasDate)
-                ctx.addIssue({
-                    path: ['signed_date'],
-                    message: 'Signed date is required',
-                });
-            if (!hasFiles)
-                ctx.addIssue({
-                    path: ['agreements'],
-                    message: 'At least one file is required',
-                });
-        }
-    });
+            const hasFiles = hasNewFiles || hasExistingAgreements;
 
-export default function Create() {
+            const any = hasType || hasDate || hasFiles;
+            const all = hasType && hasDate && hasFiles;
+
+            if (any && !all) {
+                if (!hasType) {
+                    ctx.addIssue({
+                        path: ['agreement_type'],
+                        message: 'Agreement type is required',
+                    });
+                }
+                if (!hasDate) {
+                    ctx.addIssue({
+                        path: ['signed_date'],
+                        message: 'Signed date is required',
+                    });
+                }
+                if (!hasFiles) {
+                    ctx.addIssue({
+                        path: ['agreements'],
+                        message: 'At least one agreement file is required',
+                    });
+                }
+            }
+        });
+
+
+
+export default function Edit({ client, agreements }) {
+
+    const hasExistingAgreements = agreements && agreements.length > 0;
     const {
         register,
         control,
         handleSubmit,
         setValue,
         setError,
-        reset,
         formState: { errors, isSubmitting },
     } = useForm({
-        resolver: zodResolver(clientSchema),
+        resolver: zodResolver(clientSchema(hasExistingAgreements)),
         defaultValues: {
-            client_type: 'retainer',
-            status: '1',
+            ...client,
+            agreement_type: agreements?.[0]?.agreement_type ?? '',
+            signed_date: agreements?.[0]?.signed_date ?? '',
         },
     });
 
-    const [files, setFiles] = useState([]);
+    const [files, setFiles] = useState(() =>
+        (agreements || []).map((a) => ({
+            id: a.id, // 👈 important
+            name: a.original_name,
+            isExisting: true,
+        })),
+    );
+
 
     useEffect(() => {
         register('agreements');
     }, [register]);
 
     const handleFileChange = (e) => {
-        const selected = [...files, ...Array.from(e.target.files)];
-        setFiles(selected);
-        setValue('agreements', selected);
+        const newFiles = Array.from(e.target.files).map((file) => ({
+            file,
+            name: file.name,
+            isExisting: false,
+        }));
+
+        const updated = [...files, ...newFiles];
+        setFiles(updated);
+
+        // Only send NEW files to backend
+        setValue(
+            'agreements',
+            updated.filter((f) => !f.isExisting).map((f) => f.file),
+        );
     };
 
     const removeFile = (index) => {
         const updated = files.filter((_, i) => i !== index);
         setFiles(updated);
-        setValue('agreements', updated);
+
+        setValue(
+            'agreements',
+            updated.filter((f) => !f.isExisting).map((f) => f.file),
+        );
     };
 
-    const saveClient = async (data) => {
+
+
+    const updateClient = async (data) => {
         return new Promise((resolve) => {
             router.post(
-                route('clients.store'),
-                { ...data, agreements: files },
+                route('clients.update', client.id),
+                {
+                    ...data,
+
+                    // 🟢 IDs of old files user kept
+                    existing_agreements: files
+                        .filter(f => f.isExisting)
+                        .map(f => f.id),
+
+                    // 🆕 new files only
+                    agreements: files
+                        .filter(f => !f.isExisting)
+                        .map(f => f.file),
+
+                    _method: 'PUT',
+                },
                 {
                     forceFormData: true,
                     onError: (errs) => {
-                        Object.keys(errs).forEach((k) =>
+                        Object.keys(errs).forEach(k =>
                             setError(k, { message: errs[k] })
                         );
-                        toast.error('Please fix the errors in the form.');
                     },
-                    onFinish: () => {
-                        resolve(); // 🔑 tells RHF submission is done
-                    },
+                    onFinish: () => resolve(),
                 }
             );
         });
     };
 
+
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Create Client" />
+            <Head title="Edit Client" />
 
             <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="rounded-xl border p-5">
-                    <form onSubmit={handleSubmit(saveClient)}>
+                    <form onSubmit={handleSubmit(updateClient)}>
                         {/* CLIENT INFO */}
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
                             <h2 className="mb-4 text-lg font-semibold">Client Information</h2>
 
                             <div className="grid gap-4 md:grid-cols-2">
-                                {[
-                                    ['name', 'Name'],
-                                    ['company_name', 'Company Name'],
-                                    ['email', 'Email'],
-                                    ['phone', 'Phone'],
-                                ].map(([f, l]) => (
+                                {['name', 'company_name', 'email', 'phone'].map((f) => (
                                     <div key={f} className="grid gap-2">
-                                        <Label>{l}</Label>
+                                        <Label>{f.replace('_', ' ')}</Label>
                                         <Input {...register(f)} className={cn(errors[f] && 'border-red-500')} />
                                         {errors[f] && <span className="text-sm text-red-500">{errors[f].message}</span>}
                                     </div>
                                 ))}
                             </div>
 
-                            <div className="mt-4 grid gap-2">
+                            <div className="mt-4">
                                 <Label>Address</Label>
                                 <Input {...register('address')} />
                             </div>
@@ -185,10 +228,9 @@ export default function Create() {
                             <h2 className="mb-4 text-lg font-semibold">Client Agreements</h2>
 
                             <div className="grid gap-4 md:grid-cols-2">
-                                <div className="grid gap-2">
+                                <div>
                                     <Label>Agreement Type</Label>
                                     <Input {...register('agreement_type')} />
-                                    {errors.agreement_type && <span className="text-sm text-red-500">{errors.agreement_type.message}</span>}
                                 </div>
 
                                 <Controller
@@ -211,33 +253,33 @@ export default function Create() {
                                 <input type="file" multiple hidden onChange={handleFileChange} />
                             </label>
 
-                            {errors.agreements && <span className="text-sm text-red-500">{errors.agreements.message}</span>}
-
                             <div className="mt-4 space-y-2">
-                                {files.map((file, i) => (
+                                {files.map((item, i) => (
                                     <div key={i} className="flex items-center justify-between rounded border p-2">
                                         <div className="flex items-center gap-2">
                                             <FileText className="h-5 w-5" />
-                                            <span className="truncate text-sm">{file.name}</span>
+                                            <span className="truncate text-sm">{item.name}</span>
                                         </div>
-                                        <button type="button" onClick={() => removeFile(i)} className="cursor-pointer">
-                                            <Trash2 className="h-4 w-4 text-red-600" />
+
+                                        <button type="button" onClick={() => removeFile(i)} className="text-red-600 hover:text-red-700 cursor-pointer">
+                                            <Trash2 className="h-4 w-4" />
                                         </button>
                                     </div>
                                 ))}
+
+                                {files.length === 0 && <p className="text-muted-foreground text-center text-sm">No agreements uploaded</p>}
                             </div>
                         </div>
 
-                        {/* SUBMIT */}
                         <div className="flex justify-end">
                             <Button type="submit" disabled={isSubmitting} className="cursor-pointer">
                                 {isSubmitting ? (
                                     <>
                                         <RotateCw className="mr-2 h-4 w-4 animate-spin" />
-                                        Processing...
+                                        Updating...
                                     </>
                                 ) : (
-                                    'Save Client'
+                                    'Update Client'
                                 )}
                             </Button>
                         </div>

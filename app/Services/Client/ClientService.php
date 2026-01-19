@@ -1,10 +1,12 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Client;
 use App\Models\Agreement;
 use App\Models\Client;
-use App\Models\User;
+use App\Services\BaseService;
 use Illuminate\Http\Request;
+use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\Storage;
 
 class ClientService extends BaseService
 {
@@ -58,11 +60,11 @@ class ClientService extends BaseService
         ]);
 
         if ($client){
-            //TODO: save agreements
-            foreach ($data->file('agreements', []) as $file) {
+            foreach ($data->file('agreements', []) as $file) {;
                 Agreement::create([
                     'client_id' => $client->id,
                     'file_path' => $file->store('agreements'),
+                    'original_name'  => $file->getClientOriginalName(),
                     'agreement_type'=>$data->agreement_type,
                     'signed_date'=>$data->signed_date
                 ]);
@@ -72,11 +74,44 @@ class ClientService extends BaseService
         return $client;
     }
 
-//    public function update(Client $client, array $data): Client
-//    {
-//        $client->update($data);
-//        return $client;
-//    }
+    public function update(Client $client, $data): Client
+    {
+        // Update client fields
+        $client->update([
+            'name'           => $data->name,
+            'company_name'   => $data->company_name,
+            'email'          => $data->email,
+            'phone'          => $data->phone,
+            'address'        => $data->address,
+            'client_type'    => $data->client_type,
+            'fee_percentage' => $data->fee_percentage,
+            'status'         => $data->status,
+        ]);
+
+        $keepIds = $data->input('existing_agreements', []);
+
+        foreach ($client->agreements as $agreement) {
+            if (!in_array($agreement->id, $keepIds)) {
+                Storage::delete($agreement->file_path);
+                $agreement->delete();
+            }
+        }
+
+        foreach ($data->file('agreements', []) as $file) {
+            if ($file instanceof UploadedFile) {
+                Agreement::create([
+                    'client_id'      => $client->id,
+                    'file_path'      => $file->store('agreements'),
+                    'original_name'  => $file->getClientOriginalName(),
+                    'agreement_type' => $data->agreement_type,
+                    'signed_date'    => $data->signed_date,
+                ]);
+            }
+        }
+
+        return $client;
+    }
+
 
     public function detail(Client $client): array
     {

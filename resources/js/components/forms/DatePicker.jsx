@@ -38,6 +38,13 @@ export default function DatePicker({ label = 'Signed Date', value, onChange, err
         setInputValue(formatDate(d));
     }, [value]);
 
+    const formatLocalDate = (date) => {
+        const year = date.getFullYear();
+        const month = String(date.getMonth() + 1).padStart(2, '0');
+        const day = String(date.getDate()).padStart(2, '0');
+        return `${year}-${month}-${day}`;
+    };
+
     return (
         <div className="flex w-full flex-col gap-3">
             <Label className="px-1">{label}</Label>
@@ -55,7 +62,7 @@ export default function DatePicker({ label = 'Signed Date', value, onChange, err
                         if (isValidDate(d)) {
                             setDate(d);
                             setMonth(d);
-                            onChange(d.toISOString().split('T')[0]);
+                            onChange(formatLocalDate(d));
                         }
                     }}
                     onKeyDown={(e) => {
@@ -86,7 +93,7 @@ export default function DatePicker({ label = 'Signed Date', value, onChange, err
                                 setDate(d);
                                 setMonth(d);
                                 setInputValue(formatDate(d));
-                                onChange(d ? d.toISOString().split('T')[0] : '');
+                                onChange(d ? formatLocalDate(d) : '');
                                 setOpen(false);
                             }}
                         />

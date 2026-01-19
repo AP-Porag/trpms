@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Client;
 use Illuminate\Database\Eloquent\Model;
 
 abstract class BaseService
@@ -27,12 +28,12 @@ abstract class BaseService
         return $this->model->create($data);
     }
 
-    public function update(int $id, array $data)
-    {
-        $item = $this->find($id);
-        $item->update($data);
-        return $item;
-    }
+//    public function update(Client $client, $data)
+//    {
+//        $item = $this->find($id);
+//        $item->update($data);
+//        return $item;
+//    }
 
     public function delete(int $id)
     {

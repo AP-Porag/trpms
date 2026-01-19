@@ -118,9 +118,6 @@ export default function DataTable({
                             <SelectItem key={opt} value={opt}>
                                 {opt} per page
                             </SelectItem>
-                            // <option key={opt} value={opt}>
-                            //     {opt} per page
-                            // </option>
                         ))}
                     </SelectContent>
                 </Select>

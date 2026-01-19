@@ -8,12 +8,12 @@ import { toast } from 'sonner';
 
 const breadcrumbs = [
     {
-        title: 'Clients',
-        href: '/clients/index',
+        title: 'Jobs',
+        href: '/jobs/index',
     },
 ];
 
-export default function Index({ clients,meta, filters: initialFilters }) {
+export default function Index({ jobs,meta, filters: initialFilters }) {
 
     const { flash } = usePage().props;
 
@@ -32,7 +32,7 @@ export default function Index({ clients,meta, filters: initialFilters }) {
 
     useEffect(() => {
         // Push new filters to URL and reload data
-        router.get(route('clients.index'), filters, {
+        router.get(route('jobs.index'), filters, {
             preserveState: true,
             replace: true,
             preserveScroll: true,
@@ -40,22 +40,21 @@ export default function Index({ clients,meta, filters: initialFilters }) {
     }, [filters.search, filters.status, filters.perPage, filters.page]);
 
     const columns = [
-        { key: 'name', label: 'Name' },
-        { key: 'company_name', label: 'Company' },
+        { key: 'title', label: 'Title' },
         {
-            key: 'email',
-            label: 'Email',
-            render: (row) => <span className="block w-48 truncate">{row.email}</span>,
+            key: 'fee_type',
+            label: 'Fee Type',
+            render: (row) => <span className="block w-48 truncate">{row.fee_type}</span>,
         },
         {
-            key: 'phone',
-            label: 'Phone',
-            render: (row) => <span className="block w-48 truncate">{row.phone}</span>,
+            key: 'fee_value',
+            label: 'Fee Value',
+            render: (row) => <span className="block w-48 truncate">{row.fee_value}</span>,
         },
         // {
-        //     key: 'client_type',
+        //     key: 'Job_type',
         //     label: 'Type',
-        //     render: (row) => <span className="block w-48 truncate capitalize">{row.client_type}</span>,
+        //     render: (row) => <span className="block w-48 truncate capitalize">{row.Job_type}</span>,
         // },
         {
             key: 'status',
@@ -67,7 +66,7 @@ export default function Index({ clients,meta, filters: initialFilters }) {
                 };
                 return (
                     <span className={`rounded px-2 py-1 text-xs font-medium ${statusStyles[row.status] || 'bg-gray-100 text-gray-800'}`}>
-                        {row.status === "1" ? 'Active' : 'Inactive'}
+                        {row.status === '1' ? 'Active' : 'Inactive'}
                     </span>
                 );
             },
@@ -76,16 +75,16 @@ export default function Index({ clients,meta, filters: initialFilters }) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Users" />
+            <Head title="Jobs" />
             <div className="p-4">
                 <div className="my-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Clients</h1>
-                    <Button onClick={() => router.visit(route('clients.create'))} className="cursor-pointer bg-black text-white hover:bg-gray-800">
-                        <Plus className="mr-2" /> Create Client
+                    <h1 className="text-2xl font-bold">jobs</h1>
+                    <Button onClick={() => router.visit(route('jobs.create'))} className="cursor-pointer bg-black text-white hover:bg-gray-800">
+                        <Plus className="mr-2" /> Create Job
                     </Button>
                 </div>
                 <DataTable
-                    data={clients}
+                    data={jobs}
                     columns={columns}
                     meta={{
                         from: meta.from,
@@ -100,18 +99,10 @@ export default function Index({ clients,meta, filters: initialFilters }) {
                         edit: true,
                         delete: true,
                     }}
-                    baseRoute="clients"
+                    baseRoute="jobs"
                     filters={filters}
                     onFilterChange={setFilters}
                 />
-                {/*<DataTable*/}
-                {/*    data={clients}*/}
-                {/*    columns={columns}*/}
-                {/*    meta={meta}*/}
-                {/*    filters={filters}*/}
-                {/*    baseRoute="clients"*/}
-                {/*    onFilterChange={(f) => router.get(route('clients.index'), f, { preserveState: true })}*/}
-                {/*/>*/}
             </div>
         </AppLayout>
     );
