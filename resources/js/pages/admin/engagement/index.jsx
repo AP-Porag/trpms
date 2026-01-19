@@ -98,6 +98,9 @@ export default function Index({ jobs,meta, filters: initialFilters }) {
                         view: true,
                         edit: true,
                         delete: true,
+                        search_filter: true,
+                        status_filter: true,
+                        per_page_filter: true,
                     }}
                     baseRoute="jobs"
                     filters={filters}

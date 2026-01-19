@@ -87,6 +87,9 @@ export default function Index({ users, filters: initialFilters }) {
                         view: false,
                         edit: true,
                         delete: row.user_type !== 'admin',
+                        search_filter: true,
+                        status_filter: true,
+                        per_page_filter: true,
                     })}
                     baseRoute="users"
                     filters={filters}

@@ -3,10 +3,9 @@
 namespace App\Http\Controllers\Admin\Note;
 
 use App\Http\Controllers\BaseController;
-use App\Http\Controllers\Controller;
 use App\Http\Requests\Note\NoteRequest;
 use App\Models\Client;
-use Illuminate\Http\Request;
+use App\Models\Note;
 
 class ClientNoteController extends BaseController
 {

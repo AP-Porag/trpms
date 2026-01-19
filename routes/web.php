@@ -1,8 +1,10 @@
 <?php
 
+use App\Http\Controllers\Admin\Candidate\CandidateController;
 use App\Http\Controllers\Admin\Client\ClientController;
 use App\Http\Controllers\Admin\Engagement\EngagementController;
 use App\Http\Controllers\Admin\Job\JobController;
+use App\Http\Controllers\Admin\Note\CandidateNoteController;
 use App\Http\Controllers\Admin\Note\ClientNoteController;
 use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\EditorController;
@@ -46,6 +48,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::post('/editor/finalize', [EditorController::class, 'finalize'])
         ->name('editor.finalize');
+
+    Route::resource('candidates', CandidateController::class);
+
+    Route::post('clients/{client}/notes', [CandidateNoteController::class, 'store'])
+        ->name('clients.notes.store');
 });
 
 require __DIR__.'/settings.php';
