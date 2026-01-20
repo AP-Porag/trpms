@@ -2,6 +2,8 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\MorphMany;
+
 class Candidate extends BaseModel
 {
     protected $fillable = [
@@ -15,7 +17,7 @@ class Candidate extends BaseModel
     ];
 
     // Notes (polymorphic)
-    public function notes()
+    public function notes():MorphMany
     {
         return $this->morphMany(Note::class, 'noteable')->latest();
     }

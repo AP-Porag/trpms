@@ -6,7 +6,9 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\Engagement\EngagementRequest;
 use App\Models\Client;
 use App\Models\Engagement;
+use App\Models\JobCandidate;
 use App\Services\Engagement\EngagementService;
+use App\Services\JobCandidate\JobCandidateService;
 use App\Utils\GlobalConstant;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -50,10 +52,25 @@ class EngagementController extends BaseController
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
-    {
-        //
+    public function show(
+        Request $request,
+        int $id,
+        JobCandidateService $jobCandidateService
+    ) {
+        $job = Engagement::with('client')->findOrFail($id);
+
+        $pipeline = null;
+
+        if ($request->query('tab') === 'candidates') {
+            $pipeline = $jobCandidateService->groupByStage($job);
+        }
+
+        return Inertia::render('admin/engagement/view', [
+            'job' => $job,
+            'pipeline' => $pipeline,
+        ]);
     }
+
 
     /**
      * Show the form for editing the specified resource.

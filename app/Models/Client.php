@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Client extends BaseModel
 {
@@ -25,7 +26,7 @@ class Client extends BaseModel
 //    ];
 
     // Notes (polymorphic)
-    public function notes()
+    public function notes():MorphMany
     {
         return $this->morphMany(Note::class, 'noteable')->latest();
     }
@@ -35,9 +36,9 @@ class Client extends BaseModel
         return $this->hasMany(Agreement::class,"client_id");
     }
 
-    public function jobs()
+    public function jobs():HasMany
     {
-        return $this->hasMany(Job::class,"client_id");
+        return $this->hasMany(Engagement::class,"client_id");
     }
 
 //    public function invoices()

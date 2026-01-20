@@ -6,8 +6,11 @@ use App\Http\Controllers\BaseController;
 use App\Http\Requests\Candidate\CandidateRequest;
 use App\Models\Candidate;
 use App\Services\Candidate\CandidateService;
+use App\Services\JobCandidate\JobCandidateService;
+use App\Services\JobCandidate\JobCandidateStageService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
+use Illuminate\Http\JsonResponse;
 
 class CandidateController extends BaseController
 {
@@ -78,4 +81,36 @@ class CandidateController extends BaseController
     {
         $this->service->delete($candidate->id);
     }
+
+    public function search(Request $request): JsonResponse
+    {
+        $q = trim($request->query('q', ''));
+        $jobId = $request->query('job_id');
+
+        $query = Candidate::query()
+            ->whereNotIn('id', function ($sub) use ($jobId) {
+                $sub->select('candidate_id')
+                    ->from('job_candidates')
+                    ->where('job_id', $jobId);
+            });
+
+        if ($q !== '') {
+            $query->where(function ($q2) use ($q) {
+                $q2->where('first_name', 'like', "%{$q}%")
+                    ->orWhere('last_name', 'like', "%{$q}%")
+                    ->orWhere('email', 'like', "%{$q}%");
+            });
+        }
+
+        return response()->json(
+            $query->limit(10)->get([
+                'id',
+                'first_name',
+                'last_name',
+                'email',
+                'phone',
+            ])
+        );
+    }
+
 }

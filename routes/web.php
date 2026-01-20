@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\Candidate\CandidateController;
 use App\Http\Controllers\Admin\Client\ClientController;
 use App\Http\Controllers\Admin\Engagement\EngagementController;
 use App\Http\Controllers\Admin\Job\JobController;
+use App\Http\Controllers\Admin\JobCandidate\JobCandidateController;
 use App\Http\Controllers\Admin\Note\CandidateNoteController;
 use App\Http\Controllers\Admin\Note\ClientNoteController;
 use App\Http\Controllers\Admin\User\UserController;
@@ -50,9 +51,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->name('editor.finalize');
 
     Route::resource('candidates', CandidateController::class);
+    Route::get(
+        '/candidates/search/for/job',
+        [CandidateController::class, 'search']
+    )->name('candidates.search');
 
     Route::post('clients/{client}/notes', [CandidateNoteController::class, 'store'])
         ->name('clients.notes.store');
+
+    Route::post(
+        '/job-candidates/{jobCandidate}/change-stage',
+        [JobCandidateController::class, 'changeStage']
+    )->name('job-candidates.change-stage');
+
+    Route::post(
+        '/job-candidates',
+        [JobCandidateController::class, 'store']
+    )->name('job-candidates.store');
 });
 
 require __DIR__.'/settings.php';
