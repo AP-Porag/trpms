@@ -4,9 +4,10 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 class JobCandidate extends BaseModel
 {
+    use HasFactory;
     protected $fillable = [
         'job_id',
         'candidate_id',

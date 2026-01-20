@@ -19,6 +19,7 @@ return new class extends Migration
                 ->cascadeOnDelete();
             $table->string('title');
             $table->text('description');
+            $table->string('salary_range');
             $table->string('fee_type')->default(GlobalConstant::JOB_FEE_TYPE_PERCENTAGE);
             $table->string('fee_value');
             $table->string('status')->default(GlobalConstant::STATUS_ACTIVE);

@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\Activity\ActivityLogController;
 use App\Http\Controllers\Admin\Candidate\CandidateController;
 use App\Http\Controllers\Admin\Client\ClientController;
 use App\Http\Controllers\Admin\Engagement\EngagementController;
@@ -73,6 +74,12 @@ Route::middleware(['auth', 'verified'])->group(function () {
         '/job-candidates/{jobCandidate}',
         [JobCandidateController::class, 'destroy']
     )->name('job-candidates.destroy');
+
+    //Activity Log
+    Route::get(
+        '/activity-logs/for/subject',
+        [ActivityLogController::class, 'forSubject']
+    )->name('activity.logs.for-subject');
 });
 
 require __DIR__.'/settings.php';

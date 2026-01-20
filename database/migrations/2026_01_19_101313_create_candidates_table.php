@@ -18,6 +18,7 @@ return new class extends Migration
             $table->string('email');
             $table->string('phone');
             $table->string('address');
+            $table->string('expected_salary');
             $table->string('resume_path');
             $table->string('original_name');
             $table->timestamps();

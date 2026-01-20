@@ -16,6 +16,7 @@ import { STATUS, JOB_FEE_TYPE } from '@/utils/constants';
 import { formatDateUS, DATE_PRESETS } from '@/utils/helpers';
 import JobCandidateKanban from './partials/jobCandidateKanban';
 import AddCandidateToJobModal from './partials/addCandidateToJobModal';
+import ActivityTimeline from '@/components/activity/ActivityTimeline.jsx';
 
 const breadcrumbs = [
     { title: 'Jobs', href: '/jobs' },
@@ -156,16 +157,17 @@ export default function View({ job,pipeline }) {
 
                         {/* ================= ACTIVITY ================= */}
                         <TabsContent value="activity">
-                            <Card>
-                                <CardHeader>
-                                    <CardTitle>Job Activity & History</CardTitle>
-                                </CardHeader>
-                                <CardContent>
-                                    <p className="text-muted-foreground text-sm">
-                                        Activity log and tabular reporting (DataTable view) will be available here.
-                                    </p>
-                                </CardContent>
-                            </Card>
+                            {/*<Card>*/}
+                            {/*    <CardHeader>*/}
+                            {/*        <CardTitle>Job Activity & History</CardTitle>*/}
+                            {/*    </CardHeader>*/}
+                            {/*    <CardContent>*/}
+                            {/*        <p className="text-muted-foreground text-sm">*/}
+                            {/*            Activity log and tabular reporting (DataTable view) will be available here.*/}
+                            {/*        </p>*/}
+                            {/*    </CardContent>*/}
+                            {/*</Card>*/}
+                            <ActivityTimeline subjectType="App\Models\JobCandidate" subjectId={job.id} />
                         </TabsContent>
                     </Tabs>
                 </div>

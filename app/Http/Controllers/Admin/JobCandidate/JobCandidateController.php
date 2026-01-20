@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin\JobCandidate;
 use App\Http\Controllers\Controller;
 use App\Models\Engagement;
 use App\Models\JobCandidate;
+use App\Services\Activity\ActivityEvent;
+use App\Services\Activity\ActivityLogger;
 use App\Services\JobCandidate\JobCandidateService;
 use App\Services\JobCandidate\JobCandidateStageService;
 use Illuminate\Http\Request;
@@ -55,6 +57,15 @@ class JobCandidateController extends Controller
 
     public function destroy(JobCandidate $jobCandidate)
     {
+        ActivityLogger::log(
+            subject: $jobCandidate,
+            event: ActivityEvent::CANDIDATE_REMOVED,
+            metadata: [
+                'job_id' => $jobCandidate->job_id,
+                'candidate_id' => $jobCandidate->candidate_id,
+                'stage' => $jobCandidate->stage,
+            ]
+        );
         $jobCandidate->delete();
 
         return back();
