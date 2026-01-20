@@ -11,35 +11,63 @@ class JobCandidateStageService
     /**
      * Move candidate to a new stage
      */
-    public function move(JobCandidate $jc, string $toStage): JobCandidate
-    {
-        if (!JobCandidateStage::isValid($toStage)) {
-            throw ValidationException::withMessages([
-                'stage' => 'Invalid stage provided.',
-            ]);
-        }
+//    public function move(JobCandidate $jc, string $toStage): JobCandidate
+//    {
+//        if (!JobCandidateStage::isValid($toStage)) {
+//            throw ValidationException::withMessages([
+//                'stage' => 'Invalid stage provided.',
+//            ]);
+//        }
+//
+//        $this->validateTransition($jc->stage, $toStage);
+//
+//        $now = now();
+//
+//        match ($toStage) {
+//            JobCandidateStage::SUBMITTED     => $jc->submitted_at = $now,
+//            JobCandidateStage::INTERVIEWING  => $jc->interviewing_at = $now,
+//            JobCandidateStage::OFFERED       => $jc->offered_at = $now,
+//            JobCandidateStage::PLACED        => $jc->placed_at = $now,
+//            JobCandidateStage::REJECTED      => $jc->rejected_at = $now,
+//        };
+//
+//        $jc->stage = $toStage;
+//        $jc->save();
+//
+//        if ($toStage === 'interviewing' && request('interview_scheduled_at')) {
+//            $jc->interview_scheduled_at = request('interview_scheduled_at');
+//        }
+//
+//        return $jc;
+//    }
 
+    public function move(
+        JobCandidate $jc,
+        string $toStage,
+        ?string $interviewAt = null
+    ): JobCandidate {
         $this->validateTransition($jc->stage, $toStage);
 
         $now = now();
 
         match ($toStage) {
-            JobCandidateStage::SUBMITTED     => $jc->submitted_at = $now,
-            JobCandidateStage::INTERVIEWING  => $jc->interviewing_at = $now,
-            JobCandidateStage::OFFERED       => $jc->offered_at = $now,
-            JobCandidateStage::PLACED        => $jc->placed_at = $now,
-            JobCandidateStage::REJECTED      => $jc->rejected_at = $now,
+            'submitted'     => $jc->submitted_at = $now,
+            'interviewing'  => $jc->interviewing_at = $now,
+            'offered'       => $jc->offered_at = $now,
+            'placed'        => $jc->placed_at = $now,
+            'rejected'      => $jc->rejected_at = $now,
         };
+
+        if ($toStage === 'interviewing' && $interviewAt) {
+            $jc->interview_scheduled_at = $interviewAt;
+        }
 
         $jc->stage = $toStage;
         $jc->save();
 
-        if ($toStage === 'interviewing' && request('interview_scheduled_at')) {
-            $jc->interview_scheduled_at = request('interview_scheduled_at');
-        }
-
         return $jc;
     }
+
 
     /**
      * Validate stage transitions

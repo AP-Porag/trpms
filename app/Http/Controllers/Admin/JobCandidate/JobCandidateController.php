@@ -8,6 +8,7 @@ use App\Models\JobCandidate;
 use App\Services\JobCandidate\JobCandidateService;
 use App\Services\JobCandidate\JobCandidateStageService;
 use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
 
 class JobCandidateController extends Controller
 {
@@ -37,8 +38,25 @@ class JobCandidateController extends Controller
             'interview_scheduled_at' => ['nullable', 'date'],
         ]);
 
-        $stageService->move($jobCandidate, $validated['stage']);
+        try {
+            $stageService->move(
+                $jobCandidate,
+                $validated['stage'],
+                $validated['interview_scheduled_at'] ?? null
+            );
+        } catch (ValidationException $e) {
+            return back()->withErrors([
+                'stage' => $e->getMessage(),
+            ]);
+        }
 
-        return back()->with('success', 'Candidate stage updated successfully.');
+        return back()->with('success', 'Stage updated');
+    }
+
+    public function destroy(JobCandidate $jobCandidate)
+    {
+        $jobCandidate->delete();
+
+        return back();
     }
 }

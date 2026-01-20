@@ -68,6 +68,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         '/job-candidates',
         [JobCandidateController::class, 'store']
     )->name('job-candidates.store');
+
+    Route::delete(
+        '/job-candidates/{jobCandidate}',
+        [JobCandidateController::class, 'destroy']
+    )->name('job-candidates.destroy');
 });
 
 require __DIR__.'/settings.php';
