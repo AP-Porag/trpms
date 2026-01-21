@@ -4,7 +4,6 @@ use App\Http\Controllers\Admin\Activity\ActivityLogController;
 use App\Http\Controllers\Admin\Candidate\CandidateController;
 use App\Http\Controllers\Admin\Client\ClientController;
 use App\Http\Controllers\Admin\Engagement\EngagementController;
-use App\Http\Controllers\Admin\Job\JobController;
 use App\Http\Controllers\Admin\JobCandidate\JobCandidateController;
 use App\Http\Controllers\Admin\Note\CandidateNoteController;
 use App\Http\Controllers\Admin\Note\ClientNoteController;
