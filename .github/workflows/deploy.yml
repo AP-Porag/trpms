@@ -25,11 +25,12 @@ jobs:
       # 3️⃣ Install Composer dependencies
       - name: 📦 Install Composer dependencies
         run: |
-          composer install \
-            --no-dev \
-            --prefer-dist \
-            --optimize-autoloader \
-            --no-interaction
+          composer install --no-interaction --prefer-dist --optimize-autoloader
+#          composer install \
+#            --no-dev \
+#            --prefer-dist \
+#            --optimize-autoloader \
+#            --no-interaction
 
       # 4️⃣ Setup Node
       - name: 🟢 Setup Node.js
