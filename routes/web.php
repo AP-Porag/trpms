@@ -80,6 +80,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         '/activity-logs/for/subject',
         [ActivityLogController::class, 'forSubject']
     )->name('activity.logs.for-subject');
+
+    //making some change
 });
 
 require __DIR__.'/settings.php';
