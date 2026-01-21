@@ -53,7 +53,8 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Placements',
-        href: '/placements',
+        // href: '/placements',
+        href: route('under-development', { module: 'Placement' }),
         icon: CheckCircle,
     },
     {
@@ -62,19 +63,22 @@ const mainNavItems: NavItem[] = [
         children: [
             {
                 title: 'Invoices',
-                href: '/invoices',
+                // href: '/invoices',
+                href: route('under-development', { module: 'Invoices' }),
                 icon: FileText,
             },
             {
                 title: 'Revenue Reports',
-                href: '/revenue-reports',
+                // href: '/revenue-reports',
+                href: route('under-development', { module: 'Revenue Reports' }),
                 icon: BarChart3,
             },
         ],
     },
     {
         title: 'Prospects',
-        href: '/prospects',
+        // href: '/prospects',
+        href: route('under-development', { module: 'Prospects' }),
         icon: Target,
     },
 ];

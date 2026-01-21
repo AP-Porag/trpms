@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Agreement;
 use App\Models\Candidate;
 use App\Models\Client;
 use App\Models\Engagement;
@@ -73,7 +74,14 @@ class DatabaseSeeder extends Seeder
             $actor,
             $stageFlow
         ) {
-
+            /*
+               |--------------------------------------------------------------------------
+               | AGREEMENTS (1–2 PER CLIENT)
+               |--------------------------------------------------------------------------
+               */
+            Agreement::factory(rand(1, 2))->create([
+                'client_id' => $client->id,
+            ]);
             $jobs = Engagement::factory(rand(2, 4))
                 ->create(['client_id' => $client->id]);
 

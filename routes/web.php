@@ -29,6 +29,13 @@ Route::get('/', function () {
 })->name('home');
 //->prefix('admin')->as('admin.')
 Route::middleware(['auth', 'verified'])->group(function () {
+
+    Route::get('/under-development', function (\Illuminate\Http\Request $request) {
+        return Inertia::render('UnderDevelopment', [
+            'module' => $request->get('module'),
+        ]);
+    })->name('under-development');
+
     Route::get('dashboard', function () {
         return Inertia::render('dashboard');
     })->name('dashboard');
