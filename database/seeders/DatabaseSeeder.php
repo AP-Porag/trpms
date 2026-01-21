@@ -12,26 +12,30 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-//        User::create([
-//            'first_name' => 'Admin',
-//            'last_name'  => 'Last',
-//            'email'      => 'admin@app.com',
-//            'password'   => Hash::make('12345678'),
-//            'user_type'  => 'admin',
-//            'status'     => true,
-//        ]);
-//
-//        User::create([
-//            'first_name' => 'User',
-//            'last_name'  => 'Last',
-//            'email'      => 'user@app.com',
-//            'password'   => Hash::make('12345678'),
-//            'user_type'  => 'user',
-//            'status'     => true,
-//        ]);
-//
-//        User::factory(5)->create();
-//        Client::factory(3)->create();
-//        Candidate::factory(10)->create();
+        User::create([
+            'first_name' => 'Admin',
+            'last_name'  => 'Last',
+            'email'      => 'admin@app.com',
+            'password'   => Hash::make('12345678'),
+            'user_type'  => 'admin',
+            'status'     => true,
+        ]);
+
+        User::create([
+            'first_name' => 'User',
+            'last_name'  => 'Last',
+            'email'      => 'user@app.com',
+            'password'   => Hash::make('12345678'),
+            'user_type'  => 'user',
+            'status'     => true,
+        ]);
+
+        User::factory(5)->create();
+        dump('REACHED AFTER USERS');
+
+        Client::factory(3)->create();
+        dump('REACHED AFTER CLIENT');
+        Candidate::factory(10)->create();
+        dump('REACHED AFTER CANDIDATE');
     }
 }
