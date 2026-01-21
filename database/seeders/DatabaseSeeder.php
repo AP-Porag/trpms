@@ -2,28 +2,26 @@
 
 namespace Database\Seeders;
 
-use App\Models\Candidate;
-use App\Models\Client;
-use App\Models\Engagement;
-use App\Models\JobCandidate;
-use App\Models\User;
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
-use App\Services\Activity\ActivityEvent;
-use App\Services\Activity\ActivityLogger;
-use App\Services\JobCandidate\JobCandidateStageService;
+use App\Models\Agreement;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use App\Models\User;
+use App\Models\Client;
+use App\Models\Engagement;
+use App\Models\Candidate;
+use App\Models\JobCandidate;
+use App\Models\ActivityLog;
+use App\Services\Activity\ActivityEvent;
 
 class DatabaseSeeder extends Seeder
 {
-    /**
-     * Seed the application's database.
-     */
     public function run(): void
     {
-        // -----------------------------
-        // CORE USERS
-        // -----------------------------
+        /*
+        |--------------------------------------------------------------------------
+        | USERS
+        |--------------------------------------------------------------------------
+        */
         $admin = User::create([
             'first_name' => 'Admin',
             'last_name'  => 'Last',
@@ -42,82 +40,86 @@ class DatabaseSeeder extends Seeder
             'status'     => true,
         ]);
 
-        // Additional actors
-        $users = User::factory(8)->create();
-        $actor = $users->first() ?? $admin;
+        $actors = User::factory(8)->create();
+        $actor  = $actors->first() ?? $admin;
 
-        // -----------------------------
-        // CANDIDATES
-        // -----------------------------
+        /*
+        |--------------------------------------------------------------------------
+        | CANDIDATES
+        |--------------------------------------------------------------------------
+        */
         $candidates = Candidate::factory(50)->create();
 
-        // -----------------------------
-        // SERVICES
-        // -----------------------------
-        $stageService = app(JobCandidateStageService::class);
+        /*
+        |--------------------------------------------------------------------------
+        | CLIENTS → JOBS → PIPELINE SNAPSHOTS
+        |--------------------------------------------------------------------------
+        */
+        Client::factory(8)->create()->each(function ($client) use ($candidates, $actor) {
 
-        // Canonical stage order
-        $stageFlow = [
-            'submitted',
-            'interviewing',
-            'offered',
-            'placed',
-        ];
-
-        // -----------------------------
-        // CLIENTS → JOBS → PIPELINE
-        // -----------------------------
-        Client::factory(8)->create()->each(function ($client) use (
-            $candidates,
-            $stageService,
-            $actor,
-            $stageFlow
-        ) {
-
+            /*
+    |--------------------------------------------------------------------------
+    | AGREEMENTS (1–2 PER CLIENT)
+    |--------------------------------------------------------------------------
+    */
+            Agreement::factory(rand(1, 2))->create([
+                'client_id' => $client->id,
+            ]);
             $jobs = Engagement::factory(rand(2, 4))
                 ->create(['client_id' => $client->id]);
 
             foreach ($jobs as $job) {
 
-                // Job created activity
-                ActivityLogger::log(
-                    subject: $job,
-                    event: ActivityEvent::JOB_CREATED,
-                    metadata: [
+                // -----------------------------
+                // JOB CREATED ACTIVITY
+                // -----------------------------
+                ActivityLog::create([
+                    'actor_id'     => $actor->id,
+                    'subject_type' => Engagement::class,
+                    'subject_id'   => $job->id,
+                    'event'        => ActivityEvent::JOB_CREATED,
+                    'metadata'     => [
                         'job_title' => $job->title,
                         'client_id' => $client->id,
                     ],
-                    actorId: $actor->id
-                );
+                    'created_at'   => now()->subDays(rand(10, 30)),
+                ]);
 
                 foreach ($candidates->random(rand(10, 18)) as $candidate) {
 
-                    // -----------------------------
-                    // ADD CANDIDATE TO JOB
-                    // -----------------------------
+                    /*
+                    |--------------------------------------------------------------------------
+                    | CREATE JOB CANDIDATE (BASE STATE)
+                    |--------------------------------------------------------------------------
+                    */
+                    $submittedAt = now()->subDays(rand(20, 40));
+
                     $jobCandidate = JobCandidate::create([
                         'job_id'        => $job->id,
                         'candidate_id'  => $candidate->id,
                         'stage'         => 'submitted',
-                        'submitted_at'  => now()->subDays(rand(5, 20)),
+                        'submitted_at'  => $submittedAt,
                     ]);
 
-                    ActivityLogger::log(
-                        subject: $jobCandidate,
-                        event: ActivityEvent::CANDIDATE_ADDED_TO_JOB,
-                        metadata: [
+                    ActivityLog::create([
+                        'actor_id'     => $actor->id,
+                        'subject_type' => JobCandidate::class,
+                        'subject_id'   => $jobCandidate->id,
+                        'event'        => ActivityEvent::CANDIDATE_ADDED_TO_JOB,
+                        'metadata'     => [
                             'job_id' => $job->id,
                             'candidate_id' => $candidate->id,
                             'candidate_name' => $candidate->first_name.' '.$candidate->last_name,
-                            'candidate_email'=> $candidate->email,
                             'stage' => 'submitted',
                         ],
-                        actorId: $actor->id
-                    );
+                        'created_at'   => $submittedAt,
+                    ]);
 
-                    // -----------------------------
-                    // DECIDE FINAL OUTCOME
-                    // -----------------------------
+                    /*
+                    |--------------------------------------------------------------------------
+                    | FINAL PIPELINE SNAPSHOT (NO SERVICES)
+                    |--------------------------------------------------------------------------
+                    */
                     $finalStage = collect([
                         'submitted',
                         'interviewing',
@@ -126,38 +128,67 @@ class DatabaseSeeder extends Seeder
                         'rejected',
                     ])->random();
 
-                    // -----------------------------
-                    // WALK STAGES SEQUENTIALLY
-                    // -----------------------------
-                    foreach ($stageFlow as $stage) {
+                    $timestamps = match ($finalStage) {
+                        'interviewing' => [
+                            'interviewing_at' => $submittedAt->copy()->addDays(5),
+                        ],
+                        'offered' => [
+                            'interviewing_at' => $submittedAt->copy()->addDays(5),
+                            'offered_at'      => $submittedAt->copy()->addDays(10),
+                        ],
+                        'placed' => [
+                            'interviewing_at' => $submittedAt->copy()->addDays(5),
+                            'offered_at'      => $submittedAt->copy()->addDays(10),
+                            'placed_at'       => $submittedAt->copy()->addDays(15),
+                        ],
+                        'rejected' => [
+                            'rejected_at'     => $submittedAt->copy()->addDays(7),
+                        ],
+                        default => [],
+                    };
 
-                        if ($stage === 'submitted') {
-                            continue;
-                        }
+                    $jobCandidate->updateQuietly(array_merge([
+                        'stage' => $finalStage,
+                    ], $timestamps));
 
-                        // Randomly stop early
-                        if ($finalStage === 'rejected' && rand(0, 1)) {
-                            $stageService->move($jobCandidate, 'rejected');
-                            break;
-                        }
+                    /*
+                    |--------------------------------------------------------------------------
+                    | ACTIVITY SNAPSHOTS
+                    |--------------------------------------------------------------------------
+                    */
+                    ActivityLog::create([
+                        'actor_id'     => $actor->id,
+                        'subject_type' => JobCandidate::class,
+                        'subject_id'   => $jobCandidate->id,
+                        'event'        => ActivityEvent::STAGE_CHANGED,
+                        'metadata'     => [
+                            'from' => 'submitted',
+                            'to'   => $finalStage,
+                        ],
+                        'created_at'   => now()->subDays(rand(3, 8)),
+                    ]);
 
-                        if (
-                            $finalStage !== 'rejected'
-                            && array_search($stage, $stageFlow, true)
-                            <= array_search($finalStage, $stageFlow, true)
-                        ) {
-                            $stageService->move(
-                                $jobCandidate,
-                                $stage,
-                                $stage === 'interviewing'
-                                    ? now()->addDays(rand(1, 3))
-                                    : null
-                            );
-                        }
+                    if ($finalStage === 'placed') {
+                        ActivityLog::create([
+                            'actor_id'     => $actor->id,
+                            'subject_type' => JobCandidate::class,
+                            'subject_id'   => $jobCandidate->id,
+                            'event'        => ActivityEvent::CANDIDATE_PLACED,
+                            'created_at'   => now()->subDays(2),
+                        ]);
+                    }
+
+                    if ($finalStage === 'rejected') {
+                        ActivityLog::create([
+                            'actor_id'     => $actor->id,
+                            'subject_type' => JobCandidate::class,
+                            'subject_id'   => $jobCandidate->id,
+                            'event'        => ActivityEvent::CANDIDATE_REJECTED,
+                            'created_at'   => now()->subDays(4),
+                        ]);
                     }
                 }
             }
         });
     }
-
 }
