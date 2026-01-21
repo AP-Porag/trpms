@@ -31,7 +31,7 @@ Route::get('/', function () {
 Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/under-development', function (\Illuminate\Http\Request $request) {
-        return Inertia::render('UnderDevelopment', [
+        return Inertia::render('shared/underDevelopment', [
             'module' => $request->get('module'),
         ]);
     })->name('under-development');
