@@ -161,7 +161,7 @@ export default function DataTable({
                                                                   {col.label}
                                                               </th>
                                                           ))}
-                                                          <th className="px-4 py-2">Actions</th>
+                                                          <th className="px-4 py-2 text-right">Actions</th>
                                                       </tr>
                                                   </thead>
                                                   <tbody>
@@ -179,7 +179,7 @@ export default function DataTable({
                                                                           {col.render ? col.render(row) : row[col.key]}
                                                                       </td>
                                                                   ))}
-                                                                  <td className="px-4 py-2">
+                                                                  <td className="px-4 py-2 text-right">
                                                                       <DropdownMenu>
                                                                           <DropdownMenuTrigger asChild>
                                                                               <Button size="action" className="cursor-pointer text-white">

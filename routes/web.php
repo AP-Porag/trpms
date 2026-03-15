@@ -3,11 +3,15 @@
 use App\Http\Controllers\Admin\Activity\ActivityLogController;
 use App\Http\Controllers\Admin\Candidate\CandidateController;
 use App\Http\Controllers\Admin\Client\ClientController;
+use App\Http\Controllers\Admin\Department\DepartmentController;
+use App\Http\Controllers\Admin\Industry\IndustryController;
+use App\Http\Controllers\Admin\Position\PositionController;
 use App\Http\Controllers\Admin\Prospect\ProspectController;
 use App\Http\Controllers\Admin\Engagement\EngagementController;
 use App\Http\Controllers\Admin\JobCandidate\JobCandidateController;
 use App\Http\Controllers\Admin\Note\CandidateNoteController;
 use App\Http\Controllers\Admin\Note\ClientNoteController;
+use App\Http\Controllers\Admin\Source\SourceController;
 use App\Http\Controllers\Admin\TargetAccount\TargetAccountController;
 use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\EditorController;
@@ -97,6 +101,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
         'target-accounts/{client}/promote',
         [TargetAccountController::class,'promote']
     )->name('target-accounts.promote');
+
+    Route::resource('industries', IndustryController::class);
+    Route::resource('departments', DepartmentController::class);
+    Route::resource('positions', PositionController::class);
+    Route::resource('sources', SourceController::class);
 });
 
 require __DIR__.'/settings.php';

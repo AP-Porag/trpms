@@ -18,6 +18,10 @@ import {
     Target,
     UserSearch,
     Building2Icon,
+    Factory,
+    Network,
+    UserCog2,
+    Share2,
 } from 'lucide-react';
 import AppLogo from './app-logo';
 
@@ -35,6 +39,26 @@ const mainNavItems: NavItem[] = [
                 title: 'Users',
                 href: '/users',
                 icon: Users,
+            },
+            {
+                title: 'Industries',
+                href: '/industries',
+                icon: Factory,
+            },
+            {
+                title: 'Department',
+                href: '/departments',
+                icon: Network,
+            },
+            {
+                title: 'Contact Roles',
+                href: '/positions',
+                icon: UserCog2,
+            },
+            {
+                title: 'Lead Sources',
+                href: '/sources',
+                icon: Share2,
             },
         ],
     },
