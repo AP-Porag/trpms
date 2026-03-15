@@ -5,11 +5,18 @@ namespace App\Services\JobCandidate;
 use App\Models\JobCandidate;
 use App\Services\Activity\ActivityEvent;
 use App\Services\Activity\ActivityLogger;
+use App\Services\Placement\PlacementService;
 use App\Utils\JobCandidateStage;
 use Illuminate\Validation\ValidationException;
 
 class JobCandidateStageService
 {
+    protected PlacementService $placementService;
+
+    public function __construct(PlacementService $placementService)
+    {
+        $this->placementService = $placementService;
+    }
     /**
      * Move candidate to a new stage
      */
@@ -58,7 +65,6 @@ class JobCandidateStageService
             ]
         );
 
-        // Optional semantic events
         if ($toStage === 'placed') {
             ActivityLogger::log($jc, ActivityEvent::CANDIDATE_PLACED);
         }
@@ -84,4 +90,5 @@ class JobCandidateStageService
             ]);
         }
     }
+
 }

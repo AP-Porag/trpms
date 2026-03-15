@@ -95,8 +95,7 @@ const mainNavItems: NavItem[] = [
     },
     {
         title: 'Placements',
-        // href: '/placements',
-        href: route('under-development', { module: 'Placement' }),
+        href: '/placements',
         icon: CheckCircle,
     },
     {

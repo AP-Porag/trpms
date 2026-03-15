@@ -38,4 +38,9 @@ class JobCandidate extends BaseModel
     {
         return $this->belongsTo(Engagement::class, 'job_id');
     }
+
+    public function placement()
+    {
+        return $this->hasOne(Placement::class);
+    }
 }

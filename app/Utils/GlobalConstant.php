@@ -36,4 +36,5 @@ class GlobalConstant
     // fee type
     public const JOB_FEE_TYPE_PERCENTAGE = 'percentage';
     public const JOB_FEE_TYPE_FIXED = 'fixed';
+    public const JOB_FEE_TYPE_RETAINED = 'retained';
 }

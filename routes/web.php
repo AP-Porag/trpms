@@ -5,6 +5,8 @@ use App\Http\Controllers\Admin\Candidate\CandidateController;
 use App\Http\Controllers\Admin\Client\ClientController;
 use App\Http\Controllers\Admin\Department\DepartmentController;
 use App\Http\Controllers\Admin\Industry\IndustryController;
+use App\Http\Controllers\Admin\Note\NoteController;
+use App\Http\Controllers\Admin\Placement\PlacementController;
 use App\Http\Controllers\Admin\Position\PositionController;
 use App\Http\Controllers\Admin\Prospect\ProspectController;
 use App\Http\Controllers\Admin\Engagement\EngagementController;
@@ -51,11 +53,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::resource('jobs', EngagementController::class);
 
-    Route::post('clients/{client}/notes', [ClientNoteController::class, 'store'])
-        ->name('clients.notes.store');
+//    Route::post('clients/{client}/notes', [ClientNoteController::class, 'store'])
+//        ->name('clients.notes.store');
+//
+//    Route::delete('notes/{note}', [ClientNoteController::class, 'destroy'])
+//        ->name('notes.destroy');
 
-    Route::delete('notes/{note}', [ClientNoteController::class, 'destroy'])
-        ->name('notes.destroy');
+    //global notes
+    Route::post('/notes', [NoteController::class,'store'])->name('notes.store');
+    Route::delete('/notes/{note}',[NoteController::class,'destroy'])->name('notes.destroy');
 
     Route::post('/editor/image-upload', [EditorController::class, 'upload'])
         ->name('editor.image.upload');
@@ -69,8 +75,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         [CandidateController::class, 'search']
     )->name('candidates.search');
 
-    Route::post('clients/{client}/notes', [CandidateNoteController::class, 'store'])
-        ->name('clients.notes.store');
+//    Route::post('clients/{client}/notes', [CandidateNoteController::class, 'store'])
+//        ->name('clients.notes.store');
 
     Route::post(
         '/job-candidates/{jobCandidate}/change-stage',
@@ -106,6 +112,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('departments', DepartmentController::class);
     Route::resource('positions', PositionController::class);
     Route::resource('sources', SourceController::class);
+    Route::resource('placements', PlacementController::class);
 });
 
 require __DIR__.'/settings.php';

@@ -5,6 +5,7 @@ import { toast } from 'sonner';
 
 import { DndContext, DragOverlay, PointerSensor, useDraggable, useDroppable, useSensor, useSensors } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
+import PlacementConfirmationModal from '@/components/placement/PlacementConfirmationModal';
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
@@ -34,6 +35,7 @@ export default function JobCandidateKanban({ pipeline }) {
     const [localPipeline, setLocalPipeline] = useState(pipeline);
     const [activeCard, setActiveCard] = useState(null);
     const [isDragging, setIsDragging] = useState(false);
+    const [placementCandidate, setPlacementCandidate] = useState(null);
 
     useEffect(() => {
         setLocalPipeline(pipeline);
@@ -45,6 +47,56 @@ export default function JobCandidateKanban({ pipeline }) {
         setIsDragging(true);
         setActiveCard(event.active.data.current);
     }
+
+    function openPlacementModal(jc) {
+        setPlacementCandidate(jc);
+    }
+
+    function closePlacementModal() {
+        setPlacementCandidate(null);
+    }
+
+    // function handleDragEnd(event) {
+    //     setIsDragging(false);
+    //     setActiveCard(null);
+    //
+    //     const { active, over } = event;
+    //     if (!over) return;
+    //
+    //     const jc = active.data.current;
+    //     const fromStage = jc.stage;
+    //     const toStage = over.id;
+    //
+    //     if (fromStage === toStage) return;
+    //
+    //     const fromIndex = JOB_CANDIDATE_STAGE_ORDER.indexOf(fromStage);
+    //     const toIndex = JOB_CANDIDATE_STAGE_ORDER.indexOf(toStage);
+    //
+    //     if (toIndex < fromIndex) {
+    //         toast.info('Backward stage movement is not allowed.');
+    //         return;
+    //     }
+    //
+    //     if (toStage === 'interviewing') {
+    //         toast.info('Use the menu to schedule interview.');
+    //         return;
+    //     }
+    //
+    //     // Optimistic UI
+    //     setLocalPipeline((prev) => {
+    //         const updated = structuredClone(prev);
+    //         updated[fromStage] = updated[fromStage].filter((c) => c.id !== jc.id);
+    //         updated[toStage].unshift({ ...jc, stage: toStage });
+    //         return updated;
+    //     });
+    //
+    //     if (toStage === 'placed') {
+    //         toast.info('Use the menu to confirm placement.');
+    //         return;
+    //     }
+    //
+    //     changeStage(jc.id, toStage);
+    // }
 
     function handleDragEnd(event) {
         setIsDragging(false);
@@ -72,7 +124,12 @@ export default function JobCandidateKanban({ pipeline }) {
             return;
         }
 
-        // Optimistic UI
+        if (toStage === 'placed') {
+            toast.info('Use the menu to confirm placement.');
+            return;
+        }
+
+        // Optimistic UI (only for normal stages)
         setLocalPipeline((prev) => {
             const updated = structuredClone(prev);
             updated[fromStage] = updated[fromStage].filter((c) => c.id !== jc.id);
@@ -84,32 +141,36 @@ export default function JobCandidateKanban({ pipeline }) {
     }
 
     return (
-        <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-5">
-                {JOB_CANDIDATE_STAGE_ORDER.map((stageKey) => (
-                    <KanbanColumn
-                        key={stageKey}
-                        stageKey={stageKey}
-                        stage={JOB_CANDIDATE_STAGES[stageKey]}
-                        items={localPipeline?.[stageKey] ?? []}
-                        isDragging={isDragging}
-                    />
-                ))}
-            </div>
+        <>
+            <DndContext sensors={sensors} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-5">
+                    {JOB_CANDIDATE_STAGE_ORDER.map((stageKey) => (
+                        <KanbanColumn
+                            key={stageKey}
+                            stageKey={stageKey}
+                            stage={JOB_CANDIDATE_STAGES[stageKey]}
+                            items={localPipeline?.[stageKey] ?? []}
+                            isDragging={isDragging}
+                            openPlacementModal={openPlacementModal}
+                        />
+                    ))}
+                </div>
 
-            {/*if want to change candidate card ui during drag & drop*/}
-            {/*<DragOverlay>*/}
-            {/*    {activeCard && (*/}
-            {/*        <Card className="w-64 shadow-lg">*/}
-            {/*            <CardHeader className="p-3">*/}
-            {/*                <CardTitle className="text-sm">*/}
-            {/*                    {activeCard.candidate.first_name} {activeCard.candidate.last_name}*/}
-            {/*                </CardTitle>*/}
-            {/*            </CardHeader>*/}
-            {/*        </Card>*/}
-            {/*    )}*/}
-            {/*</DragOverlay>*/}
-        </DndContext>
+                {/*if want to change candidate card ui during drag & drop*/}
+                {/*<DragOverlay>*/}
+                {/*    {activeCard && (*/}
+                {/*        <Card className="w-64 shadow-lg">*/}
+                {/*            <CardHeader className="p-3">*/}
+                {/*                <CardTitle className="text-sm">*/}
+                {/*                    {activeCard.candidate.first_name} {activeCard.candidate.last_name}*/}
+                {/*                </CardTitle>*/}
+                {/*            </CardHeader>*/}
+                {/*        </Card>*/}
+                {/*    )}*/}
+                {/*</DragOverlay>*/}
+            </DndContext>
+            <PlacementConfirmationModal open={!!placementCandidate} jc={placementCandidate} onClose={closePlacementModal} />
+        </>
     );
 }
 
@@ -117,7 +178,7 @@ export default function JobCandidateKanban({ pipeline }) {
 /* COLUMN                                                    */
 /* ========================================================= */
 
-function KanbanColumn({ stageKey, stage, items, isDragging }) {
+function KanbanColumn({ stageKey, stage, items, isDragging, openPlacementModal }) {
     const { setNodeRef, isOver } = useDroppable({ id: stageKey });
 
     return (
@@ -139,7 +200,7 @@ function KanbanColumn({ stageKey, stage, items, isDragging }) {
 
                 <div className="space-y-3 p-3">
                     {items.map((jc) => (
-                        <CandidateCard key={jc.id} jc={jc} />
+                        <CandidateCard key={jc.id} jc={jc} openPlacementModal={openPlacementModal} />
                     ))}
                 </div>
             </div>
@@ -180,7 +241,7 @@ function StageDateLabel({ jc }) {
     return <span className="text-muted-foreground">Updated: {formatDateUS(date)}</span>;
 }
 
-function CandidateCard({ jc }) {
+function CandidateCard({ jc, openPlacementModal }) {
     const { attributes, listeners, setNodeRef, transform, isDragging } = useDraggable({
         id: jc.id,
         data: jc,
@@ -215,7 +276,7 @@ function CandidateCard({ jc }) {
 
                             {/* Dropdown */}
                             <div onClick={(e) => e.stopPropagation()} className="text-muted-foreground hover:text-foreground">
-                                <StageActionMenu jc={jc} />
+                                <StageActionMenu jc={jc} openPlacementModal={openPlacementModal} />
                             </div>
                         </div>
                     </div>
@@ -224,7 +285,7 @@ function CandidateCard({ jc }) {
                 {/* Contact */}
                 <div className="text-muted-foreground gap-4 text-xs">
                     {candidate.email && (
-                        <a href={`mailto:${candidate.email}`} className="hover:text-foreground flex items-center gap-1]">
+                        <a href={`mailto:${candidate.email}`} className="hover:text-foreground gap-1] flex items-center">
                             ✉️ {candidate.email}
                         </a>
                     )}
@@ -251,11 +312,26 @@ function CandidateCard({ jc }) {
 /* ACTION MENU                                               */
 /* ========================================================= */
 
-function StageActionMenu({ jc }) {
+function PlacementMenuAction({ jc, closeMenu, openPlacementModal }) {
+    return (
+        <DropdownMenuItem
+            onSelect={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+
+                closeMenu(); // close dropdown
+                openPlacementModal(jc); // open modal
+            }}
+        >
+            Move to Placed
+        </DropdownMenuItem>
+    );
+}
+
+function StageActionMenu({ jc, openPlacementModal }) {
     const [open, setOpen] = useState(false);
 
     const availableStages = useMemo(() => Object.keys(JOB_CANDIDATE_STAGES).filter((s) => s !== jc.stage), [jc.stage]);
-
     return (
         <DropdownMenu open={open} onOpenChange={setOpen}>
             <DropdownMenuTrigger asChild>
@@ -265,20 +341,24 @@ function StageActionMenu({ jc }) {
                         e.stopPropagation();
                         setOpen(true);
                     }}
-                    className="p-1 rounded-md hover:bg-muted text-foreground cursor-pointer"
+                    className="hover:bg-muted text-foreground cursor-pointer rounded-md p-1"
                 >
                     <ChevronDown className="h-4 w-4" />
                 </button>
             </DropdownMenuTrigger>
 
             <DropdownMenuContent align="end">
-                {availableStages.map((stage) =>
-                    stage === 'interviewing' ? (
-                        <InterviewScheduleDialog key={stage} jc={jc} closeMenu={() => setOpen(false)} />
-                    ) : (
-                        <ConfirmStageChange key={stage} jc={jc} stage={stage} closeMenu={() => setOpen(false)} />
-                    ),
-                )}
+                {availableStages.map((stage) => {
+                    if (stage === 'interviewing') {
+                        return <InterviewScheduleDialog key={stage} jc={jc} closeMenu={() => setOpen(false)} />;
+                    }
+
+                    if (stage === 'placed') {
+                        return <PlacementMenuAction key={stage} jc={jc} closeMenu={() => setOpen(false)} openPlacementModal={openPlacementModal} />;
+                    }
+
+                    return <ConfirmStageChange key={stage} jc={jc} stage={stage} closeMenu={() => setOpen(false)} />;
+                })}
 
                 <DropdownMenuSeparator />
 

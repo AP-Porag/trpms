@@ -45,4 +45,5 @@ export const CLIENT_CATEGORY = {
 export const JOB_FEE_TYPE = {
     PERCENTAGE: "percentage",
     FIXED: "fixed",
+    RETAINED: "retained",
 };

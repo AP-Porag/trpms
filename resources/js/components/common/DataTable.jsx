@@ -160,6 +160,35 @@ export default function DataTable({
                                                               <th key={col.key} className="px-4 py-2">
                                                                   {col.label}
                                                               </th>
+                                                              // <th
+                                                              //     key={col.key}
+                                                              //     className="cursor-pointer px-4 py-2 select-none"
+                                                              //     onClick={() => {
+                                                              //         if (!col.sortable) return;
+                                                              //
+                                                              //         const direction =
+                                                              //             filters.sort === col.key && filters.direction === 'asc'
+                                                              //                 ? 'desc'
+                                                              //                 : 'asc';
+                                                              //
+                                                              //         onFilterChange({
+                                                              //             ...filters,
+                                                              //             sort: col.key,
+                                                              //             direction,
+                                                              //             page: 1,
+                                                              //         });
+                                                              //     }}
+                                                              // >
+                                                              //     <div className="flex items-center gap-1">
+                                                              //         {col.label}
+                                                              //
+                                                              //         {col.sortable && filters.sort === col.key && (
+                                                              //             <span className="text-xs">
+                                                              //                 {filters.direction === 'asc' ? '▲' : '▼'}
+                                                              //             </span>
+                                                              //         )}
+                                                              //     </div>
+                                                              // </th>
                                                           ))}
                                                           <th className="px-4 py-2 text-right">Actions</th>
                                                       </tr>

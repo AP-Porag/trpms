@@ -8,6 +8,8 @@ class Note extends BaseModel
 {
     protected $fillable = [
         'note',
+        'noteable_id',
+        'noteable_type',
         'created_by',
     ];
 

@@ -46,6 +46,7 @@ class JobCandidateService
     {
         return JobCandidate::with([
             'candidate:id,first_name,last_name,email,phone',
+            'job.client'
         ])
             ->where('job_id', $job->id)
             ->orderBy('created_at')
