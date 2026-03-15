@@ -3,10 +3,12 @@
 use App\Http\Controllers\Admin\Activity\ActivityLogController;
 use App\Http\Controllers\Admin\Candidate\CandidateController;
 use App\Http\Controllers\Admin\Client\ClientController;
+use App\Http\Controllers\Admin\Prospect\ProspectController;
 use App\Http\Controllers\Admin\Engagement\EngagementController;
 use App\Http\Controllers\Admin\JobCandidate\JobCandidateController;
 use App\Http\Controllers\Admin\Note\CandidateNoteController;
 use App\Http\Controllers\Admin\Note\ClientNoteController;
+use App\Http\Controllers\Admin\TargetAccount\TargetAccountController;
 use App\Http\Controllers\Admin\User\UserController;
 use App\Http\Controllers\EditorController;
 use Illuminate\Support\Facades\Artisan;
@@ -88,6 +90,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     )->name('activity.logs.for-subject');
 
     //making some change
+
+    Route::resource('prospects', ProspectController::class);
+    Route::resource('target-accounts', TargetAccountController::class);
+    Route::post(
+        'target-accounts/{client}/promote',
+        [TargetAccountController::class,'promote']
+    )->name('target-accounts.promote');
 });
 
 require __DIR__.'/settings.php';

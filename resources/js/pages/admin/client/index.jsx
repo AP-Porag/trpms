@@ -25,7 +25,7 @@ export default function Index({ clients,meta, filters: initialFilters }) {
 
     const [filters, setFilters] = useState({
         search: initialFilters.search || '',
-        status: initialFilters.status || '',
+        status: initialFilters.status || 'all',
         perPage: initialFilters.perPage || 5,
         page: meta.current_page || 1,
     });

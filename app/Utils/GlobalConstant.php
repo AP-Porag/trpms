@@ -28,6 +28,11 @@ class GlobalConstant
     public const CLIENT_TYPE_RETAINER = 'retainer';
     public const CLIENT_TYPE_CONTINGENCY = 'contingency';
 
+    // client category
+    public const CLIENT_CATEGORY_CLIENT = 'client';
+    public const CLIENT_CATEGORY_PROSPECT = 'prospect';
+    public const CLIENT_CATEGORY_TARGET_ACCOUNT = 'target_account';
+
     // fee type
     public const JOB_FEE_TYPE_PERCENTAGE = 'percentage';
     public const JOB_FEE_TYPE_FIXED = 'fixed';

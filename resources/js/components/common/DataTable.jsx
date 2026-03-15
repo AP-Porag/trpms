@@ -196,6 +196,7 @@ export default function DataTable({
 
                                                                                   return (
                                                                                       <>
+                                                                                          {/* EDIT */}
                                                                                           {rowActions.edit && (
                                                                                               <DropdownMenuItem
                                                                                                   onClick={() =>
@@ -207,6 +208,7 @@ export default function DataTable({
                                                                                               </DropdownMenuItem>
                                                                                           )}
 
+                                                                                          {/* VIEW */}
                                                                                           {rowActions.view && (
                                                                                               <DropdownMenuItem
                                                                                                   onClick={() =>
@@ -218,6 +220,7 @@ export default function DataTable({
                                                                                               </DropdownMenuItem>
                                                                                           )}
 
+                                                                                          {/* DELETE */}
                                                                                           {rowActions.delete && (
                                                                                               <DropdownMenuItem
                                                                                                   onClick={() => setDeleteId(row.id)}
@@ -227,6 +230,29 @@ export default function DataTable({
                                                                                                   Delete
                                                                                               </DropdownMenuItem>
                                                                                           )}
+
+                                                                                          {/* CUSTOM ACTIONS */}
+                                                                                          {Object.entries(rowActions).map(([key, value]) => {
+                                                                                              if (
+                                                                                                  ['view', 'edit', 'delete'].includes(key) ||
+                                                                                                  !value ||
+                                                                                                  typeof value !== 'object'
+                                                                                              )
+                                                                                                  return null;
+
+                                                                                              return (
+                                                                                                  <DropdownMenuItem
+                                                                                                      key={key}
+                                                                                                      onClick={value.action}
+                                                                                                      className="cursor-pointer"
+                                                                                                  >
+                                                                                                      {value.icon && (
+                                                                                                          <value.icon className="mr-2 h-4 w-4" />
+                                                                                                      )}
+                                                                                                      {value.label}
+                                                                                                  </DropdownMenuItem>
+                                                                                              );
+                                                                                          })}
                                                                                       </>
                                                                                   );
                                                                               })()}

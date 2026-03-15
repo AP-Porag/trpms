@@ -57,6 +57,10 @@ class DatabaseSeeder extends Seeder
         // -----------------------------
         $stageService = app(JobCandidateStageService::class);
 
+        Client::factory()->prospect()->count(30)->create();
+
+        Client::factory()->targetAccount()->count(40)->create();
+
         // Canonical stage order
         $stageFlow = [
             'submitted',
@@ -68,7 +72,9 @@ class DatabaseSeeder extends Seeder
         // -----------------------------
         // CLIENTS → JOBS → PIPELINE
         // -----------------------------
-        Client::factory(8)->create()->each(function ($client) use (
+        $clients = Client::factory()->client()->count(20)->create();
+//        Client::factory(8)->create()
+        $clients->each(function ($client) use (
             $candidates,
             $stageService,
             $actor,

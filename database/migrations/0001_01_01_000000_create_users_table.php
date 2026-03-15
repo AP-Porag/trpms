@@ -1,5 +1,6 @@
 <?php
 
+use App\Utils\GlobalConstant;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -19,7 +20,8 @@ return new class extends Migration
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
             $table->string('user_type')->default('admin');
-            $table->boolean('status')->default(true);
+            $table->integer('status')
+                ->default(GlobalConstant::STATUS_ACTIVE);
             $table->string('avatar')->nullable();
             $table->rememberToken();
             $table->timestamps();

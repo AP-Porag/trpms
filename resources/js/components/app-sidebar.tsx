@@ -16,6 +16,8 @@ import {
     FileText,
     BarChart3,
     Target,
+    UserSearch,
+    Building2Icon,
 } from 'lucide-react';
 import AppLogo from './app-logo';
 
@@ -37,9 +39,25 @@ const mainNavItems: NavItem[] = [
         ],
     },
     {
-        title: 'Clients',
-        href: '/clients',
-        icon: Briefcase,
+        title: 'Companies',
+        icon: Building2Icon,
+        children: [
+            {
+                title: 'Clients',
+                href: '/clients',
+                icon: Briefcase,
+            },
+            {
+                title: 'Prospects',
+                href: '/prospects',
+                icon: UserSearch,
+            },
+            {
+                title: 'Target Accounts',
+                href: '/target-accounts',
+                icon: Target,
+            },
+        ],
     },
     {
         title: 'Jobs',
@@ -74,12 +92,6 @@ const mainNavItems: NavItem[] = [
                 icon: BarChart3,
             },
         ],
-    },
-    {
-        title: 'Prospects',
-        // href: '/prospects',
-        href: route('under-development', { module: 'Prospects' }),
-        icon: Target,
     },
 ];
 
