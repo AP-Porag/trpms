@@ -37,4 +37,15 @@ class GlobalConstant
     public const JOB_FEE_TYPE_PERCENTAGE = 'percentage';
     public const JOB_FEE_TYPE_FIXED = 'fixed';
     public const JOB_FEE_TYPE_RETAINED = 'retained';
+
+
+    //placement invoice status
+    public const PLACEMENT_INVOICE_STATUS_NOT_INVOICED = 'not_invoiced';
+    public const PLACEMENT_INVOICE_STATUS_INVOICED = 'invoiced';
+    public const PLACEMENT_INVOICE_STATUS_PAID = 'paid';
+
+    // invoice status
+    public const INVOICE_STATUS_ISSUED = 'issued';
+    public const INVOICE_STATUS_PAID = 'paid';
+    public const INVOICE_STATUS_CANCELED = 'canceled';
 }

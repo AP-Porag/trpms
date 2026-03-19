@@ -3,8 +3,10 @@
 use App\Http\Controllers\Admin\Activity\ActivityLogController;
 use App\Http\Controllers\Admin\Candidate\CandidateController;
 use App\Http\Controllers\Admin\Client\ClientController;
+use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Department\DepartmentController;
 use App\Http\Controllers\Admin\Industry\IndustryController;
+use App\Http\Controllers\Admin\Invoice\InvoiceController;
 use App\Http\Controllers\Admin\Note\NoteController;
 use App\Http\Controllers\Admin\Placement\PlacementController;
 use App\Http\Controllers\Admin\Position\PositionController;
@@ -13,6 +15,8 @@ use App\Http\Controllers\Admin\Engagement\EngagementController;
 use App\Http\Controllers\Admin\JobCandidate\JobCandidateController;
 use App\Http\Controllers\Admin\Note\CandidateNoteController;
 use App\Http\Controllers\Admin\Note\ClientNoteController;
+use App\Http\Controllers\Admin\Revenue\RevenueGoalController;
+use App\Http\Controllers\Admin\Revenue\RevenueReportController;
 use App\Http\Controllers\Admin\Source\SourceController;
 use App\Http\Controllers\Admin\TargetAccount\TargetAccountController;
 use App\Http\Controllers\Admin\User\UserController;
@@ -43,9 +47,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ]);
     })->name('under-development');
 
-    Route::get('dashboard', function () {
-        return Inertia::render('dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
 
     Route::resource('users', UserController::class);
 
@@ -113,6 +116,16 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('positions', PositionController::class);
     Route::resource('sources', SourceController::class);
     Route::resource('placements', PlacementController::class);
+    Route::resource('invoices', InvoiceController::class);
+    Route::get('invoices/client-placements/data/{id}', [InvoiceController::class, 'getClientPlacements'])
+        ->name('invoices.client-placements');
+    Route::post('invoices/update/status/{id}', [InvoiceController::class, 'updateStatus'])
+        ->name('invoices.update-status');
+
+    Route::resource('invoices', InvoiceController::class);
+    Route::resource('revenue-goals', RevenueGoalController::class);
+    Route::resource('revenue-reports', RevenueReportController::class);
+
 });
 
 require __DIR__.'/settings.php';

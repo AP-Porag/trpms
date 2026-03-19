@@ -66,7 +66,9 @@ return new class extends Migration
             | A / B / C (from Excel)
             */
 
-            $table->string('rating')->nullable();
+            $table->enum('rating', ['A','B','C'])->nullable();
+            $table->foreignId('industry_id')->nullable();
+            $table->json('departments')->nullable();
 
 
             /*

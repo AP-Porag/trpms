@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin\Client;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Client\ClientRequest;
 use App\Models\Client;
+use App\Models\Department;
+use App\Models\Industry;
 use App\Services\Client\ClientService;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
@@ -57,6 +59,8 @@ class ClientController extends BaseController
         return inertia('admin/client/edit', [
             'client' => $client,
             'agreements' => $client->agreements()->get(),
+            'industries' => Industry::select('id','name')->get(),
+            'departments' => Department::select('id','name')->get(),
         ]);
     }
 
@@ -65,6 +69,7 @@ class ClientController extends BaseController
      */
     public function update(ClientRequest $request, Client $client)
     {
+        dd($request->all());
         $this->service->update($client, $request);
 
         return redirect()

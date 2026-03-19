@@ -28,6 +28,9 @@ class ClientRequest extends BaseRequest
 
             'address' => 'nullable|string|max:500',
             'category' => 'nullable|string',
+            'rating' => 'nullable',
+            'industry_id' => 'nullable|exists:industries,id',
+            'departments' => 'nullable',
 
             /*
             |--------------------------------------------------------------------------

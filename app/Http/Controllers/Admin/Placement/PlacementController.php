@@ -155,7 +155,7 @@ class PlacementController extends Controller
                 'candidate:id,first_name,last_name',
                 'client:id,name,company_name',
                 'job:id,title',
-                'recruiter:id,name'
+                'recruiter:id,first_name'
             ]);
 
         /* =========================
@@ -329,7 +329,7 @@ class PlacementController extends Controller
 
         $topRecruiters = Placement::select('recruiter_id')
             ->selectRaw('SUM(placement_fee) as revenue')
-            ->with('recruiter:id,name')
+            ->with('recruiter:id,first_name')
             ->groupBy('recruiter_id')
             ->orderByDesc('revenue')
             ->limit(5)

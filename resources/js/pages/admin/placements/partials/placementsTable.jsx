@@ -83,16 +83,16 @@ export default function PlacementsTable({ placements, meta, filters }) {
             actions={{
                 view: true,
                 status_filter: false,
-                create_invoice: {
-                    label: 'Create Invoice',
-                    icon: FileText,
-                    action: () =>
-                        router.visit(
-                            route('invoices.create', {
-                                placement_id: row.id,
-                            }),
-                        ),
-                },
+                // create_invoice: {
+                //     label: 'Create Invoice',
+                //     icon: FileText,
+                //     action: () =>
+                //         router.visit(
+                //             route('invoices.create', {
+                //                 id: row.client_id,
+                //             }),
+                //         ),
+                // },
 
                 // add_note: {
                 //     label: 'Add Note',

@@ -20,6 +20,9 @@ class Placement extends Model
         'start_date',
         'guarantee_end_date',
         'recruiter_id',
+        'invoice_id',
+        'invoiced_at',
+        'placement_invoice_status',
         'created_by'
     ];
 
@@ -51,5 +54,10 @@ class Placement extends Model
     public function notes()
     {
         return $this->morphMany(Note::class, 'noteable')->latest();
+    }
+
+    public function invoice()
+    {
+        return $this->belongsTo(Invoice::class);
     }
 }

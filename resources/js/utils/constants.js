@@ -47,3 +47,15 @@ export const JOB_FEE_TYPE = {
     FIXED: "fixed",
     RETAINED: "retained",
 };
+
+export const PLACEMENT_INVOICE_STATUS = {
+    NOT_INVOICED: 'not_invoiced',
+    INVOICED: 'invoiced',
+    PAID: 'paid',
+};
+
+export const INVOICE_STATUS = {
+    ISSUED: 'issued',
+    PAID: 'paid',
+    CANCELED: 'canceled',
+};

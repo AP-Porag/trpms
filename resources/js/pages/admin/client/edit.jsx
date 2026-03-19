@@ -17,30 +17,33 @@ import { CLIENT_TYPE, JOB_FEE_TYPE, STATUS } from '@/utils/constants';
 const breadcrumbs = [{ title: 'Edit Client', href: '#' }];
 
 const clientSchema = (hasExistingAgreements) =>
-    z.object({
-        name: z.string().min(3),
-        company_name: z.string().min(3),
-        email: z.string().email(),
-        phone: z.string().min(5),
-        address: z.string().optional(),
+    z
+        .object({
+            name: z.string().min(3),
+            company_name: z.string().min(3),
+            email: z.string().email(),
+            phone: z.string().min(5),
+            address: z.string().optional(),
 
-        client_type: z.enum([CLIENT_TYPE.RETAINER, CLIENT_TYPE.CONTINGENCY]),
+            client_type: z.enum([CLIENT_TYPE.RETAINER, CLIENT_TYPE.CONTINGENCY]),
 
-        fee_value: z.string().min(1),
+            fee_value: z.string().min(1),
 
-        status: z.enum([STATUS.ACTIVE.toString(), STATUS.INACTIVE.toString()]),
+            status: z.enum([STATUS.ACTIVE.toString(), STATUS.INACTIVE.toString()]),
 
-        agreement_type: z.string().optional(),
-        signed_date: z.string().optional(),
-        agreements: z.any().optional(),
-    })
+            industry_id: z.string().nullable().optional(),
+            rating: z.string().nullable().optional(),
+            departments: z.array(z.string()).default([]),
+
+            agreement_type: z.string().optional(),
+            signed_date: z.string().optional(),
+            agreements: z.any().optional(),
+        })
         .superRefine((data, ctx) => {
-
             const hasType = !!data.agreement_type;
             const hasDate = !!data.signed_date;
 
-            const hasNewFiles =
-                Array.isArray(data.agreements) && data.agreements.length > 0;
+            const hasNewFiles = Array.isArray(data.agreements) && data.agreements.length > 0;
 
             const hasFiles = hasNewFiles || hasExistingAgreements;
 
@@ -48,7 +51,6 @@ const clientSchema = (hasExistingAgreements) =>
             const all = hasType && hasDate && hasFiles;
 
             if (any && !all) {
-
                 if (!hasType) {
                     ctx.addIssue({
                         path: ['agreement_type'],
@@ -69,13 +71,11 @@ const clientSchema = (hasExistingAgreements) =>
                         message: 'At least one agreement file is required',
                     });
                 }
-
             }
-
         });
 
-export default function Edit({ client, agreements }) {
-
+export default function Edit({ client, agreements, industries, departments }) {
+    const [deptOpen, setDeptOpen] = useState(false);
     const hasExistingAgreements = agreements && agreements.length > 0;
 
     const {
@@ -90,6 +90,9 @@ export default function Edit({ client, agreements }) {
         resolver: zodResolver(clientSchema(hasExistingAgreements)),
         defaultValues: {
             ...client,
+            industry_id: client?.industry_id?.toString() || '',
+            rating: client?.rating || '',
+            departments: (client?.departments || []).map(String),
             agreement_type: agreements?.[0]?.agreement_type ?? '',
             signed_date: agreements?.[0]?.signed_date ?? '',
         },
@@ -104,10 +107,34 @@ export default function Edit({ client, agreements }) {
     );
 
     const clientType = watch('client_type');
+    const selectedDepartments = watch('departments') || [];
 
     useEffect(() => {
         register('agreements');
     }, [register]);
+
+    useEffect(() => {
+        const handleClickOutside = (e) => {
+            if (!e.target.closest('.department-dropdown')) {
+                setDeptOpen(false);
+            }
+        };
+
+        document.addEventListener('click', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
+    }, []);
+
+    const toggleDepartment = (id) => {
+        let updated = [...selectedDepartments];
+
+        if (updated.includes(id.toString())) {
+            updated = updated.filter((d) => d !== id.toString());
+        } else {
+            updated.push(id.toString());
+        }
+
+        setValue('departments', updated);
+    };
 
     const handleFileChange = (e) => {
 
@@ -142,6 +169,8 @@ export default function Edit({ client, agreements }) {
     };
 
     const updateClient = async (data) => {
+
+        console.log('data');
 
         return new Promise((resolve) => {
 
@@ -188,40 +217,22 @@ export default function Edit({ client, agreements }) {
 
             <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="rounded-xl border p-5">
-
                     <form onSubmit={handleSubmit(updateClient)}>
-
                         {/* CLIENT INFO */}
 
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
-
-                            <h2 className="mb-4 text-lg font-semibold">
-                                Client Information
-                            </h2>
+                            <h2 className="mb-4 text-lg font-semibold">Client Information</h2>
 
                             <div className="grid gap-4 md:grid-cols-2">
-
-                                {['name','company_name','email','phone'].map((f) => (
-
+                                {['name', 'company_name', 'email', 'phone'].map((f) => (
                                     <div key={f} className="grid gap-2">
+                                        <Label>{f.replace('_', ' ')}</Label>
 
-                                        <Label>{f.replace('_',' ')}</Label>
+                                        <Input {...register(f)} className={cn(errors[f] && 'border-red-500')} />
 
-                                        <Input
-                                            {...register(f)}
-                                            className={cn(errors[f] && 'border-red-500')}
-                                        />
-
-                                        {errors[f] && (
-                                            <span className="text-sm text-red-500">
-{errors[f].message}
-</span>
-                                        )}
-
+                                        {errors[f] && <span className="text-sm text-red-500">{errors[f].message}</span>}
                                     </div>
-
                                 ))}
-
                             </div>
 
                             <div className="mt-4">
@@ -230,11 +241,100 @@ export default function Edit({ client, agreements }) {
                             </div>
 
                             <div className="mt-4 grid gap-4 md:grid-cols-3">
+                                {/* INDUSTRY */}
 
+                                <div className="grid gap-2">
+                                    <Label>Industry</Label>
+
+                                    <Controller
+                                        name="industry_id"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select value={field.value?.toString()} onValueChange={field.onChange}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select Industry" />
+                                                </SelectTrigger>
+
+                                                <SelectContent>
+                                                    {industries.map((i) => (
+                                                        <SelectItem key={i.id} value={i.id.toString()}>
+                                                            {i.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </div>
+
+                                {/* TIER */}
+
+                                <div className="grid gap-2">
+                                    <Label>Client Tier</Label>
+
+                                    <Controller
+                                        name="rating"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select value={field.value || ''} onValueChange={field.onChange}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select Tier" />
+                                                </SelectTrigger>
+
+                                                <SelectContent>
+                                                    <SelectItem value="A">A - High Value</SelectItem>
+                                                    <SelectItem value="B">B - Medium</SelectItem>
+                                                    <SelectItem value="C">C - Low</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </div>
+
+                                {/* DEPARTMENTS MULTI SELECT */}
+
+                                <div className="grid gap-2">
+                                    <Label>Departments</Label>
+
+                                    <div className="department-dropdown relative mt-2">
+                                        <div className="w-full cursor-pointer rounded border bg-white p-2" onClick={() => setDeptOpen(!deptOpen)}>
+                                            {selectedDepartments.length > 0
+                                                ? departments
+                                                      .filter((d) => selectedDepartments.includes(d.id.toString()))
+                                                      .map((d) => d.name)
+                                                      .join(', ')
+                                                : 'Select Departments'}
+                                        </div>
+
+                                        {deptOpen && (
+                                            <div className="absolute z-50 mt-1 max-h-60 w-full overflow-auto rounded border bg-white shadow">
+                                                {departments.map((d) => {
+                                                    const isSelected = selectedDepartments.includes(d.id.toString());
+
+                                                    return (
+                                                        <div
+                                                            key={d.id}
+                                                            onClick={() => toggleDepartment(d.id)}
+                                                            className={`flex cursor-pointer justify-between px-3 py-2 text-sm hover:bg-gray-100 ${
+                                                                isSelected ? 'bg-gray-100 font-medium' : ''
+                                                            }`}
+                                                        >
+                                                            {d.name}
+
+                                                            {isSelected && <span className="text-xs text-green-600">✓</span>}
+                                                        </div>
+                                                    );
+                                                })}
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="mt-4 grid gap-4 md:grid-cols-3">
                                 {/* CLIENT TYPE */}
 
                                 <div className="grid gap-2">
-
                                     <Label>Client Type</Label>
 
                                     <Controller
@@ -247,87 +347,55 @@ export default function Edit({ client, agreements }) {
                                                 </SelectTrigger>
 
                                                 <SelectContent>
-                                                    <SelectItem value={CLIENT_TYPE.RETAINER}>
-                                                        Retainer
-                                                    </SelectItem>
+                                                    <SelectItem value={CLIENT_TYPE.RETAINER}>Retainer</SelectItem>
 
-                                                    <SelectItem value={CLIENT_TYPE.CONTINGENCY}>
-                                                        Contingency
-                                                    </SelectItem>
+                                                    <SelectItem value={CLIENT_TYPE.CONTINGENCY}>Contingency</SelectItem>
                                                 </SelectContent>
-
                                             </Select>
                                         )}
                                     />
-
                                 </div>
 
                                 {/* FEE */}
 
                                 <div className="grid gap-2">
-
-                                    <Label>
-                                        {clientType === CLIENT_TYPE.CONTINGENCY
-                                            ? 'Placement Fee (%)'
-                                            : 'Monthly Retainer ($)'}
-                                    </Label>
+                                    <Label>{clientType === CLIENT_TYPE.CONTINGENCY ? 'Placement Fee (%)' : 'Monthly Retainer ($)'}</Label>
 
                                     <div className="relative">
-
                                         {clientType === CLIENT_TYPE.RETAINER && (
-                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
-$
-</span>
+                                            <span className="absolute top-1/2 left-3 -translate-y-1/2 text-sm text-gray-500">$</span>
                                         )}
 
                                         <Input
                                             type="number"
                                             min={0}
                                             max={clientType === CLIENT_TYPE.CONTINGENCY ? 100 : undefined}
-                                            className={cn(
-                                                clientType === CLIENT_TYPE.RETAINER && 'pl-7',
-                                                errors.fee_value && 'border-red-500'
-                                            )}
-                                            placeholder={
-                                                clientType === CLIENT_TYPE.CONTINGENCY
-                                                    ? 'Fee %'
-                                                    : 'Retainer Amount'
-                                            }
-                                            {...register('fee_value',{
-                                                onChange:(e)=>{
+                                            className={cn(clientType === CLIENT_TYPE.RETAINER && 'pl-7', errors.fee_value && 'border-red-500')}
+                                            placeholder={clientType === CLIENT_TYPE.CONTINGENCY ? 'Fee %' : 'Retainer Amount'}
+                                            {...register('fee_value', {
+                                                onChange: (e) => {
+                                                    let value = e.target.value;
 
-                                                    let value=e.target.value;
-
-                                                    if(clientType===CLIENT_TYPE.CONTINGENCY){
-                                                        value=Math.min(100,Math.max(0,value));
+                                                    if (clientType === CLIENT_TYPE.CONTINGENCY) {
+                                                        value = Math.min(100, Math.max(0, value));
                                                     }
 
-                                                    setValue('fee_value',value);
-
-                                                }
+                                                    setValue('fee_value', value);
+                                                },
                                             })}
                                         />
 
                                         {clientType === CLIENT_TYPE.CONTINGENCY && (
-                                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
-%
-</span>
+                                            <span className="absolute top-1/2 right-3 -translate-y-1/2 text-sm text-gray-500">%</span>
                                         )}
-
                                     </div>
 
-                                    {errors.fee_value && (
-                                        <span className="text-sm text-red-500">
-{errors.fee_value.message}
-</span>
-                                    )}
-
+                                    {errors.fee_value && <span className="text-sm text-red-500">{errors.fee_value.message}</span>}
                                 </div>
 
                                 {/* STATUS */}
 
                                 <div className="grid gap-2">
-
                                     <Label>Status</Label>
 
                                     <Controller
@@ -340,35 +408,23 @@ $
                                                 </SelectTrigger>
 
                                                 <SelectContent>
-                                                    <SelectItem value={STATUS.ACTIVE.toString()}>
-                                                        Active
-                                                    </SelectItem>
+                                                    <SelectItem value={STATUS.ACTIVE.toString()}>Active</SelectItem>
 
-                                                    <SelectItem value={STATUS.INACTIVE.toString()}>
-                                                        Inactive
-                                                    </SelectItem>
+                                                    <SelectItem value={STATUS.INACTIVE.toString()}>Inactive</SelectItem>
                                                 </SelectContent>
-
                                             </Select>
                                         )}
                                     />
-
                                 </div>
-
                             </div>
-
                         </div>
 
                         {/* AGREEMENTS */}
 
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
-
-                            <h2 className="mb-4 text-lg font-semibold">
-                                Client Agreements
-                            </h2>
+                            <h2 className="mb-4 text-lg font-semibold">Client Agreements</h2>
 
                             <div className="grid gap-4 md:grid-cols-2">
-
                                 <div className="grid gap-2">
                                     <Label>Agreement Type</Label>
                                     <Input {...register('agreement_type')} />
@@ -386,35 +442,19 @@ $
                                         />
                                     )}
                                 />
-
                             </div>
 
                             <label className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center">
-
                                 <Upload className="mb-2 h-6 w-6" />
 
-                                <span className="text-sm">
-Upload agreements
-</span>
+                                <span className="text-sm">Upload agreements</span>
 
-                                <input
-                                    type="file"
-                                    multiple
-                                    hidden
-                                    onChange={handleFileChange}
-                                />
-
+                                <input type="file" multiple hidden onChange={handleFileChange} />
                             </label>
 
                             <div className="mt-4 space-y-2">
-
                                 {files.map((item, i) => (
-
-                                    <div
-                                        key={i}
-                                        className="flex items-center justify-between rounded border p-2"
-                                    >
-
+                                    <div key={i} className="flex items-center justify-between rounded border p-2">
                                         <div className="flex items-center gap-2">
                                             <FileText className="h-5 w-5" />
                                             <span className="truncate text-sm">{item.name}</span>
@@ -423,35 +463,21 @@ Upload agreements
                                         <button
                                             type="button"
                                             onClick={() => removeFile(i)}
-                                            className="text-red-600 hover:text-red-700 cursor-pointer"
+                                            className="cursor-pointer text-red-600 hover:text-red-700"
                                         >
                                             <Trash2 className="h-4 w-4" />
                                         </button>
-
                                     </div>
-
                                 ))}
 
-                                {files.length === 0 && (
-                                    <p className="text-muted-foreground text-center text-sm">
-                                        No agreements uploaded
-                                    </p>
-                                )}
-
+                                {files.length === 0 && <p className="text-muted-foreground text-center text-sm">No agreements uploaded</p>}
                             </div>
-
                         </div>
 
                         {/* SUBMIT */}
 
                         <div className="flex justify-end">
-
-                            <Button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="cursor-pointer"
-                            >
-
+                            <Button type="submit" disabled={isSubmitting} className="cursor-pointer">
                                 {isSubmitting ? (
                                     <>
                                         <RotateCw className="mr-2 h-4 w-4 animate-spin" />
@@ -460,11 +486,8 @@ Upload agreements
                                 ) : (
                                     'Update Client'
                                 )}
-
                             </Button>
-
                         </div>
-
                     </form>
                 </div>
             </div>

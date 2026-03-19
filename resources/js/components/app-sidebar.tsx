@@ -22,6 +22,9 @@ import {
     Network,
     UserCog2,
     Share2,
+    Award,
+    AwardIcon,
+    ListOrdered,
 } from 'lucide-react';
 import AppLogo from './app-logo';
 
@@ -81,6 +84,12 @@ const mainNavItems: NavItem[] = [
                 href: '/target-accounts',
                 icon: Target,
             },
+            {
+                title: 'Leads',
+                // href: '/leads',
+                href: route('under-development', { module: 'Leads' }),
+                icon: ListOrdered,
+            },
         ],
     },
     {
@@ -104,14 +113,17 @@ const mainNavItems: NavItem[] = [
         children: [
             {
                 title: 'Invoices',
-                // href: '/invoices',
-                href: route('under-development', { module: 'Invoices' }),
+                href: '/invoices',
                 icon: FileText,
             },
             {
+                title: 'Revenue Goal',
+                href: '/revenue-goals',
+                icon: Award,
+            },
+            {
                 title: 'Revenue Reports',
-                // href: '/revenue-reports',
-                href: route('under-development', { module: 'Revenue Reports' }),
+                href: '/revenue-reports',
                 icon: BarChart3,
             },
         ],

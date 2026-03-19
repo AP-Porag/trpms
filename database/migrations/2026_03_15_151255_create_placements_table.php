@@ -33,8 +33,14 @@ return new class extends Migration
 
             $table->date('guarantee_end_date')->nullable();
 
+            $table->foreignId('invoice_id')->nullable();
+            $table->date('invoiced_at')->nullable();
+            $table->enum('placement_invoice_status', [GlobalConstant::PLACEMENT_INVOICE_STATUS_NOT_INVOICED, GlobalConstant::PLACEMENT_INVOICE_STATUS_INVOICED, GlobalConstant::PLACEMENT_INVOICE_STATUS_PAID])->default(GlobalConstant::PLACEMENT_INVOICE_STATUS_NOT_INVOICED);
+
             $table->foreignId('recruiter_id')->nullable()->constrained('users');
             $table->foreignId('created_by')->nullable()->constrained('users');
+
+            $table->index('placement_invoice_status');
 
             $table->timestamps();
         });

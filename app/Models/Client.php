@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Utils\GlobalConstant;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -23,6 +24,8 @@ class Client extends BaseModel
         'fee_value',
         'category',
         'rating',
+        'industry_id',
+        'departments',
         'average_salary',
         'status',
         'created_by',
@@ -31,6 +34,7 @@ class Client extends BaseModel
     protected $casts = [
         'fee_value' => 'decimal:2',
         'average_salary' => 'decimal:2',
+        'departments' => 'array',
     ];
 
     /*
@@ -51,10 +55,21 @@ class Client extends BaseModel
         return $this->hasMany(Agreement::class, "client_id");
     }
 
+    // Industry
+    public function industry(): BelongsTo
+    {
+        return $this->belongsTo(Industry::class);
+    }
+
     // Jobs / Engagements
     public function jobs(): HasMany
     {
         return $this->hasMany(Engagement::class, "client_id");
+    }
+
+    public function invoices(): HasMany
+    {
+        return $this->hasMany(Invoice::class);
     }
 
     /*
