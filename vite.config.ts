@@ -18,6 +18,7 @@ export default defineConfig({
         jsx: 'automatic',
     },
     resolve: {
+        extensions: ['.js', '.jsx', '.ts', '.tsx'],
         alias: {
             'ziggy-js': resolve(__dirname, 'vendor/tightenco/ziggy'),
         },
