@@ -25,6 +25,7 @@ import {
     Award,
     AwardIcon,
     ListOrdered,
+    CalendarDays,
 } from 'lucide-react';
 import AppLogo from './app-logo';
 
@@ -33,6 +34,11 @@ const mainNavItems: NavItem[] = [
         title: 'Dashboard',
         href: '/dashboard',
         icon: LayoutGrid,
+    },
+    {
+        title: "Business Timeline",
+        href: "/events",
+        icon: CalendarDays,
     },
     {
         title: 'Administration',

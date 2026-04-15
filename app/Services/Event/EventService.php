@@ -15,11 +15,13 @@ class EventService
 {
     public function syncEvents(): void
     {
+        \Log::info('Event Sync Started');
         $this->syncJobEvents();
         $this->syncPipelineEvents();
         $this->syncPlacementEvents();
         $this->syncInvoiceEvents();
         $this->syncAgreementEvents();
+        \Log::info('Event Sync Completed');
     }
 
     /*
@@ -269,20 +271,33 @@ class EventService
                $date,
         string $color
     ): void {
-        Event::updateOrCreate(
-            [
+        try {
+            Event::updateOrCreate(
+                [
+                    'type' => $type,
+                    'entity_type' => $entityType,
+                    'entity_id' => $entityId,
+                ],
+                [
+                    'title' => $title,
+                    'description' => $description,
+                    'start_at' => Carbon::parse($date),
+                    'color' => $color,
+                    'status' => $this->resolveStatus($date),
+                ]
+            );
+
+            \Log::info("Event created/updated", [
                 'type' => $type,
-                'entity_type' => $entityType,
-                'entity_id' => $entityId,
-            ],
-            [
-                'title' => $title,
-                'description' => $description,
-                'start_at' => Carbon::parse($date),
-                'color' => $color,
-                'status' => $this->resolveStatus($date),
-            ]
-        );
+                'entity_id' => $entityId
+            ]);
+        }catch (\Exception $e){
+
+            \Log::error("Event failed", [
+                'error' => $e->getMessage()
+            ]);
+
+        }
     }
 
     private function resolveStatus($date): string

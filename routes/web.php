@@ -5,6 +5,7 @@ use App\Http\Controllers\Admin\Candidate\CandidateController;
 use App\Http\Controllers\Admin\Client\ClientController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Department\DepartmentController;
+use App\Http\Controllers\Admin\Event\EventController;
 use App\Http\Controllers\Admin\Industry\IndustryController;
 use App\Http\Controllers\Admin\Invoice\InvoiceController;
 use App\Http\Controllers\Admin\Note\NoteController;
@@ -125,6 +126,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('invoices', InvoiceController::class);
     Route::resource('revenue-goals', RevenueGoalController::class);
     Route::resource('revenue-reports', RevenueReportController::class);
+    Route::resource('events', EventController::class);
 
 });
 
