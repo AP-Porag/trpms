@@ -1,39 +1,21 @@
-import { useRef, useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Head, router } from '@inertiajs/react';
-import { Controller, useForm } from 'react-hook-form';
-import { toast } from 'sonner';
-import { z } from 'zod';
 import axios from 'axios';
+import { useRef, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-} from '@/components/ui/command';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 
-import { cn } from '@/lib/utils';
-import { Check, ChevronsUpDown, RotateCw } from 'lucide-react';
+import { ChevronsUpDown, RotateCw } from 'lucide-react';
 
 import RichTextEditor from '@/components/forms/RichTextEditor';
 
@@ -46,6 +28,7 @@ const jobSchema = z.object({
     title: z.string().min(3, 'Title is required'),
     client_id: z.string().min(1, 'Client is required'),
     description: z.string().min(3, 'Description is required'),
+    salary_range: z.string().min(3, 'Salary range is required'),
     fee_type: z.enum(Object.values(JOB_FEE_TYPE)),
     fee_value: z.string().min(1, 'Fee value is required'),
     status: z.enum([String(STATUS.ACTIVE), String(STATUS.INACTIVE)]),
@@ -70,8 +53,7 @@ export default function Create({ clients }) {
     const saveJob = async (data) => {
         let html = data.description;
 
-        const tempImages =
-            editorRef.current?.editor?.storage?.tempImages || [];
+        const tempImages = editorRef.current?.editor?.storage?.tempImages || [];
 
         if (tempImages.length) {
             const formData = new FormData();
@@ -81,10 +63,7 @@ export default function Create({ clients }) {
                 formData.append(`images[${i}]`, img.file);
             });
 
-            const response = await axios.post(
-                route('editor.finalize'),
-                formData
-            );
+            const response = await axios.post(route('editor.finalize'), formData);
 
             html = response.data.html;
         }
@@ -101,13 +80,8 @@ export default function Create({ clients }) {
 
             <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="rounded-xl border p-5">
-                    <form
-                        onSubmit={handleSubmit(saveJob)}
-                        className="space-y-6"
-                    >
-                        <h2 className="text-lg font-semibold">
-                            Job Information
-                        </h2>
+                    <form onSubmit={handleSubmit(saveJob)} className="space-y-6">
+                        <h2 className="text-lg font-semibold">Job Information</h2>
 
                         {/* Client + Fee */}
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
@@ -119,37 +93,26 @@ export default function Create({ clients }) {
                                     const [open, setOpen] = useState(false);
 
                                     return (
-                                        <div className="md:col-span-1 grid gap-2 min-w-0">
+                                        <div className="grid min-w-0 gap-2 md:col-span-1">
                                             <Label>Client</Label>
 
                                             <Popover open={open} onOpenChange={setOpen}>
                                                 <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        role="combobox"
-                                                        className="w-full justify-between overflow-hidden"
-                                                    >
-                <span className="truncate">
-                    {field.value
-                        ? (() => {
-                            const c = clients.find(
-                                (x) => String(x.id) === field.value
-                            );
-                            return c
-                                ? `${c.name} – ${c.company_name}`
-                                : "Select client";
-                        })()
-                        : "Select client"}
-                </span>
+                                                    <Button variant="outline" role="combobox" className="w-full justify-between overflow-hidden">
+                                                        <span className="truncate">
+                                                            {field.value
+                                                                ? (() => {
+                                                                      const c = clients.find((x) => String(x.id) === field.value);
+                                                                      return c ? `${c.name} – ${c.company_name}` : 'Select client';
+                                                                  })()
+                                                                : 'Select client'}
+                                                        </span>
 
                                                         <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                                     </Button>
                                                 </PopoverTrigger>
 
-                                                <PopoverContent
-                                                    align="start"
-                                                    className="w-[--radix-popover-trigger-width] p-0"
-                                                >
+                                                <PopoverContent align="start" className="w-[--radix-popover-trigger-width] p-0">
                                                     <Command>
                                                         <CommandInput placeholder="Search client..." />
                                                         <CommandEmpty>No client found.</CommandEmpty>
@@ -164,9 +127,9 @@ export default function Create({ clients }) {
                                                                         setOpen(false);
                                                                     }}
                                                                 >
-                            <span className="truncate">
-                                {client.name} – {client.company_name}
-                            </span>
+                                                                    <span className="truncate">
+                                                                        {client.name} – {client.company_name}
+                                                                    </span>
                                                                 </CommandItem>
                                                             ))}
                                                         </CommandGroup>
@@ -174,13 +137,8 @@ export default function Create({ clients }) {
                                                 </PopoverContent>
                                             </Popover>
 
-                                            {errors.client_id && (
-                                                <span className="text-sm text-red-500">
-            {errors.client_id.message}
-        </span>
-                                            )}
+                                            {errors.client_id && <span className="text-sm text-red-500">{errors.client_id.message}</span>}
                                         </div>
-
                                     );
                                 }}
                             />
@@ -192,26 +150,13 @@ export default function Create({ clients }) {
                                 render={({ field }) => (
                                     <div className="grid gap-2">
                                         <Label>Fee Type</Label>
-                                        <Select
-                                            value={field.value}
-                                            onValueChange={field.onChange}
-                                        >
+                                        <Select value={field.value} onValueChange={field.onChange}>
                                             <SelectTrigger className="w-full">
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem
-                                                    value={
-                                                        JOB_FEE_TYPE.PERCENTAGE
-                                                    }
-                                                >
-                                                    Percentage
-                                                </SelectItem>
-                                                <SelectItem
-                                                    value={JOB_FEE_TYPE.FIXED}
-                                                >
-                                                    Fixed
-                                                </SelectItem>
+                                                <SelectItem value={JOB_FEE_TYPE.PERCENTAGE}>Percentage</SelectItem>
+                                                <SelectItem value={JOB_FEE_TYPE.FIXED}>Fixed</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -221,15 +166,21 @@ export default function Create({ clients }) {
                             {/* Fee Value */}
                             <div className="grid gap-2">
                                 <Label>Fee Value</Label>
+                                <Input type="number" {...register('fee_value')} />
+                                {errors.fee_value && <span className="text-sm text-red-500">{errors.fee_value.message}</span>}
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
+                            {/* Salary Range */}
+                            <div className="grid gap-2">
+                                <Label>Salary Range</Label>
                                 <Input
                                     type="number"
-                                    {...register('fee_value')}
+                                    {...register('salary_range', {
+                                        setValueAs: (v) => v?.toString(),
+                                    })}
                                 />
-                                {errors.fee_value && (
-                                    <span className="text-sm text-red-500">
-                                        {errors.fee_value.message}
-                                    </span>
-                                )}
+                                {errors.fee_value && <span className="text-sm text-red-500">{errors.salary_range.message}</span>}
                             </div>
 
                             {/* Status */}
@@ -239,28 +190,13 @@ export default function Create({ clients }) {
                                 render={({ field }) => (
                                     <div className="grid gap-2">
                                         <Label>Status</Label>
-                                        <Select
-                                            value={field.value}
-                                            onValueChange={field.onChange}
-                                        >
+                                        <Select value={field.value} onValueChange={field.onChange}>
                                             <SelectTrigger className="w-full">
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem
-                                                    value={String(
-                                                        STATUS.ACTIVE
-                                                    )}
-                                                >
-                                                    Active
-                                                </SelectItem>
-                                                <SelectItem
-                                                    value={String(
-                                                        STATUS.INACTIVE
-                                                    )}
-                                                >
-                                                    Inactive
-                                                </SelectItem>
+                                                <SelectItem value={String(STATUS.ACTIVE)}>Active</SelectItem>
+                                                <SelectItem value={String(STATUS.INACTIVE)}>Inactive</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -272,11 +208,7 @@ export default function Create({ clients }) {
                         <div className="grid gap-2">
                             <Label>Title</Label>
                             <Input {...register('title')} />
-                            {errors.title && (
-                                <span className="text-sm text-red-500">
-                                    {errors.title.message}
-                                </span>
-                            )}
+                            {errors.title && <span className="text-sm text-red-500">{errors.title.message}</span>}
                         </div>
 
                         {/* Description */}
@@ -286,30 +218,15 @@ export default function Create({ clients }) {
                             render={({ field }) => (
                                 <div className="grid gap-2">
                                     <Label>Description</Label>
-                                    <RichTextEditor
-                                        ref={editorRef}
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                    />
-                                    {errors.description && (
-                                        <span className="text-sm text-red-500">
-                                            {
-                                                errors.description
-                                                    .message
-                                            }
-                                        </span>
-                                    )}
+                                    <RichTextEditor ref={editorRef} value={field.value} onChange={field.onChange} />
+                                    {errors.description && <span className="text-sm text-red-500">{errors.description.message}</span>}
                                 </div>
                             )}
                         />
 
                         {/* Submit */}
                         <div className="flex justify-end">
-                            <Button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="cursor-pointer"
-                            >
+                            <Button type="submit" disabled={isSubmitting} className="cursor-pointer">
                                 {isSubmitting ? (
                                     <>
                                         <RotateCw className="mr-2 h-4 w-4 animate-spin" />

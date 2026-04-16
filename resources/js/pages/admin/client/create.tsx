@@ -21,10 +21,10 @@ const clientSchema = z.object({
     name: z.string().min(3, { message: 'Name is Required!' }),
     company_name: z.string().min(3, { message: 'Company name is required!' }),
     email: z.string().email(),
-    phone: z.string().min(10),
+    phone: z.string().min(10, { message: 'Phone number must be at least 10 digits' }),
     address: z.string().optional(),
 
-    industry_id: z.string().min(1),
+    industry_id: z.string().nullable().optional(),
 
     client_type: z.enum([CLIENT_TYPE.RETAINER, CLIENT_TYPE.CONTINGENCY]),
     fee_value: z.string().min(1, { message: 'Fee value is required' }),

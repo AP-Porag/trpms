@@ -83,6 +83,8 @@ class ClientService extends BaseService
         return $client;
     }
 
+
+
     public function update(Client $client, $data): Client
     {
 
@@ -152,4 +154,13 @@ class ClientService extends BaseService
             'client' => $client->load('notes.author'),
         ];
     }
+    // public function detail(string $id): array
+    // {
+    //     $client = Client::with(['notes.author', 'agreements'])
+    //         ->findOrFail($id);
+
+    //     return [
+    //         'client' => $client,
+    //     ];
+    // }
 }
