@@ -14,7 +14,7 @@ use Illuminate\Http\JsonResponse;
 
 class CandidateController extends BaseController
 {
-    public function __construct(protected CandidateService $service){}
+    public function __construct(protected CandidateService $service) {}
 
 
     /**
@@ -49,7 +49,11 @@ class CandidateController extends BaseController
      */
     public function show(string $id)
     {
-        //
+        $candidate = Candidate::findOrFail($id);
+
+        $data = $this->service->detail($candidate);
+
+        return Inertia::render('admin/candidate/show', $data);
     }
 
     /**
@@ -112,5 +116,4 @@ class CandidateController extends BaseController
             ])
         );
     }
-
 }

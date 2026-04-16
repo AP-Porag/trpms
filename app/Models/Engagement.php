@@ -17,12 +17,13 @@ class Engagement extends BaseModel
         'description',
         'fee_type',
         'fee_value',
+        'salary_range',
         'status',
     ];
 
-    public function client():BelongsTo
+    public function client(): BelongsTo
     {
-        return $this->belongsTo(Client::class,'client_id');
+        return $this->belongsTo(Client::class, 'client_id');
     }
 
     public function notes()
