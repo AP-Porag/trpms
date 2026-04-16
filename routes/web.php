@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\Event\EventController;
 use App\Http\Controllers\Admin\Industry\IndustryController;
 use App\Http\Controllers\Admin\Invoice\InvoiceController;
 use App\Http\Controllers\Admin\Note\NoteController;
+use App\Http\Controllers\Admin\Notification\NotificationController;
 use App\Http\Controllers\Admin\Placement\PlacementController;
 use App\Http\Controllers\Admin\Position\PositionController;
 use App\Http\Controllers\Admin\Prospect\ProspectController;
@@ -127,6 +128,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('revenue-goals', RevenueGoalController::class);
     Route::resource('revenue-reports', RevenueReportController::class);
     Route::resource('events', EventController::class);
+
+    Route::prefix('notifications')->name('notifications.')->group(function () {
+        Route::get('/', [NotificationController::class, 'index'])->name('index');
+        Route::post('/{id}/toggle', [NotificationController::class, 'toggle'])->name('toggle');
+    });
 
 });
 

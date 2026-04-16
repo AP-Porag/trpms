@@ -2,12 +2,15 @@
 
 namespace App\Providers;
 
+use App\Models\Notification;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Models\Placement;
 use App\Models\Candidate;
 use App\Models\Client;
 use App\Models\Engagement;
+use Inertia\Inertia;
+
 //use App\Models\Invoice;
 
 class AppServiceProvider extends ServiceProvider
@@ -31,6 +34,23 @@ class AppServiceProvider extends ServiceProvider
             'client' => Client::class,
             'job' => Engagement::class,
 //            'invoice' => Invoice::class,
+        ]);
+
+        Inertia::share([
+            'notifications' => function () {
+                return Notification::query()
+                    ->where(function ($q) {
+                        $q->where('status', 0)
+                            ->orWhereMonth('created_at', now()->month);
+                    })
+                    ->latest()
+                    ->limit(50)
+                    ->get();
+            },
+
+            'notification_unseen_count' => function () {
+                return Notification::where('status', 0)->count();
+            },
         ]);
     }
 }

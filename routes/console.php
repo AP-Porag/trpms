@@ -1,6 +1,7 @@
 <?php
 
 use App\Jobs\EventSyncJob;
+use App\Jobs\NotificationSyncJob;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 
@@ -9,3 +10,9 @@ use Illuminate\Support\Facades\Artisan;
 //})->purpose('Display an inspiring quote');
 
 Schedule::job(new EventSyncJob)->everyMinute();
+Schedule::job(new NotificationSyncJob)->everyTenMinutes();
+
+
+//command to run the job
+//php artisan queue:work
+//php artisan schedule:work

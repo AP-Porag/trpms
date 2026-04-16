@@ -113,18 +113,17 @@ export default function Index() {
 
             <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="bg-background space-y-5 rounded-xl border p-5">
-
                     {/* HEADER */}
                     <div>
                         <h2 className="text-lg font-semibold">Business Timeline</h2>
                         <p className="text-muted-foreground text-xs">
-                            Auto-updated timeline of pipeline, placements, invoices, and agreements.
+                            Automatically generated timeline of interviews, offers, placements, invoices, agreements, and job activity. Updated hourly
+                            and refreshed in the interface to keep your business view always current.
                         </p>
                     </div>
 
                     {/* CONTROLS */}
                     <div className="flex flex-wrap items-center justify-between gap-3">
-
                         {/* DATE */}
                         <div></div>
                         <input
@@ -134,23 +133,20 @@ export default function Index() {
                             onChange={(e) => {
                                 setDate(e.target.value);
                                 router.get(
-                                    route("events.index"),
+                                    route('events.index'),
                                     {
                                         view: mapView(view),
                                         date: e.target.value,
                                     },
-                                    { preserveState: true }
+                                    { preserveState: true },
                                 );
                             }}
-                            className="border rounded-md px-2 py-1 text-sm"
+                            className="rounded-md border px-2 py-1 text-sm"
                         />
 
                         {/* VIEW SELECT */}
-                        <Select
-                            value={view}
-                            onValueChange={(v) => setView(v)}
-                        >
-                            <SelectTrigger className="w-[140px] h-8 text-sm">
+                        <Select value={view} onValueChange={(v) => setView(v)}>
+                            <SelectTrigger className="h-8 w-[140px] text-sm">
                                 <SelectValue />
                             </SelectTrigger>
                             <SelectContent>
@@ -163,7 +159,7 @@ export default function Index() {
                     </div>
 
                     {/* CALENDAR */}
-                    {view !== "agenda" ? (
+                    {view !== 'agenda' ? (
                         <FullCalendar
                             key={view}
                             plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}

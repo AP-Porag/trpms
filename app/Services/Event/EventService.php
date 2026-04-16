@@ -15,6 +15,7 @@ class EventService
 {
     public function syncEvents(): void
     {
+        //Schedule::job(new EventSyncJob)->everyMinute();
         \Log::info('Event Sync Started');
         $this->syncJobEvents();
         $this->syncPipelineEvents();
