@@ -63,7 +63,6 @@ const clientSchema = z
     });
 
 export default function Create() {
-
     const {
         register,
         control,
@@ -112,22 +111,16 @@ export default function Create() {
 
     const saveClient = async (data) => {
         return new Promise((resolve) => {
-
             const payload = {
                 ...data,
-                fee_type:
-                    data.client_type === CLIENT_TYPE.CONTINGENCY
-                        ? JOB_FEE_TYPE.PERCENTAGE
-                        : JOB_FEE_TYPE.FIXED,
+                fee_type: data.client_type === CLIENT_TYPE.CONTINGENCY ? JOB_FEE_TYPE.PERCENTAGE : JOB_FEE_TYPE.FIXED,
                 agreements: files,
             };
 
             router.post(route('clients.store'), payload, {
                 forceFormData: true,
                 onError: (errs) => {
-                    Object.keys(errs).forEach((k) =>
-                        setError(k, { message: errs[k] })
-                    );
+                    Object.keys(errs).forEach((k) => setError(k, { message: errs[k] }));
                     toast.error('Please fix the errors in the form.');
                 },
                 onFinish: () => resolve(),
@@ -141,16 +134,11 @@ export default function Create() {
 
             <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="rounded-xl border p-5">
-
                     <form onSubmit={handleSubmit(saveClient)}>
-
                         {/* CLIENT INFO */}
 
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
-
-                            <h2 className="mb-4 text-lg font-semibold">
-                                Client Information
-                            </h2>
+                            <h2 className="mb-4 text-lg font-semibold">Client Information</h2>
 
                             <div className="grid gap-4 md:grid-cols-2">
                                 {[
@@ -162,16 +150,9 @@ export default function Create() {
                                     <div key={f} className="grid gap-2">
                                         <Label>{l}</Label>
 
-                                        <Input
-                                            {...register(f)}
-                                            className={cn(errors[f] && 'border-red-500')}
-                                        />
+                                        <Input {...register(f)} className={cn(errors[f] && 'border-red-500')} />
 
-                                        {errors[f] && (
-                                            <span className="text-sm text-red-500">
-{errors[f].message}
-</span>
-                                        )}
+                                        {errors[f] && <span className="text-sm text-red-500">{errors[f].message}</span>}
                                     </div>
                                 ))}
                             </div>
@@ -182,7 +163,6 @@ export default function Create() {
                             </div>
 
                             <div className="mt-4 grid gap-4 md:grid-cols-3">
-
                                 {/* CLIENT TYPE */}
 
                                 <div className="grid gap-2">
@@ -198,54 +178,33 @@ export default function Create() {
                                                 </SelectTrigger>
 
                                                 <SelectContent>
-                                                    <SelectItem value={CLIENT_TYPE.RETAINER}>
-                                                        Retainer
-                                                    </SelectItem>
+                                                    <SelectItem value={CLIENT_TYPE.RETAINER}>Retainer</SelectItem>
 
-                                                    <SelectItem value={CLIENT_TYPE.CONTINGENCY}>
-                                                        Contingency
-                                                    </SelectItem>
+                                                    <SelectItem value={CLIENT_TYPE.CONTINGENCY}>Contingency</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         )}
                                     />
-
                                 </div>
 
                                 {/* FEE VALUE */}
 
                                 <div className="grid gap-2">
-
-                                    <Label>
-                                        {clientType === CLIENT_TYPE.CONTINGENCY
-                                            ? 'Placement Fee (%)'
-                                            : 'Monthly Retainer ($)'}
-                                    </Label>
+                                    <Label>{clientType === CLIENT_TYPE.CONTINGENCY ? 'Placement Fee (%)' : 'Monthly Retainer ($)'}</Label>
 
                                     <div className="relative">
-
                                         {clientType === CLIENT_TYPE.RETAINER && (
-                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
-$
-</span>
+                                            <span className="absolute top-1/2 left-3 -translate-y-1/2 text-sm text-gray-500">$</span>
                                         )}
 
                                         <Input
                                             type="number"
                                             min={0}
                                             max={clientType === CLIENT_TYPE.CONTINGENCY ? 100 : undefined}
-                                            className={cn(
-                                                clientType === CLIENT_TYPE.RETAINER && 'pl-7',
-                                                errors.fee_value && 'border-red-500'
-                                            )}
-                                            placeholder={
-                                                clientType === CLIENT_TYPE.CONTINGENCY
-                                                    ? 'Fee %'
-                                                    : 'Retainer Amount'
-                                            }
+                                            className={cn(clientType === CLIENT_TYPE.RETAINER && 'pl-7', errors.fee_value && 'border-red-500')}
+                                            placeholder={clientType === CLIENT_TYPE.CONTINGENCY ? 'Fee %' : 'Retainer Amount'}
                                             {...register('fee_value', {
                                                 onChange: (e) => {
-
                                                     let value = e.target.value;
 
                                                     if (clientType === CLIENT_TYPE.CONTINGENCY) {
@@ -258,19 +217,11 @@ $
                                         />
 
                                         {clientType === CLIENT_TYPE.CONTINGENCY && (
-                                            <span className="absolute right-3 top-1/2 -translate-y-1/2 text-sm text-gray-500">
-%
-</span>
+                                            <span className="absolute top-1/2 right-3 -translate-y-1/2 text-sm text-gray-500">%</span>
                                         )}
-
                                     </div>
 
-                                    {errors.fee_value && (
-                                        <span className="text-sm text-red-500">
-{errors.fee_value.message}
-</span>
-                                    )}
-
+                                    {errors.fee_value && <span className="text-sm text-red-500">{errors.fee_value.message}</span>}
                                 </div>
 
                                 {/* STATUS */}
@@ -288,45 +239,29 @@ $
                                                 </SelectTrigger>
 
                                                 <SelectContent>
-                                                    <SelectItem value={STATUS.ACTIVE.toString()}>
-                                                        Active
-                                                    </SelectItem>
+                                                    <SelectItem value={STATUS.ACTIVE.toString()}>Active</SelectItem>
 
-                                                    <SelectItem value={STATUS.INACTIVE.toString()}>
-                                                        Inactive
-                                                    </SelectItem>
+                                                    <SelectItem value={STATUS.INACTIVE.toString()}>Inactive</SelectItem>
                                                 </SelectContent>
-
                                             </Select>
                                         )}
                                     />
-
                                 </div>
-
                             </div>
-
                         </div>
 
                         {/* AGREEMENTS */}
 
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
-
-                            <h2 className="mb-4 text-lg font-semibold">
-                                Client Agreements
-                            </h2>
+                            <h2 className="mb-4 text-lg font-semibold">Client Agreements</h2>
 
                             <div className="grid gap-4 md:grid-cols-2">
-
                                 <div className="grid gap-2">
                                     <Label>Agreement Type</Label>
 
                                     <Input {...register('agreement_type')} />
 
-                                    {errors.agreement_type && (
-                                        <span className="text-sm text-red-500">
-{errors.agreement_type.message}
-</span>
-                                    )}
+                                    {errors.agreement_type && <span className="text-sm text-red-500">{errors.agreement_type.message}</span>}
                                 </div>
 
                                 <Controller
@@ -341,77 +276,39 @@ $
                                         />
                                     )}
                                 />
-
                             </div>
 
                             <label className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center">
-
                                 <Upload className="mb-2 h-6 w-6" />
 
-                                <span className="text-sm">
-Upload agreements
-</span>
+                                <span className="text-sm">Upload agreements</span>
 
-                                <input
-                                    type="file"
-                                    multiple
-                                    hidden
-                                    onChange={handleFileChange}
-                                />
-
+                                <input type="file" multiple hidden onChange={handleFileChange} />
                             </label>
 
-                            {errors.agreements && (
-                                <span className="text-sm text-red-500">
-{errors.agreements.message}
-</span>
-                            )}
+                            {errors.agreements && <span className="text-sm text-red-500">{errors.agreements.message}</span>}
 
                             <div className="mt-4 space-y-2">
-
                                 {files.map((file, i) => (
-
-                                    <div
-                                        key={i}
-                                        className="flex items-center justify-between rounded border p-2"
-                                    >
-
+                                    <div key={i} className="flex items-center justify-between rounded border p-2">
                                         <div className="flex items-center gap-2">
-
                                             <FileText className="h-5 w-5" />
 
-                                            <span className="truncate text-sm">
-{file.name}
-</span>
-
+                                            <span className="truncate text-sm">{file.name}</span>
                                         </div>
 
-                                        <button
-                                            type="button"
-                                            onClick={() => removeFile(i)}
-                                            className="cursor-pointer"
-                                        >
+                                        <button type="button" onClick={() => removeFile(i)} className="cursor-pointer">
                                             <Trash2 className="h-4 w-4 text-red-600" />
                                         </button>
-
                                     </div>
-
                                 ))}
-
                             </div>
-
                         </div>
 
                         {/* SUBMIT */}
 
                         <div className="flex justify-end">
-
-                            <Button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="cursor-pointer"
-                            >
-
+                            <Button type="submit" disabled={isSubmitting} className="cursor-pointer">
                                 {isSubmitting ? (
                                     <>
                                         <RotateCw className="mr-2 h-4 w-4 animate-spin" />
@@ -420,15 +317,11 @@ Upload agreements
                                 ) : (
                                     'Save Client'
                                 )}
-
                             </Button>
-
                         </div>
-
                     </form>
                 </div>
             </div>
         </AppLayout>
     );
 }
-
