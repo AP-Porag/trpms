@@ -90,12 +90,12 @@ const mainNavItems: NavItem[] = [
                 href: '/target-accounts',
                 icon: Target,
             },
-            {
-                title: 'Leads',
-                // href: '/leads',
-                href: route('under-development', { module: 'Leads' }),
-                icon: ListOrdered,
-            },
+            // {
+            //     title: 'Leads',
+            //     // href: '/leads',
+            //     href: route('under-development', { module: 'Leads' }),
+            //     icon: ListOrdered,
+            // },
         ],
     },
     {
