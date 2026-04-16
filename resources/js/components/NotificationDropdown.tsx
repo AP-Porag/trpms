@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { router, usePage } from "@inertiajs/react";
 import { Bell, Mail, MailOpen } from "lucide-react";
+import { Separator } from '@/components/ui/separator';
 
 export default function NotificationDropdown() {
     const { notifications: initialNotifications, notification_unseen_count } = usePage().props as any;
@@ -42,68 +43,65 @@ export default function NotificationDropdown() {
         <div className="relative">
             {/* 🔔 Bell Icon */}
             <button onClick={() => setOpen(!open)} className="relative">
-                <Bell className="w-5 h-5" />
+                <Bell className="h-5 w-5" />
 
-                {unseenCount > 0 && (
-                    <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-1">
-                        {unseenCount}
-                    </span>
-                )}
+                {unseenCount > 0 && <span className="absolute -top-1 -right-1 rounded-full bg-red-500 px-1 text-xs text-white">{unseenCount}</span>}
             </button>
 
             {/* DROPDOWN */}
             {open && (
-                <div className="absolute right-0 mt-2 w-96 bg-white shadow-lg rounded-lg border z-50">
-
+                <div className="absolute right-0 z-50 mt-2 w-96 rounded-lg border bg-white shadow-lg">
                     {/* HEADER */}
-                    <div className="p-3 border-b font-semibold text-sm">
-                        Notifications ({unseenCount})
-                    </div>
+                    <div className="border-b p-3 text-sm font-semibold">Notifications ({unseenCount})</div>
 
                     {/* LIST */}
                     <div className="max-h-[400px] overflow-y-auto">
-                        {notifications.map((n: any) => (
-                            <div
-                                key={n.id}
-                                className={`flex items-start gap-3 p-3 border-b cursor-pointer hover:bg-gray-50 ${
-                                    n.status === 0 ? 'bg-blue-50' : ''
-                                }`}
-                                onClick={() => {
-                                    if (n.route_name) {
-                                        router.visit(route(n.route_name, n.route_param));
-                                    }
-                                }}
-                            >
-                                {/* ICON LETTER */}
-                                <div className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-200 text-sm font-bold">
-                                    {n.icon_letter}
-                                </div>
-
-                                {/* CONTENT */}
-                                <div className="flex-1">
-                                    <p className="text-sm font-semibold">{n.title}</p>
-                                    <p className="text-xs text-gray-500">{n.description}</p>
-                                    <p className="text-[10px] text-gray-400 mt-1">
-                                        {new Date(n.created_at).toLocaleString()}
-                                    </p>
-                                </div>
-
-                                {/* STATUS TOGGLE */}
+                        {notifications.length > 0 ? (
+                            notifications.map((n: any) => (
                                 <div
-                                    className="flex items-center pl-2 border-l"
-                                    onClick={(e) => {
-                                        e.stopPropagation();
-                                        toggleStatus(n.id);
+                                    key={n.id}
+                                    className={`flex cursor-pointer items-start gap-3 border-b p-3 hover:bg-gray-50 ${
+                                        n.status === 0 ? 'bg-blue-50' : ''
+                                    }`}
+                                    onClick={() => {
+                                        if (n.route_name) {
+                                            router.visit(route(n.route_name, n.route_param));
+                                        }
                                     }}
                                 >
-                                    {n.status === 0 ? (
-                                        <Mail className="w-4 h-4 text-gray-600" />
-                                    ) : (
-                                        <MailOpen className="w-4 h-4 text-green-600" />
-                                    )}
+                                    {/* ICON LETTER */}
+                                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-gray-200 text-sm font-bold">
+                                        {n.icon_letter}
+                                    </div>
+
+                                    {/* CONTENT */}
+                                    <div className="flex-1">
+                                        <p className="text-sm font-semibold">{n.title}</p>
+                                        <p className="text-xs text-gray-500">{n.description}</p>
+                                        <p className="mt-1 text-[10px] text-gray-400">{new Date(n.created_at).toLocaleString()}</p>
+                                    </div>
+
+                                    <Separator orientation="vertical" style={{ height: '70px' }} />
+
+                                    {/* STATUS TOGGLE */}
+                                    <div
+                                        className="flex items-center"
+                                        onClick={(e) => {
+                                            e.stopPropagation();
+                                            toggleStatus(n.id);
+                                        }}
+                                    >
+                                        {n.status === 0 ? (
+                                            <Mail className="h-4 w-4 text-gray-600" />
+                                        ) : (
+                                            <MailOpen className="h-4 w-4 text-green-600" />
+                                        )}
+                                    </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))
+                        ) : (
+                            <div className="p-3 text-center text-sm text-gray-500">No notifications yet!</div>
+                        )}
                     </div>
                 </div>
             )}

@@ -35,9 +35,11 @@ class NotificationController extends Controller
         $notification->status = !$notification->status;
         $notification->save();
 
-        return response()->json([
-            'success' => true,
-            'status' => $notification->status,
-        ]);
+        return back();
+
+//        return response()->json([
+//            'success' => true,
+//            'status' => $notification->status,
+//        ]);
     }
 }
