@@ -12,15 +12,26 @@ import { z } from 'zod';
 
 const breadcrumbs = [{ title: 'Create Candidate', href: '/candidates/create' }];
 
+// const candidateSchema = z.object({
+//     first_name: z.string().min(2, 'First name is required'),
+//     last_name: z.string().min(2, 'Last name is required'),
+//     email: z.string().email(),
+//     phone: z.string().min(5),
+//     address: z.string().min(3),
+//     file: z.any().refine((f) => f instanceof File, {
+//         message: 'Resume is required',
+//     }),
+// });
+
 const candidateSchema = z.object({
     first_name: z.string().min(2, 'First name is required'),
     last_name: z.string().min(2, 'Last name is required'),
     email: z.string().email(),
     phone: z.string().min(5),
     address: z.string().min(3),
-    file: z.any().refine((f) => f instanceof File, {
-        message: 'Resume is required',
-    }),
+    expected_salary: z.string().optional(),
+
+    file: z.array(z.any()).optional(),
 });
 
 export default function Create() {
@@ -35,7 +46,8 @@ export default function Create() {
         resolver: zodResolver(candidateSchema),
     });
 
-    const resume = watch('file');
+    // const resume = watch('file');
+    const resumes = watch('file');
 
     const submit = async (data) => {
         return new Promise((resolve) => {
@@ -73,6 +85,8 @@ export default function Create() {
                                     ['last_name', 'Last Name'],
                                     ['email', 'Email'],
                                     ['phone', 'Phone'],
+                                    ['expected_salary', 'Expected Salary'],
+                                    ['address', 'Address'],
                                 ].map(([f, l]) => (
                                     <div key={f} className="grid gap-2">
                                         <Label>{l}</Label>
@@ -82,10 +96,10 @@ export default function Create() {
                                 ))}
                             </div>
 
-                            <div className="mt-4">
-                                <Label>Address</Label>
-                                <Input {...register('address')} />
-                            </div>
+                            {/*<div className="mt-4">*/}
+                            {/*    <Label>Address</Label>*/}
+                            {/*    <Input {...register('address')} />*/}
+                            {/*</div>*/}
                         </div>
 
                         {/* RESUME */}
@@ -95,13 +109,24 @@ export default function Create() {
                             <label className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed text-center">
                                 <Upload className="mb-1 h-5 w-5" />
                                 <span className="text-xs">Upload</span>
-                                <input type="file" hidden onChange={(e) => setValue('file', e.target.files[0])} />
+                                <input type="file" hidden multiple onChange={(e) => setValue('file', Array.from(e.target.files))} />
+                                {/*<input type="file" hidden onChange={(e) => setValue('file', e.target.files[0])} />*/}
                             </label>
 
-                            {resume && (
-                                <div className="mt-3 flex items-center gap-2 text-sm">
-                                    <FileText className="h-4 w-4" />
-                                    <span className="truncate">{resume.name}</span>
+                            {/*{resume && (*/}
+                            {/*    <div className="mt-3 flex items-center gap-2 text-sm">*/}
+                            {/*        <FileText className="h-4 w-4" />*/}
+                            {/*        <span className="truncate">{resume.name}</span>*/}
+                            {/*    </div>*/}
+                            {/*)}*/}
+                            {resumes?.length > 0 && (
+                                <div className="mt-3 space-y-1 text-sm">
+                                    {resumes.map((file, index) => (
+                                        <div key={index} className="flex items-center gap-2">
+                                            <FileText className="h-4 w-4" />
+                                            <span className="truncate">{file.name}</span>
+                                        </div>
+                                    ))}
                                 </div>
                             )}
 

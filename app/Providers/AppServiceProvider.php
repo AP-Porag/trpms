@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Models\Invoice;
 use App\Models\Notification;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
@@ -29,11 +30,11 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Relation::morphMap([
-            'placement' => Placement::class,
+            'placement' => Placement::class, //done
             'candidate' => Candidate::class,
             'client' => Client::class,
-            'job' => Engagement::class,
-//            'invoice' => Invoice::class,
+            'engagement' => Engagement::class, //done
+            'invoice' => Invoice::class,
         ]);
 
         Inertia::share([

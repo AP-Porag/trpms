@@ -12,6 +12,8 @@ import { JOB_FEE_TYPE, STATUS } from '@/utils/constants';
 import { DATE_PRESETS, formatDateUS } from '@/utils/helpers';
 import AddCandidateToJobModal from './partials/addCandidateToJobModal';
 import JobCandidateKanban from './partials/jobCandidateKanban';
+import AddNoteModal from '@/components/notes/AddNoteModal';
+import NotesTimeline from '@/components/notes/NotesTimeline';
 
 const breadcrumbs = [{ title: 'Jobs', href: '/jobs' }, { title: 'View Job' }];
 
@@ -83,6 +85,10 @@ export default function View({ job, pipeline }) {
 
                         {/* ================= OVERVIEW ================= */}
                         <TabsContent value="overview">
+                            <div className="mb-3 flex justify-between">
+                                <div className=""></div>
+                                <AddNoteModal noteableType="engagement" noteableId={job.id} />
+                            </div>
                             <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
                                 {/* Job Info */}
                                 <Card className="md:col-span-2">
@@ -131,6 +137,17 @@ export default function View({ job, pipeline }) {
                                     </CardContent>
                                 </Card>
                             </div>
+                            {/* NOTES */}
+
+                            <Card className="mt-3">
+                                <CardHeader>
+                                    <CardTitle>Notes</CardTitle>
+                                </CardHeader>
+
+                                <CardContent>
+                                    <NotesTimeline notes={job.notes} />
+                                </CardContent>
+                            </Card>
                         </TabsContent>
 
                         {/* ================= CANDIDATES ================= */}

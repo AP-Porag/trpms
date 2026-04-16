@@ -57,7 +57,8 @@ class EngagementController extends BaseController
         int $id,
         JobCandidateService $jobCandidateService
     ) {
-        $job = Engagement::with('client')->findOrFail($id);
+
+        $job = Engagement::with('client','notes')->findOrFail($id);
 
         $pipeline = null;
 

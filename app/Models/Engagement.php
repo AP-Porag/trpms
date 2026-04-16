@@ -24,4 +24,9 @@ class Engagement extends BaseModel
     {
         return $this->belongsTo(Client::class,'client_id');
     }
+
+    public function notes()
+    {
+        return $this->morphMany(Note::class, 'noteable')->latest();
+    }
 }

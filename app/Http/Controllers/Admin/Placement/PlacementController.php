@@ -430,7 +430,7 @@ class PlacementController extends Controller
             'client',
             'job',
             'recruiter',
-            'notes.author'
+            'notes'
         ]);
 
         return Inertia::render('admin/placements/view',[

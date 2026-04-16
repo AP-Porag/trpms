@@ -17,7 +17,13 @@ class Candidate extends BaseModel
         'address',
         'resume_path',
         'original_name',
+        'expected_salary',
     ];
+
+    public function resumes()
+    {
+        return $this->hasMany(Resume::class);
+    }
 
     // Notes (polymorphic)
     public function notes():MorphMany

@@ -331,7 +331,7 @@ function StageActionMenu({ jc, openPlacementModal }) {
 
     const availableStages = useMemo(() => Object.keys(JOB_CANDIDATE_STAGES).filter((s) => s !== jc.stage), [jc.stage]);
     return (
-        <DropdownMenu open={open} onOpenChange={setOpen}>
+        <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
             <DropdownMenuTrigger asChild>
                 <button
                     type="button"
@@ -413,17 +413,17 @@ function ConfirmStageChange({ jc, stage, closeMenu }) {
 /* ========================================================= */
 
 function InterviewScheduleDialog({ jc, closeMenu }) {
-    const [open, setOpen] = useState(false);
+    const [openInterviewScheduleDialog, setOpenInterviewScheduleDialog] = useState(false);
     const [dateTime, setDateTime] = useState('');
 
     return (
-        <AlertDialog open={open} onOpenChange={setOpen}>
+        <AlertDialog open={openInterviewScheduleDialog} onOpenChange={setOpenInterviewScheduleDialog}>
             <AlertDialogTrigger asChild>
                 <DropdownMenuItem
                     onSelect={(e) => {
                         e.preventDefault();
                         e.stopPropagation();
-                        setOpen(true);
+                        setOpenInterviewScheduleDialog(true);
                     }}
                 >
                     Move to Interviewing
@@ -445,7 +445,7 @@ function InterviewScheduleDialog({ jc, closeMenu }) {
                 <AlertDialogFooter>
                     <AlertDialogCancel
                         onClick={() => {
-                            setOpen(false);
+                            setOpenInterviewScheduleDialog(false);
                             closeMenu();
                         }}
                     >
@@ -458,7 +458,7 @@ function InterviewScheduleDialog({ jc, closeMenu }) {
                             changeStage(jc.id, 'interviewing', {
                                 interview_scheduled_at: dateTime,
                             });
-                            setOpen(false);
+                            setOpenInterviewScheduleDialog(false);
                             closeMenu();
                         }}
                     >

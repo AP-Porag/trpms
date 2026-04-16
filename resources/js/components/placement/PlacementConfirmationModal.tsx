@@ -82,8 +82,9 @@ export default function PlacementConfirmationModal({ open, onClose, jc }) {
                     router.reload({ only: ['pipeline'] });
                 },
 
-                onError: () => {
+                onError: (error: any) => {
                     setLoading(false);
+                    console.log(error);
                     toast.error('Placement could not be created.');
                 },
             },
@@ -101,125 +102,126 @@ export default function PlacementConfirmationModal({ open, onClose, jc }) {
                         ✕
                     </button>
                 </div>
+                <div className="h-[80vh] overflow-y-auto">
+                    {/* Body */}
+                    <div className="space-y-5 p-6 text-sm">
+                        <div className="space-y-1">
+                            <div>
+                                <span className="font-medium">Candidate:</span> {candidate.first_name} {candidate.last_name}
+                            </div>
 
-                {/* Body */}
-                <div className="space-y-5 p-6 text-sm">
-                    <div className="space-y-1">
-                        <div>
-                            <span className="font-medium">Candidate:</span> {candidate.first_name} {candidate.last_name}
+                            <div>
+                                <span className="font-medium">Client:</span> {client?.name ?? '—'}
+                            </div>
+
+                            <div>
+                                <span className="font-medium">Job:</span> {job?.title ?? '—'}
+                            </div>
                         </div>
 
+                        {/* Salary */}
                         <div>
-                            <span className="font-medium">Client:</span> {client?.name ?? '—'}
-                        </div>
+                            <label className="mb-1 block font-medium">Salary Offered</label>
 
-                        <div>
-                            <span className="font-medium">Job:</span> {job?.title ?? '—'}
-                        </div>
-                    </div>
-
-                    {/* Salary */}
-                    <div>
-                        <label className="mb-1 block font-medium">Salary Offered</label>
-
-                        {/*<input type="number" value={salary} onChange={(e) => setSalary(e.target.value)} className="w-full rounded border px-3 py-2" />*/}
-                        <input
-                            className="w-full rounded border px-3 py-2"
-                            type="number"
-                            inputMode="numeric"
-                            step="1000"
-                            min="0"
-                            value={salary}
-                            onWheel={(e) => e.preventDefault()}
-                            onChange={(e) => setSalary(e.target.value)}
-                        />
-
-                        {errors.salary && <p className="mt-1 text-xs text-red-500">{errors.salary}</p>}
-                    </div>
-
-                    {/* Fee Preview */}
-                    <div className="rounded bg-gray-50 p-3">
-                        <div>
-                            Placement Fee %:
-                            <span className="ml-2 font-medium">{feePercent}%</span>
-                        </div>
-
-                        <div>
-                            Placement Fee:
-                            <span className="ml-2 font-semibold text-green-600">${Number(placementFee).toLocaleString()}</span>
-                        </div>
-                    </div>
-
-                    {/* Dates */}
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="mb-1 block font-medium">Offer Accepted</label>
-
+                            {/*<input type="number" value={salary} onChange={(e) => setSalary(e.target.value)} className="w-full rounded border px-3 py-2" />*/}
                             <input
-                                type="date"
-                                value={offerDate}
-                                onChange={(e) => setOfferDate(e.target.value)}
                                 className="w-full rounded border px-3 py-2"
+                                type="number"
+                                inputMode="numeric"
+                                step="1000"
+                                min="0"
+                                value={salary}
+                                onWheel={(e) => e.preventDefault()}
+                                onChange={(e) => setSalary(e.target.value)}
                             />
 
-                            {errors.offerDate && <p className="mt-1 text-xs text-red-500">{errors.offerDate}</p>}
+                            {errors.salary && <p className="mt-1 text-xs text-red-500">{errors.salary}</p>}
                         </div>
 
+                        {/* Fee Preview */}
+                        <div className="rounded bg-gray-50 p-3">
+                            <div>
+                                Placement Fee %:
+                                <span className="ml-2 font-medium">{feePercent}%</span>
+                            </div>
+
+                            <div>
+                                Placement Fee:
+                                <span className="ml-2 font-semibold text-green-600">${Number(placementFee).toLocaleString()}</span>
+                            </div>
+                        </div>
+
+                        {/* Dates */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="mb-1 block font-medium">Offer Accepted</label>
+
+                                <input
+                                    type="date"
+                                    value={offerDate}
+                                    onChange={(e) => setOfferDate(e.target.value)}
+                                    className="w-full rounded border px-3 py-2"
+                                />
+
+                                {errors.offerDate && <p className="mt-1 text-xs text-red-500">{errors.offerDate}</p>}
+                            </div>
+
+                            <div>
+                                <label className="mb-1 block font-medium">Start Date</label>
+
+                                <input
+                                    type="date"
+                                    value={startDate}
+                                    onChange={(e) => setStartDate(e.target.value)}
+                                    className="w-full rounded border px-3 py-2"
+                                />
+
+                                {errors.startDate && <p className="mt-1 text-xs text-red-500">{errors.startDate}</p>}
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-sm font-medium">Placement Date</label>
+
+                                <input
+                                    type="date"
+                                    value={placementDate}
+                                    onChange={(e) => setPlacementDate(e.target.value)}
+                                    className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+                                />
+                            </div>
+
+                            <div>
+                                <label className="text-sm font-medium">Guarantee End Date</label>
+
+                                <input
+                                    type="date"
+                                    value={guaranteeEndDate}
+                                    onChange={(e) => setGuaranteeEndDate(e.target.value)}
+                                    className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
+                                />
+                            </div>
+                        </div>
+
+                        {/* Notes */}
                         <div>
-                            <label className="mb-1 block font-medium">Start Date</label>
+                            <label className="mb-1 block font-medium">Notes</label>
 
-                            <input
-                                type="date"
-                                value={startDate}
-                                onChange={(e) => setStartDate(e.target.value)}
-                                className="w-full rounded border px-3 py-2"
-                            />
-
-                            {errors.startDate && <p className="mt-1 text-xs text-red-500">{errors.startDate}</p>}
+                            <textarea rows="3" value={notes} onChange={(e) => setNotes(e.target.value)} className="w-full rounded border px-3 py-2" />
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
-                        <div>
-                            <label className="text-sm font-medium">Placement Date</label>
+                    {/* Footer */}
+                    <div className="flex justify-end gap-2 border-t px-6 py-4">
+                        <button onClick={onClose} className="rounded border px-4 py-2 text-sm">
+                            Cancel
+                        </button>
 
-                            <input
-                                type="date"
-                                value={placementDate}
-                                onChange={(e) => setPlacementDate(e.target.value)}
-                                className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
-                            />
-                        </div>
-
-                        <div>
-                            <label className="text-sm font-medium">Guarantee End Date</label>
-
-                            <input
-                                type="date"
-                                value={guaranteeEndDate}
-                                onChange={(e) => setGuaranteeEndDate(e.target.value)}
-                                className="mt-1 w-full rounded-md border px-3 py-2 text-sm"
-                            />
-                        </div>
+                        <button disabled={loading} onClick={confirmPlacement} className="rounded bg-black px-4 py-2 text-sm text-white">
+                            {loading ? 'Saving...' : 'Confirm Placement'}
+                        </button>
                     </div>
-
-                    {/* Notes */}
-                    <div>
-                        <label className="mb-1 block font-medium">Notes</label>
-
-                        <textarea rows="3" value={notes} onChange={(e) => setNotes(e.target.value)} className="w-full rounded border px-3 py-2" />
-                    </div>
-                </div>
-
-                {/* Footer */}
-                <div className="flex justify-end gap-2 border-t px-6 py-4">
-                    <button onClick={onClose} className="rounded border px-4 py-2 text-sm">
-                        Cancel
-                    </button>
-
-                    <button disabled={loading} onClick={confirmPlacement} className="rounded bg-black px-4 py-2 text-sm text-white">
-                        {loading ? 'Saving...' : 'Confirm Placement'}
-                    </button>
                 </div>
             </div>
         </div>,
