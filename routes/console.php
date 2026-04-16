@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Artisan;
 //})->purpose('Display an inspiring quote');
 
 Schedule::job(new EventSyncJob)->everyMinute();
-Schedule::job(new NotificationSyncJob)->everyTenMinutes();
+Schedule::job(new NotificationSyncJob)->everyMinute();
 
 
 //command to run the job
