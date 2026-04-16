@@ -136,7 +136,7 @@ export default function Create({ industries = [] }: any) {
                                 <Input {...register('address')} />
                             </div>
 
-                            <div className="mt-4 grid gap-4 md:grid-cols-3">
+                            <div className="mt-4 grid gap-4 grid-cols-4">
                                 {/* CLIENT TYPE */}
                                 <div className="grid gap-2">
                                     <Label>Client Type</Label>
@@ -146,7 +146,7 @@ export default function Create({ industries = [] }: any) {
                                         control={control}
                                         render={({ field }) => (
                                             <Select value={field.value ?? CLIENT_TYPE.RETAINER} onValueChange={field.onChange}>
-                                                <SelectTrigger>
+                                                <SelectTrigger className="w-full">
                                                     <SelectValue />
                                                 </SelectTrigger>
 
@@ -168,7 +168,7 @@ export default function Create({ industries = [] }: any) {
                                         control={control}
                                         render={({ field }) => (
                                             <Select value={field.value || ''} onValueChange={field.onChange}>
-                                                <SelectTrigger>
+                                                <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Select Industry" />
                                                 </SelectTrigger>
 
@@ -220,7 +220,7 @@ export default function Create({ industries = [] }: any) {
                                         control={control}
                                         render={({ field }) => (
                                             <Select value={field.value} onValueChange={field.onChange}>
-                                                <SelectTrigger>
+                                                <SelectTrigger className="w-full">
                                                     <SelectValue />
                                                 </SelectTrigger>
 

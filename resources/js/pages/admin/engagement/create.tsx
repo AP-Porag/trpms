@@ -84,7 +84,7 @@ export default function Create({ clients }) {
                         <h2 className="text-lg font-semibold">Job Information</h2>
 
                         {/* Client + Fee */}
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                        <div className="grid grid-cols-3 gap-4">
                             {/* Client Combobox */}
                             <Controller
                                 name="client_id"
@@ -170,7 +170,7 @@ export default function Create({ clients }) {
                                 {errors.fee_value && <span className="text-sm text-red-500">{errors.fee_value.message}</span>}
                             </div>
                         </div>
-                        <div className="grid grid-cols-2 gap-4 md:grid-cols-6">
+                        <div className="grid grid-cols-2 gap-4">
                             {/* Salary Range */}
                             <div className="grid gap-2">
                                 <Label>Salary Range</Label>
@@ -180,6 +180,7 @@ export default function Create({ clients }) {
                                         setValueAs: (v) => v?.toString(),
                                     })}
                                 />
+                                <span></span>
                                 {errors.fee_value && <span className="text-sm text-red-500">{errors.salary_range.message}</span>}
                             </div>
 
