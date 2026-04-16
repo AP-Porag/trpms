@@ -31,8 +31,8 @@ class AppServiceProvider extends ServiceProvider
     {
         Relation::morphMap([
             'placement' => Placement::class, //done
-            'candidate' => Candidate::class,
-            'client' => Client::class,
+            'candidate' => Candidate::class, //done
+            'client' => Client::class,//done
             'engagement' => Engagement::class, //done
             'invoice' => Invoice::class,
         ]);

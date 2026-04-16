@@ -151,7 +151,7 @@ class ClientService extends BaseService
     public function detail(Client $client): array
     {
         return [
-            'client' => $client->load('notes.author'),
+            'client' => $client->load('notes'),
         ];
     }
     // public function detail(string $id): array

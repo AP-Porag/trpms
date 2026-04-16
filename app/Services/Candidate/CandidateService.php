@@ -225,7 +225,7 @@ class CandidateService extends BaseService
     public function detail(Candidate $candidate): array
     {
         return [
-            'candidate' => $candidate->load('notes.author'),
+            'candidate' => $candidate->load('notes'),
         ];
     }
 }
