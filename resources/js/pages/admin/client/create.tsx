@@ -18,8 +18,8 @@ import { CLIENT_TYPE, JOB_FEE_TYPE, STATUS } from '@/utils/constants';
 const breadcrumbs = [{ title: 'Create Client', href: '/clients/create' }];
 
 const clientSchema = z.object({
-    name: z.string().min(3),
-    company_name: z.string().min(3),
+    name: z.string().min(3, { message: 'Name is Required!' }),
+    company_name: z.string().min(3, { message: 'Company name is required!' }),
     email: z.string().email(),
     phone: z.string().min(10),
     address: z.string().optional(),
@@ -27,7 +27,7 @@ const clientSchema = z.object({
     industry_id: z.string().min(1),
 
     client_type: z.enum([CLIENT_TYPE.RETAINER, CLIENT_TYPE.CONTINGENCY]),
-    fee_value: z.string().min(1),
+    fee_value: z.string().min(1, { message: 'Fee value is required' }),
 
     status: z.enum([STATUS.ACTIVE.toString(), STATUS.INACTIVE.toString()]),
 
