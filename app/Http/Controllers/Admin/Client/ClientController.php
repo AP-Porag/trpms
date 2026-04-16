@@ -13,7 +13,7 @@ use Inertia\Inertia;
 
 class ClientController extends BaseController
 {
-    public function __construct(protected ClientService $service){}
+    public function __construct(protected ClientService $service) {}
 
 
     /**
@@ -29,7 +29,10 @@ class ClientController extends BaseController
      */
     public function create()
     {
-        return Inertia('admin/client/create');
+
+        return Inertia::render('admin/client/create', [
+            'industries' => Industry::select('id', 'name')->get(),
+        ]);
     }
 
     /**
@@ -59,8 +62,8 @@ class ClientController extends BaseController
         return inertia('admin/client/edit', [
             'client' => $client,
             'agreements' => $client->agreements()->get(),
-            'industries' => Industry::select('id','name')->get(),
-            'departments' => Department::select('id','name')->get(),
+            'industries' => Industry::select('id', 'name')->get(),
+            'departments' => Department::select('id', 'name')->get(),
         ]);
     }
 

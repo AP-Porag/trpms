@@ -17,52 +17,26 @@ import { CLIENT_TYPE, JOB_FEE_TYPE, STATUS } from '@/utils/constants';
 
 const breadcrumbs = [{ title: 'Create Client', href: '/clients/create' }];
 
-const clientSchema = z
-    .object({
-        name: z.string().min(3, { message: 'Name is Required!' }),
-        company_name: z.string().min(3, { message: 'Company name is required!' }),
-        email: z.string().email(),
-        phone: z.string().min(10),
-        address: z.string().optional(),
+const clientSchema = z.object({
+    name: z.string().min(3),
+    company_name: z.string().min(3),
+    email: z.string().email(),
+    phone: z.string().min(10),
+    address: z.string().optional(),
 
-        client_type: z.enum([CLIENT_TYPE.RETAINER, CLIENT_TYPE.CONTINGENCY]),
+    industry_id: z.string().min(1),
 
-        fee_value: z.string().min(1, { message: 'Fee value is required' }),
+    client_type: z.enum([CLIENT_TYPE.RETAINER, CLIENT_TYPE.CONTINGENCY]),
+    fee_value: z.string().min(1),
 
-        status: z.enum([STATUS.ACTIVE.toString(), STATUS.INACTIVE.toString()]),
+    status: z.enum([STATUS.ACTIVE.toString(), STATUS.INACTIVE.toString()]),
 
-        agreement_type: z.string().optional(),
-        signed_date: z.string().optional(),
-        agreements: z.any().optional(),
-    })
-    .superRefine((data, ctx) => {
-        const hasType = !!data.agreement_type;
-        const hasDate = !!data.signed_date;
-        const hasFiles = Array.isArray(data.agreements) && data.agreements.length > 0;
+    agreement_type: z.string().optional(),
+    signed_date: z.string().optional(),
+    agreements: z.any().optional(),
+});
 
-        const any = hasType || hasDate || hasFiles;
-        const all = hasType && hasDate && hasFiles;
-
-        if (any && !all) {
-            if (!hasType)
-                ctx.addIssue({
-                    path: ['agreement_type'],
-                    message: 'Agreement type is required',
-                });
-            if (!hasDate)
-                ctx.addIssue({
-                    path: ['signed_date'],
-                    message: 'Signed date is required',
-                });
-            if (!hasFiles)
-                ctx.addIssue({
-                    path: ['agreements'],
-                    message: 'At least one file is required',
-                });
-        }
-    });
-
-export default function Create() {
+export default function Create({ industries = [] }: any) {
     const {
         register,
         control,
@@ -76,10 +50,13 @@ export default function Create() {
         defaultValues: {
             client_type: CLIENT_TYPE.RETAINER,
             status: STATUS.ACTIVE.toString(),
+            industry_id: '',
+            agreements: [],
+            fee_value: '',
         },
     });
 
-    const [files, setFiles] = useState([]);
+    const [files, setFiles] = useState<File[]>([]);
 
     const clientType = watch('client_type');
 
@@ -87,30 +64,26 @@ export default function Create() {
         register('agreements');
     }, [register]);
 
-    /*
-    |--------------------------------------------------------------------------
-    | Auto clear fee when switching client type
-    |--------------------------------------------------------------------------
-    */
-
     useEffect(() => {
         setValue('fee_value', '');
-    }, [clientType]);
+    }, [clientType, setValue]);
 
-    const handleFileChange = (e) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) return;
+
         const selected = [...files, ...Array.from(e.target.files)];
         setFiles(selected);
         setValue('agreements', selected);
     };
 
-    const removeFile = (index) => {
+    const removeFile = (index: number) => {
         const updated = files.filter((_, i) => i !== index);
         setFiles(updated);
         setValue('agreements', updated);
     };
 
-    const saveClient = async (data) => {
-        return new Promise((resolve) => {
+    const saveClient = (data: any) => {
+        return new Promise<void>((resolve) => {
             const payload = {
                 ...data,
                 fee_type: data.client_type === CLIENT_TYPE.CONTINGENCY ? JOB_FEE_TYPE.PERCENTAGE : JOB_FEE_TYPE.FIXED,
@@ -120,7 +93,7 @@ export default function Create() {
             router.post(route('clients.store'), payload, {
                 forceFormData: true,
                 onError: (errs) => {
-                    Object.keys(errs).forEach((k) => setError(k, { message: errs[k] }));
+                    Object.keys(errs).forEach((k) => setError(k as any, { message: errs[k] }));
                     toast.error('Please fix the errors in the form.');
                 },
                 onFinish: () => resolve(),
@@ -136,7 +109,6 @@ export default function Create() {
                 <div className="rounded-xl border p-5">
                     <form onSubmit={handleSubmit(saveClient)}>
                         {/* CLIENT INFO */}
-
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
                             <h2 className="mb-4 text-lg font-semibold">Client Information</h2>
 
@@ -150,9 +122,11 @@ export default function Create() {
                                     <div key={f} className="grid gap-2">
                                         <Label>{l}</Label>
 
-                                        <Input {...register(f)} className={cn(errors[f] && 'border-red-500')} />
+                                        <Input {...register(f as any)} className={cn(errors[f as keyof typeof errors] && 'border-red-500')} />
 
-                                        {errors[f] && <span className="text-sm text-red-500">{errors[f].message}</span>}
+                                        {errors[f as keyof typeof errors] && (
+                                            <span className="text-sm text-red-500">{(errors[f as keyof typeof errors] as any)?.message}</span>
+                                        )}
                                     </div>
                                 ))}
                             </div>
@@ -164,7 +138,6 @@ export default function Create() {
 
                             <div className="mt-4 grid gap-4 md:grid-cols-3">
                                 {/* CLIENT TYPE */}
-
                                 <div className="grid gap-2">
                                     <Label>Client Type</Label>
 
@@ -172,14 +145,13 @@ export default function Create() {
                                         name="client_type"
                                         control={control}
                                         render={({ field }) => (
-                                            <Select value={field.value} onValueChange={field.onChange}>
-                                                <SelectTrigger className="w-full">
+                                            <Select value={field.value ?? CLIENT_TYPE.RETAINER} onValueChange={field.onChange}>
+                                                <SelectTrigger>
                                                     <SelectValue />
                                                 </SelectTrigger>
 
                                                 <SelectContent>
                                                     <SelectItem value={CLIENT_TYPE.RETAINER}>Retainer</SelectItem>
-
                                                     <SelectItem value={CLIENT_TYPE.CONTINGENCY}>Contingency</SelectItem>
                                                 </SelectContent>
                                             </Select>
@@ -187,8 +159,34 @@ export default function Create() {
                                     />
                                 </div>
 
-                                {/* FEE VALUE */}
+                                {/* INDUSTRY FIXED */}
+                                <div className="grid gap-2">
+                                    <Label>Industry</Label>
 
+                                    <Controller
+                                        name="industry_id"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select value={field.value || ''} onValueChange={field.onChange}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select Industry" />
+                                                </SelectTrigger>
+
+                                                <SelectContent>
+                                                    {industries?.map((industry: any) => (
+                                                        <SelectItem key={industry.id} value={String(industry.id)}>
+                                                            {industry.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+
+                                    {errors.industry_id && <span className="text-sm text-red-500">{errors.industry_id.message}</span>}
+                                </div>
+
+                                {/* FEE VALUE */}
                                 <div className="grid gap-2">
                                     <Label>{clientType === CLIENT_TYPE.CONTINGENCY ? 'Placement Fee (%)' : 'Monthly Retainer ($)'}</Label>
 
@@ -202,18 +200,7 @@ export default function Create() {
                                             min={0}
                                             max={clientType === CLIENT_TYPE.CONTINGENCY ? 100 : undefined}
                                             className={cn(clientType === CLIENT_TYPE.RETAINER && 'pl-7', errors.fee_value && 'border-red-500')}
-                                            placeholder={clientType === CLIENT_TYPE.CONTINGENCY ? 'Fee %' : 'Retainer Amount'}
-                                            {...register('fee_value', {
-                                                onChange: (e) => {
-                                                    let value = e.target.value;
-
-                                                    if (clientType === CLIENT_TYPE.CONTINGENCY) {
-                                                        value = Math.min(100, Math.max(0, value));
-                                                    }
-
-                                                    setValue('fee_value', value);
-                                                },
-                                            })}
+                                            {...register('fee_value')}
                                         />
 
                                         {clientType === CLIENT_TYPE.CONTINGENCY && (
@@ -225,7 +212,6 @@ export default function Create() {
                                 </div>
 
                                 {/* STATUS */}
-
                                 <div className="grid gap-2">
                                     <Label>Status</Label>
 
@@ -234,13 +220,12 @@ export default function Create() {
                                         control={control}
                                         render={({ field }) => (
                                             <Select value={field.value} onValueChange={field.onChange}>
-                                                <SelectTrigger className="w-full">
+                                                <SelectTrigger>
                                                     <SelectValue />
                                                 </SelectTrigger>
 
                                                 <SelectContent>
                                                     <SelectItem value={STATUS.ACTIVE.toString()}>Active</SelectItem>
-
                                                     <SelectItem value={STATUS.INACTIVE.toString()}>Inactive</SelectItem>
                                                 </SelectContent>
                                             </Select>
@@ -251,17 +236,13 @@ export default function Create() {
                         </div>
 
                         {/* AGREEMENTS */}
-
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
                             <h2 className="mb-4 text-lg font-semibold">Client Agreements</h2>
 
                             <div className="grid gap-4 md:grid-cols-2">
                                 <div className="grid gap-2">
                                     <Label>Agreement Type</Label>
-
                                     <Input {...register('agreement_type')} />
-
-                                    {errors.agreement_type && <span className="text-sm text-red-500">{errors.agreement_type.message}</span>}
                                 </div>
 
                                 <Controller
@@ -280,24 +261,19 @@ export default function Create() {
 
                             <label className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center">
                                 <Upload className="mb-2 h-6 w-6" />
-
                                 <span className="text-sm">Upload agreements</span>
-
                                 <input type="file" multiple hidden onChange={handleFileChange} />
                             </label>
-
-                            {errors.agreements && <span className="text-sm text-red-500">{errors.agreements.message}</span>}
 
                             <div className="mt-4 space-y-2">
                                 {files.map((file, i) => (
                                     <div key={i} className="flex items-center justify-between rounded border p-2">
                                         <div className="flex items-center gap-2">
                                             <FileText className="h-5 w-5" />
-
                                             <span className="truncate text-sm">{file.name}</span>
                                         </div>
 
-                                        <button type="button" onClick={() => removeFile(i)} className="cursor-pointer">
+                                        <button type="button" onClick={() => removeFile(i)}>
                                             <Trash2 className="h-4 w-4 text-red-600" />
                                         </button>
                                     </div>
@@ -306,7 +282,6 @@ export default function Create() {
                         </div>
 
                         {/* SUBMIT */}
-
                         <div className="flex justify-end">
                             <Button type="submit" disabled={isSubmitting} className="cursor-pointer">
                                 {isSubmitting ? (

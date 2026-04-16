@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services\Client;
+
 use App\Models\Agreement;
 use App\Models\Client;
 use App\Services\BaseService;
@@ -37,7 +38,7 @@ class ClientService extends BaseService
         $clients = $query->latest()->paginate($perPage ?? 10);
         return [
             'clients' => $clients->items(),
-            'meta' => pagination_meta($clients,'Search by name, email, phone or company...'),
+            'meta' => pagination_meta($clients, 'Search by name, email, phone or company...'),
             'filters' => [
                 'search' => $search,
                 'status' => $status,
@@ -55,6 +56,7 @@ class ClientService extends BaseService
             'email'        => $data->email,
             'phone'        => $data->phone,
             'address'      => $data->address,
+            'industry_id'  => $data->industry_id,
             'client_type'  => $data->client_type,
             'fee_type'     => $data->fee_type,
             'fee_value'    => $data->fee_value,
@@ -74,11 +76,8 @@ class ClientService extends BaseService
                         'agreement_type' => $data->agreement_type,
                         'signed_date'    => $data->signed_date,
                     ]);
-
                 }
-
             }
-
         }
 
         return $client;
@@ -120,9 +119,7 @@ class ClientService extends BaseService
                 Storage::delete($agreement->file_path);
 
                 $agreement->delete();
-
             }
-
         }
 
         /*
@@ -142,9 +139,7 @@ class ClientService extends BaseService
                     'agreement_type' => $data->agreement_type,
                     'signed_date'    => $data->signed_date,
                 ]);
-
             }
-
         }
 
         return $client;
