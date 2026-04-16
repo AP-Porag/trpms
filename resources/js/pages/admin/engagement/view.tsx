@@ -1,29 +1,21 @@
-import { useEffect, useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
 import { Head, router, usePage } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 
-import {
-    Tabs,
-    TabsContent,
-    TabsList,
-    TabsTrigger,
-} from '@/components/ui/tabs';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-import { STATUS, JOB_FEE_TYPE } from '@/utils/constants';
-import { formatDateUS, DATE_PRESETS } from '@/utils/helpers';
-import JobCandidateKanban from './partials/jobCandidateKanban';
-import AddCandidateToJobModal from './partials/addCandidateToJobModal';
 import ActivityTimeline from '@/components/activity/ActivityTimeline.jsx';
+import { JOB_FEE_TYPE, STATUS } from '@/utils/constants';
+import { DATE_PRESETS, formatDateUS } from '@/utils/helpers';
+import AddCandidateToJobModal from './partials/addCandidateToJobModal';
+import JobCandidateKanban from './partials/jobCandidateKanban';
 
-const breadcrumbs = [
-    { title: 'Jobs', href: '/jobs' },
-    { title: 'View Job' },
-];
+const breadcrumbs = [{ title: 'Jobs', href: '/jobs' }, { title: 'View Job' }];
 
-export default function View({ job,pipeline }) {
+export default function View({ job, pipeline }) {
     const { url } = usePage();
     const params = new URLSearchParams(url.split('?')[1]);
     const initialTab = params.get('tab') || 'overview';
@@ -183,9 +175,7 @@ function InfoRow({ label, value }) {
     return (
         <div>
             <p className="text-sm font-medium">{label}</p>
-            <p className="text-sm text-muted-foreground">
-                {value || '—'}
-            </p>
+            <p className="text-muted-foreground text-sm">{value || '—'}</p>
         </div>
     );
 }

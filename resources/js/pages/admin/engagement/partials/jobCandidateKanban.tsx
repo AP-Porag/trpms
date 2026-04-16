@@ -3,9 +3,9 @@ import { ChevronDown } from 'lucide-react';
 import { useEffect, useMemo, useState } from 'react';
 import { toast } from 'sonner';
 
-import { DndContext, DragOverlay, PointerSensor, useDraggable, useDroppable, useSensor, useSensors } from '@dnd-kit/core';
-import { CSS } from '@dnd-kit/utilities';
 import PlacementConfirmationModal from '@/components/placement/PlacementConfirmationModal';
+import { DndContext, PointerSensor, useDraggable, useDroppable, useSensor, useSensors } from '@dnd-kit/core';
+import { CSS } from '@dnd-kit/utilities';
 
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuSeparator, DropdownMenuTrigger } from '@/components/ui/dropdown-menu';
 
@@ -22,10 +22,10 @@ import {
 } from '@/components/ui/alert-dialog';
 
 import { Badge } from '@/components/ui/badge';
-import { Card, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardHeader } from '@/components/ui/card';
 
-import { JOB_CANDIDATE_STAGES, JOB_CANDIDATE_STAGE_ORDER } from '@/utils/jobCandidateStages';
 import { formatDateUS } from '@/utils/helpers.js';
+import { JOB_CANDIDATE_STAGES, JOB_CANDIDATE_STAGE_ORDER } from '@/utils/jobCandidateStages';
 
 /* ========================================================= */
 /* ROOT                                                      */
@@ -208,7 +208,6 @@ function KanbanColumn({ stageKey, stage, items, isDragging, openPlacementModal }
     );
 }
 
-
 /* ========================================================= */
 /* CARD                                                      */
 /* ========================================================= */
@@ -306,7 +305,6 @@ function CandidateCard({ jc, openPlacementModal }) {
         </Card>
     );
 }
-
 
 /* ========================================================= */
 /* ACTION MENU                                               */

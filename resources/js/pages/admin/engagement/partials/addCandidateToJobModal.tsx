@@ -1,26 +1,14 @@
-import { useState } from 'react';
 import { router } from '@inertiajs/react';
+import { useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-    DialogFooter,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 
-import {
-    Command,
-    CommandInput,
-    CommandItem,
-    CommandGroup,
-    CommandEmpty,
-} from '@/components/ui/command';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 
+import { CommandList } from 'cmdk';
 import { Plus } from 'lucide-react';
 
 export default function AddCandidateToJobModal({ jobId }) {
@@ -28,7 +16,6 @@ export default function AddCandidateToJobModal({ jobId }) {
     const [search, setSearch] = useState('');
     const [candidates, setCandidates] = useState([]);
     const [selected, setSelected] = useState(null);
-
 
     const loadDefaultCandidates = async () => {
         try {
@@ -70,28 +57,30 @@ export default function AddCandidateToJobModal({ jobId }) {
         }
     };
 
-
-
     const submit = () => {
         if (!selected) return;
 
-        router.post(route('job-candidates.store'), {
-            job_id: jobId,
-            candidate_id: selected.id,
-        }, {
-            onSuccess: () => {
-                setOpen(false);
-                setSelected(null);
-                setCandidates([]);
+        router.post(
+            route('job-candidates.store'),
+            {
+                job_id: jobId,
+                candidate_id: selected.id,
             },
-            preserveScroll: true,
-        });
+            {
+                onSuccess: () => {
+                    setOpen(false);
+                    setSelected(null);
+                    setCandidates([]);
+                },
+                preserveScroll: true,
+            },
+        );
     };
 
     return (
         <>
             <Button
-                size='sm'
+                size="sm"
                 className="cursor-pointer"
                 onClick={() => {
                     setOpen(true);
@@ -103,7 +92,7 @@ export default function AddCandidateToJobModal({ jobId }) {
             </Button>
 
             <Dialog open={open} onOpenChange={setOpen}>
-                <DialogContent>
+                <DialogContent className="max-h-[80vh]">
                     <DialogHeader>
                         <DialogTitle>Add Candidate to Job</DialogTitle>
                     </DialogHeader>
@@ -114,28 +103,32 @@ export default function AddCandidateToJobModal({ jobId }) {
                         <Command>
                             <CommandInput placeholder="Search by name or email or phone..." value={search} onValueChange={searchCandidates} />
 
-                            <CommandEmpty>No candidates found.</CommandEmpty>
+                            <CommandList className="h-[200px] overflow-y-auto">
+                                <CommandEmpty>No candidates found.</CommandEmpty>
 
-                            <CommandGroup>
-                                {candidates.map((c) => (
-                                    <CommandItem key={c.id} onSelect={() => setSelected(c)}>
-                                        <div>
-                                            <p className="text-sm font-medium">
-                                                {c.first_name} - {c.last_name}
-                                            </p>
-                                            <p className="text-muted-foreground text-xs">{c.email}</p>
-                                            <p className="text-muted-foreground text-xs">{c.phone}</p>
-                                        </div>
-                                    </CommandItem>
-                                ))}
-                            </CommandGroup>
+                                <CommandGroup>
+                                    {candidates.map((c) => (
+                                        <CommandItem key={c.id} onSelect={() => setSelected(c)}>
+                                            <div>
+                                                <p className="text-sm font-medium">
+                                                    {c.first_name} - {c.last_name}
+                                                </p>
+                                                <p className="text-muted-foreground text-xs">{c.email}</p>
+                                                <p className="text-muted-foreground text-xs">{c.phone}</p>
+                                            </div>
+                                        </CommandItem>
+                                    ))}
+                                </CommandGroup>
+                            </CommandList>
                         </Command>
                     </div>
 
                     {selected && (
                         <div className="rounded-md border p-3 text-sm">
                             Selected:
-                            <strong className="ml-1">{selected.first_name} {selected.last_name}</strong>
+                            <strong className="ml-1">
+                                {selected.first_name} {selected.last_name}
+                            </strong>
                         </div>
                     )}
 
