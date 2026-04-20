@@ -64,8 +64,6 @@ class ClientService extends BaseService
             'departments' => $data->departments ? array_map('intval', $data->departments) : null
         ]);
 
-
-
         if ($client) {
 
             foreach ($data->file('agreements', []) as $file) {

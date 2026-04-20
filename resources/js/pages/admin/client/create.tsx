@@ -167,6 +167,38 @@ export default function Create({ industries = [], departments = [] }: any) {
                                 <Input {...register('address')} />
                             </div>
 
+                            {/* ================= DEPARTMENTS (MULTISELECT + BADGES) ================= */}
+                            <div className="mt-4 grid gap-2">
+                                <Label>Departments</Label>
+
+                                <MultiSelect
+                                    options={departmentOptions}
+                                    value={selectedDepartments}
+                                    onChange={(val) => {
+                                        const normalized = val.map(String);
+
+                                        setSelectedDepartments(normalized);
+                                        setValue('departments', normalized);
+                                    }}
+                                    placeholder="Select Departments"
+                                />
+
+                                {/* BADGES */}
+                                {selectedDepartments.length > 0 && (
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                        {selectedDepartments.map((id) => {
+                                            const dept = departmentOptions.find((d) => d.value === id);
+
+                                            return (
+                                                <span key={id} className="rounded-full border bg-blue-100 px-3 py-1 text-xs text-blue-700">
+                                                    {dept?.label}
+                                                </span>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+
                             {/* ================= GRID ================= */}
                             <div className="mt-4 grid grid-cols-4 gap-4">
                                 {/* CLIENT TYPE */}
@@ -243,49 +275,6 @@ export default function Create({ industries = [], departments = [] }: any) {
                                         )}
                                     />
                                 </div>
-                            </div>
-
-                            {/* ================= DEPARTMENTS (MULTISELECT + BADGES) ================= */}
-                            <div className="mt-4 grid gap-2">
-                                <Label>Departments</Label>
-
-                                {/* <MultiSelect
-                                    options={departmentOptions}
-                                    value={selectedDepartments}
-                                    onChange={(val) => {
-                                        const normalized = val.map(String);
-                                        setSelectedDepartments(normalized);
-                                        setValue('departments', normalized);
-                                    }}
-                                    placeholder="Select Departments"
-                                /> */}
-
-                                <MultiSelect
-                                    options={departmentOptions}
-                                    value={selectedDepartments}
-                                    onChange={(val) => {
-                                        const normalized = val.map(String);
-
-                                        setSelectedDepartments(normalized);
-                                        setValue('departments', normalized);
-                                    }}
-                                    placeholder="Select Departments"
-                                />
-
-                                {/* BADGES */}
-                                {selectedDepartments.length > 0 && (
-                                    <div className="mt-2 flex flex-wrap gap-2">
-                                        {selectedDepartments.map((id) => {
-                                            const dept = departmentOptions.find((d) => d.value === id);
-
-                                            return (
-                                                <span key={id} className="rounded-full border bg-blue-100 px-3 py-1 text-xs text-blue-700">
-                                                    {dept?.label}
-                                                </span>
-                                            );
-                                        })}
-                                    </div>
-                                )}
                             </div>
                         </div>
 

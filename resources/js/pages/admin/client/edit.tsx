@@ -43,7 +43,7 @@ const clientSchema = z.object({
     departments: z.array(z.string()).optional(),
 });
 
-export default function Edit({ client, industries = [], departments = [] }: any) {
+export default function Edit({ client, industries = [], agreements, departments = [] }: any) {
     const [files, setFiles] = useState<File[]>([]);
     const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
 
@@ -76,8 +76,8 @@ export default function Edit({ client, industries = [], departments = [] }: any)
 
             status: client?.status?.toString() || STATUS.ACTIVE.toString(),
 
-            agreement_type: client?.agreement_type || '',
-            signed_date: client?.signed_date || '',
+            agreement_type: client?.agreements?.[0]?.agreement_type || '',
+            signed_date: client?.agreements?.[0]?.signed_date || '',
 
             // FIXED SAFE DEFAULT
             departments: Array.isArray(client?.departments) ? client.departments.map((d: any) => String(d.id ?? d)) : [],
@@ -94,7 +94,12 @@ export default function Edit({ client, industries = [], departments = [] }: any)
         setValue('departments', initialDepartments);
 
         register('agreements');
-    }, [register]);
+
+        if (client?.agreements?.length) {
+            setValue('agreement_type', client.agreements[0]?.agreement_type || '');
+            setValue('signed_date', client.agreements[0]?.signed_date || '');
+        }
+    }, [register, client, setValue]);
 
     /* ================= FILE HANDLING (UNCHANGED) ================= */
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -125,8 +130,6 @@ export default function Edit({ client, industries = [], departments = [] }: any)
         };
 
         router.put(route('clients.update', client.id), payload, {
-            forceFormData: true,
-
             onError: (errs) => {
                 console.log('VALIDATION ERRORS:', errs); // 👈 add this
                 Object.keys(errs).forEach((k) => setError(k as any, { message: errs[k] }));
