@@ -61,6 +61,10 @@ class Client extends BaseModel
         return $this->belongsTo(Industry::class);
     }
 
+    // Department
+
+
+
     // Jobs / Engagements
     public function jobs(): HasMany
     {
@@ -85,14 +89,15 @@ class Client extends BaseModel
 
     public function scopeProspects($query)
     {
-        return $query->where('category',
+        return $query->where(
+            'category',
             GlobalConstant::CLIENT_CATEGORY_PROSPECT
         );
     }
 
     public function scopeTargetAccounts($query)
     {
-        return $query->where('category',GlobalConstant::CLIENT_CATEGORY_TARGET_ACCOUNT);
+        return $query->where('category', GlobalConstant::CLIENT_CATEGORY_TARGET_ACCOUNT);
     }
 
     /*
@@ -112,5 +117,10 @@ class Client extends BaseModel
         }
 
         return null;
+    }
+
+    public function departments()
+    {
+        return $this->belongsToMany(Department::class);
     }
 }

@@ -61,7 +61,10 @@ class ClientService extends BaseService
             'fee_type'     => $data->fee_type,
             'fee_value'    => $data->fee_value,
             'status'       => $data->status,
+            'departments' => $data->departments ? array_map('intval', $data->departments) : null
         ]);
+
+
 
         if ($client) {
 
@@ -104,6 +107,7 @@ class ClientService extends BaseService
             'fee_type'     => $data->fee_type,
             'fee_value'    => $data->fee_value,
             'status'       => $data->status,
+            'departments' => $data->departments ? array_map('intval', $data->departments) : null
         ]);
 
         /*

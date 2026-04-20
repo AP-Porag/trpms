@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Head, router, usePage } from '@inertiajs/react';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 import DataTable from '@/components/common/DataTable';
+import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout.js';
+import { Head, router, usePage } from '@inertiajs/react';
+import { Plus } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 const breadcrumbs = [
@@ -13,8 +13,7 @@ const breadcrumbs = [
     },
 ];
 
-export default function Index({ clients,meta, filters: initialFilters }) {
-
+export default function Index({ clients, meta, filters: initialFilters }) {
     const { flash } = usePage().props;
 
     useEffect(() => {
@@ -67,7 +66,7 @@ export default function Index({ clients,meta, filters: initialFilters }) {
                 };
                 return (
                     <span className={`rounded px-2 py-1 text-xs font-medium ${statusStyles[row.status] || 'bg-gray-100 text-gray-800'}`}>
-                        {row.status === "1" ? 'Active' : 'Inactive'}
+                        {row.status === '1' ? 'Active' : 'Inactive'}
                     </span>
                 );
             },
@@ -76,7 +75,7 @@ export default function Index({ clients,meta, filters: initialFilters }) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Users" />
+            <Head title="Clients" />
             <div className="p-4">
                 <div className="my-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Clients</h1>

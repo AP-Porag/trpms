@@ -32,6 +32,7 @@ class ClientController extends BaseController
 
         return Inertia::render('admin/client/create', [
             'industries' => Industry::select('id', 'name')->get(),
+            'departments' => Department::select('id', 'name')->get(),
         ]);
     }
 
@@ -63,6 +64,7 @@ class ClientController extends BaseController
      */
     public function edit(Client $client)
     {
+
         return inertia('admin/client/edit', [
             'client' => $client,
             'agreements' => $client->agreements()->get(),
@@ -76,7 +78,6 @@ class ClientController extends BaseController
      */
     public function update(ClientRequest $request, Client $client)
     {
-        dd($request->all());
         $this->service->update($client, $request);
 
         return redirect()

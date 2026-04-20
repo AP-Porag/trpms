@@ -1,8 +1,12 @@
 import DatePicker from '@/components/forms/DatePicker';
+import type { MultiSelectOption } from '@/components/forms/MultiSelect';
+import MultiSelect from '@/components/forms/MultiSelect';
+
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,6 +21,7 @@ import { CLIENT_TYPE, JOB_FEE_TYPE, STATUS } from '@/utils/constants';
 
 const breadcrumbs = [{ title: 'Create Client', href: '/clients/create' }];
 
+/* ================= SCHEMA ================= */
 const clientSchema = z.object({
     name: z.string().min(3, { message: 'Name is Required!' }),
     company_name: z.string().min(3, { message: 'Company name is required!' }),
@@ -33,10 +38,23 @@ const clientSchema = z.object({
 
     agreement_type: z.string().optional(),
     signed_date: z.string().optional(),
+
     agreements: z.any().optional(),
+
+    departments: z.array(z.string()).optional(),
 });
 
-export default function Create({ industries = [] }: any) {
+export default function Create({ industries = [], departments = [] }: any) {
+    const [files, setFiles] = useState<File[]>([]);
+    const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
+
+    /* ================= OPTIONS ================= */
+    const departmentOptions: MultiSelectOption[] =
+        departments?.map((item: any) => ({
+            label: item.name,
+            value: String(item.id),
+        })) || [];
+
     const {
         register,
         control,
@@ -48,26 +66,36 @@ export default function Create({ industries = [] }: any) {
     } = useForm({
         resolver: zodResolver(clientSchema),
         defaultValues: {
+            name: '',
+            company_name: '',
+            email: '',
+            phone: '',
+            address: '',
+
+            industry_id: '',
+
             client_type: CLIENT_TYPE.RETAINER,
             status: STATUS.ACTIVE.toString(),
-            industry_id: '',
-            agreements: [],
+
             fee_value: '',
+
+            agreement_type: '',
+            signed_date: '',
+
+            departments: [],
+            agreements: [],
         },
     });
 
-    const [files, setFiles] = useState<File[]>([]);
-
     const clientType = watch('client_type');
 
+    /* ================= REGISTER EXTRA FIELD ================= */
     useEffect(() => {
         register('agreements');
+        register('departments');
     }, [register]);
 
-    useEffect(() => {
-        setValue('fee_value', '');
-    }, [clientType, setValue]);
-
+    /* ================= FILE HANDLING ================= */
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (!e.target.files) return;
 
@@ -82,22 +110,25 @@ export default function Create({ industries = [] }: any) {
         setValue('agreements', updated);
     };
 
+    /* ================= SUBMIT ================= */
     const saveClient = (data: any) => {
-        return new Promise<void>((resolve) => {
-            const payload = {
-                ...data,
-                fee_type: data.client_type === CLIENT_TYPE.CONTINGENCY ? JOB_FEE_TYPE.PERCENTAGE : JOB_FEE_TYPE.FIXED,
-                agreements: files,
-            };
+        const payload = {
+            ...data,
 
-            router.post(route('clients.store'), payload, {
-                forceFormData: true,
-                onError: (errs) => {
-                    Object.keys(errs).forEach((k) => setError(k as any, { message: errs[k] }));
-                    toast.error('Please fix the errors in the form.');
-                },
-                onFinish: () => resolve(),
-            });
+            fee_type: data.client_type === CLIENT_TYPE.CONTINGENCY ? JOB_FEE_TYPE.PERCENTAGE : JOB_FEE_TYPE.FIXED,
+
+            agreements: files,
+
+            departments: (data.departments || []).map((id: string) => Number(id)),
+        };
+
+        router.post(route('clients.store'), payload, {
+            forceFormData: true,
+
+            onError: (errs) => {
+                Object.keys(errs).forEach((k) => setError(k as any, { message: errs[k] }));
+                toast.error('Please fix the errors in the form.');
+            },
         });
     };
 
@@ -108,7 +139,7 @@ export default function Create({ industries = [] }: any) {
             <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="rounded-xl border p-5">
                     <form onSubmit={handleSubmit(saveClient)}>
-                        {/* CLIENT INFO */}
+                        {/* ================= CLIENT INFO ================= */}
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
                             <h2 className="mb-4 text-lg font-semibold">Client Information</h2>
 
@@ -136,7 +167,8 @@ export default function Create({ industries = [] }: any) {
                                 <Input {...register('address')} />
                             </div>
 
-                            <div className="mt-4 grid gap-4 grid-cols-4">
+                            {/* ================= GRID ================= */}
+                            <div className="mt-4 grid grid-cols-4 gap-4">
                                 {/* CLIENT TYPE */}
                                 <div className="grid gap-2">
                                     <Label>Client Type</Label>
@@ -145,11 +177,10 @@ export default function Create({ industries = [] }: any) {
                                         name="client_type"
                                         control={control}
                                         render={({ field }) => (
-                                            <Select value={field.value ?? CLIENT_TYPE.RETAINER} onValueChange={field.onChange}>
-                                                <SelectTrigger className="w-full">
+                                            <Select value={field.value} onValueChange={field.onChange}>
+                                                <SelectTrigger>
                                                     <SelectValue />
                                                 </SelectTrigger>
-
                                                 <SelectContent>
                                                     <SelectItem value={CLIENT_TYPE.RETAINER}>Retainer</SelectItem>
                                                     <SelectItem value={CLIENT_TYPE.CONTINGENCY}>Contingency</SelectItem>
@@ -159,7 +190,7 @@ export default function Create({ industries = [] }: any) {
                                     />
                                 </div>
 
-                                {/* INDUSTRY FIXED */}
+                                {/* INDUSTRY */}
                                 <div className="grid gap-2">
                                     <Label>Industry</Label>
 
@@ -168,45 +199,26 @@ export default function Create({ industries = [] }: any) {
                                         control={control}
                                         render={({ field }) => (
                                             <Select value={field.value || ''} onValueChange={field.onChange}>
-                                                <SelectTrigger className="w-full">
+                                                <SelectTrigger>
                                                     <SelectValue placeholder="Select Industry" />
                                                 </SelectTrigger>
-
                                                 <SelectContent>
-                                                    {industries?.map((industry: any) => (
-                                                        <SelectItem key={industry.id} value={String(industry.id)}>
-                                                            {industry.name}
+                                                    {industries.map((i: any) => (
+                                                        <SelectItem key={i.id} value={String(i.id)}>
+                                                            {i.name}
                                                         </SelectItem>
                                                     ))}
                                                 </SelectContent>
                                             </Select>
                                         )}
                                     />
-
-                                    {errors.industry_id && <span className="text-sm text-red-500">{errors.industry_id.message}</span>}
                                 </div>
 
-                                {/* FEE VALUE */}
+                                {/* FEE */}
                                 <div className="grid gap-2">
                                     <Label>{clientType === CLIENT_TYPE.CONTINGENCY ? 'Placement Fee (%)' : 'Monthly Retainer ($)'}</Label>
 
-                                    <div className="relative">
-                                        {clientType === CLIENT_TYPE.RETAINER && (
-                                            <span className="absolute top-1/2 left-3 -translate-y-1/2 text-sm text-gray-500">$</span>
-                                        )}
-
-                                        <Input
-                                            type="number"
-                                            min={0}
-                                            max={clientType === CLIENT_TYPE.CONTINGENCY ? 100 : undefined}
-                                            className={cn(clientType === CLIENT_TYPE.RETAINER && 'pl-7', errors.fee_value && 'border-red-500')}
-                                            {...register('fee_value')}
-                                        />
-
-                                        {clientType === CLIENT_TYPE.CONTINGENCY && (
-                                            <span className="absolute top-1/2 right-3 -translate-y-1/2 text-sm text-gray-500">%</span>
-                                        )}
-                                    </div>
+                                    <Input type="number" {...register('fee_value')} className={cn(errors.fee_value && 'border-red-500')} />
 
                                     {errors.fee_value && <span className="text-sm text-red-500">{errors.fee_value.message}</span>}
                                 </div>
@@ -220,10 +232,9 @@ export default function Create({ industries = [] }: any) {
                                         control={control}
                                         render={({ field }) => (
                                             <Select value={field.value} onValueChange={field.onChange}>
-                                                <SelectTrigger className="w-full">
+                                                <SelectTrigger>
                                                     <SelectValue />
                                                 </SelectTrigger>
-
                                                 <SelectContent>
                                                     <SelectItem value={STATUS.ACTIVE.toString()}>Active</SelectItem>
                                                     <SelectItem value={STATUS.INACTIVE.toString()}>Inactive</SelectItem>
@@ -233,9 +244,52 @@ export default function Create({ industries = [] }: any) {
                                     />
                                 </div>
                             </div>
+
+                            {/* ================= DEPARTMENTS (MULTISELECT + BADGES) ================= */}
+                            <div className="mt-4 grid gap-2">
+                                <Label>Departments</Label>
+
+                                {/* <MultiSelect
+                                    options={departmentOptions}
+                                    value={selectedDepartments}
+                                    onChange={(val) => {
+                                        const normalized = val.map(String);
+                                        setSelectedDepartments(normalized);
+                                        setValue('departments', normalized);
+                                    }}
+                                    placeholder="Select Departments"
+                                /> */}
+
+                                <MultiSelect
+                                    options={departmentOptions}
+                                    value={selectedDepartments}
+                                    onChange={(val) => {
+                                        const normalized = val.map(String);
+
+                                        setSelectedDepartments(normalized);
+                                        setValue('departments', normalized);
+                                    }}
+                                    placeholder="Select Departments"
+                                />
+
+                                {/* BADGES */}
+                                {selectedDepartments.length > 0 && (
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                        {selectedDepartments.map((id) => {
+                                            const dept = departmentOptions.find((d) => d.value === id);
+
+                                            return (
+                                                <span key={id} className="rounded-full border bg-blue-100 px-3 py-1 text-xs text-blue-700">
+                                                    {dept?.label}
+                                                </span>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
                         </div>
 
-                        {/* AGREEMENTS */}
+                        {/* ================= AGREEMENTS ================= */}
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
                             <h2 className="mb-4 text-lg font-semibold">Client Agreements</h2>
 
@@ -281,9 +335,9 @@ export default function Create({ industries = [] }: any) {
                             </div>
                         </div>
 
-                        {/* SUBMIT */}
+                        {/* ================= SUBMIT ================= */}
                         <div className="flex justify-end">
-                            <Button type="submit" disabled={isSubmitting} className="cursor-pointer">
+                            <Button type="submit" disabled={isSubmitting}>
                                 {isSubmitting ? (
                                     <>
                                         <RotateCw className="mr-2 h-4 w-4 animate-spin" />

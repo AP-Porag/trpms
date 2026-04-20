@@ -1,8 +1,8 @@
+import AddNoteModal from '@/components/notes/AddNoteModal';
+import NotesTimeline from '@/components/notes/NotesTimeline';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
-import AddNoteModal from '@/components/notes/AddNoteModal';
-import NotesTimeline from '@/components/notes/NotesTimeline';
 const breadcrumbs = [{ title: 'Clients', href: '/clients' }, { title: 'View Client' }];
 
 export default function Show({ client }: any) {
@@ -50,8 +50,13 @@ export default function Show({ client }: any) {
 
                         <div>
                             <p className="text-sm font-semibold">Fee Value</p>
-                            <p className="text-sm text-gray-600">{client?.fee_value ?? '—'}</p>
+                            <p className="text-sm text-gray-600">${client?.fee_value ?? '—'}</p>
                         </div>
+
+                        {/* <div>
+                            <p className="text-sm font-semibold">Departments</p>
+                            <p className="text-sm text-gray-600">{client?.departments}</p>
+                        </div> */}
 
                         <div>
                             <p className="text-sm font-semibold">Status</p>
