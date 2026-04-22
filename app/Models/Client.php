@@ -51,9 +51,9 @@ class Client extends BaseModel
     }
 
     // Agreements
-    public function agreement(): hasOne
+    public function agreements(): hasMany
     {
-        return $this->hasOne(Agreement::class, "client_id");
+        return $this->hasMany(Agreement::class, "client_id");
     }
 
     // Industry

@@ -72,7 +72,7 @@ class ClientService extends BaseService
 
                     Agreement::create([
                         'client_id'      => $client->id,
-                        'file_path'      => $file->store('agreements'),
+                        'file_path' => $file->store('agreements', 'public'),
                         'original_name'  => $file->getClientOriginalName(),
                         'agreement_type' => $data->agreement_type,
                         'signed_date'    => $data->signed_date,
@@ -150,12 +150,12 @@ class ClientService extends BaseService
     }
 
 
-    public function detail(Client $client): array
-    {
-        return [
-            'client' => $client->load('notes'),
-        ];
-    }
+    // public function detail(Client $client): array
+    // {
+    //     return [
+    //         'client' => $client->load('notes'),
+    //     ];
+    // }
     // public function detail(string $id): array
     // {
     //     $client = Client::with(['notes.author', 'agreements'])
@@ -165,4 +165,14 @@ class ClientService extends BaseService
     //         'client' => $client,
     //     ];
     // }
+
+    public function detail(Client $client): array
+    {
+        return [
+            'client' => $client->load([
+                'notes',
+                'agreements:id,client_id,file_path,original_name,agreement_type,signed_date',
+            ]),
+        ];
+    }
 }
