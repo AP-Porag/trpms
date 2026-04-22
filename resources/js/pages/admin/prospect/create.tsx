@@ -107,7 +107,7 @@ export default function Create() {
                                 />
                             </div>
                             <div className="mt-4 grid gap-2">
-                                <Label>Initial Note</Label>
+                                <Label>Note</Label>
                                 <Input {...register('note')} />
                             </div>
                         </div>

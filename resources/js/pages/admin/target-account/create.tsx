@@ -106,6 +106,10 @@ export default function Create() {
                                     )}
                                 />
                             </div>
+                            <div className="mt-4 grid gap-2">
+                                <Label>Note</Label>
+                                <Input {...register('note')} />
+                            </div>
                         </div>
 
                         <div className="flex justify-end">

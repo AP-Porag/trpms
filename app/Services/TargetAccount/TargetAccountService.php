@@ -3,6 +3,7 @@
 namespace App\Services\TargetAccount;
 
 use App\Models\Client;
+use App\Models\Note;
 use App\Services\Client\ClientService;
 use App\Utils\GlobalConstant;
 use Illuminate\Http\Request;
@@ -35,7 +36,7 @@ class TargetAccountService extends ClientService
 
         return [
             'prospects' => $prospects->items(),
-            'meta' => pagination_meta($prospects,'Search by name, email, phone or company...'),
+            'meta' => pagination_meta($prospects, 'Search by name, email, phone or company...'),
             'filters' => [
                 'search' => $search,
                 'status' => $status,
@@ -47,10 +48,24 @@ class TargetAccountService extends ClientService
 
     public function create($data): Client
     {
-        return Client::create([
+
+        $prospect = Client::create([
             ...$data->validated(),
             'category' => GlobalConstant::CLIENT_CATEGORY_TARGET_ACCOUNT,
         ]);
+
+        $note = $data->validated()['note'] ?? null;
+
+
+        if (!empty($note)) {
+            Note::create([
+                'note' => $note,
+                'noteable_id' => $prospect->id,
+                'noteable_type' => 'client',
+                'created_by' => auth()->id(), // IMPORTANT if column exists
+            ]);
+        }
+        return $prospect;
     }
 
 
@@ -66,5 +81,4 @@ class TargetAccountService extends ClientService
 
         return parent::delete($client->id);
     }
-
 }

@@ -12,7 +12,7 @@ use Inertia\Inertia;
 
 class TargetAccountController extends BaseController
 {
-    public function __construct(protected TargetAccountService $service){}
+    public function __construct(protected TargetAccountService $service) {}
 
 
     /**
@@ -20,7 +20,8 @@ class TargetAccountController extends BaseController
      */
     public function index(Request $request)
     {
-        return Inertia::render('admin/target-account/index',
+        return Inertia::render(
+            'admin/target-account/index',
             $this->service->list($request)
         );
     }
