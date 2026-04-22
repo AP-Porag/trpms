@@ -27,6 +27,7 @@ class ClientRequest extends BaseRequest
             'phone' => 'required|string|max:50',
 
             'address' => 'nullable|string|max:500',
+
             'category' => 'nullable|string',
             'rating' => 'nullable',
             'industry_id' => 'nullable|exists:industries,id',
@@ -67,6 +68,7 @@ class ClientRequest extends BaseRequest
             */
 
             'agreement_type' => 'nullable|string|max:255',
+            'note' => 'nullable|string|max:255',
 
             'signed_date' => 'nullable|date',
 

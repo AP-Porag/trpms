@@ -22,10 +22,10 @@ const prospectSchema = z.object({
     phone: z.string().min(5),
     address: z.string().optional(),
     status: z.enum([STATUS.ACTIVE.toString(), STATUS.INACTIVE.toString()]),
+    note: z.string().optional(),
 });
 
 export default function Create() {
-
     const {
         register,
         control,
@@ -40,24 +40,16 @@ export default function Create() {
     });
 
     const saveProspect = async (data) => {
-
         return new Promise((resolve) => {
-
             router.post(route('prospects.store'), data, {
-
                 onError: (errs) => {
-                    Object.keys(errs).forEach((k) =>
-                        setError(k, { message: errs[k] })
-                    );
+                    Object.keys(errs).forEach((k) => setError(k, { message: errs[k] }));
                     toast.error('Please fix the errors in the form.');
                 },
 
                 onFinish: () => resolve(),
-
             });
-
         });
-
     };
 
     return (
@@ -66,55 +58,34 @@ export default function Create() {
 
             <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="rounded-xl border p-5">
-
                     <form onSubmit={handleSubmit(saveProspect)}>
-
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
-
-                            <h2 className="mb-4 text-lg font-semibold">
-                                Prospect Information
-                            </h2>
+                            <h2 className="mb-4 text-lg font-semibold">Prospect Information</h2>
 
                             <div className="grid gap-4 md:grid-cols-2">
-
                                 {[
                                     ['name', 'Name'],
                                     ['company_name', 'Company Name'],
                                     ['email', 'Email'],
                                     ['phone', 'Phone'],
                                 ].map(([f, l]) => (
-
                                     <div key={f} className="grid gap-2">
-
                                         <Label>{l}</Label>
 
-                                        <Input
-                                            {...register(f)}
-                                            className={cn(errors[f] && 'border-red-500')}
-                                        />
+                                        <Input {...register(f)} className={cn(errors[f] && 'border-red-500')} />
 
-                                        {errors[f] && (
-                                            <span className="text-sm text-red-500">
-                                                {errors[f].message}
-                                            </span>
-                                        )}
-
+                                        {errors[f] && <span className="text-sm text-red-500">{errors[f].message}</span>}
                                     </div>
-
                                 ))}
-
                             </div>
 
                             <div className="mt-4 grid gap-2">
-
                                 <Label>Address</Label>
 
                                 <Input {...register('address')} />
-
                             </div>
 
                             <div className="mt-4 grid gap-2">
-
                                 <Label>Status</Label>
 
                                 <Controller
@@ -127,30 +98,22 @@ export default function Create() {
                                             </SelectTrigger>
 
                                             <SelectContent>
-                                                <SelectItem value={STATUS.ACTIVE.toString()}>
-                                                    Active
-                                                </SelectItem>
+                                                <SelectItem value={STATUS.ACTIVE.toString()}>Active</SelectItem>
 
-                                                <SelectItem value={STATUS.INACTIVE.toString()}>
-                                                    Inactive
-                                                </SelectItem>
+                                                <SelectItem value={STATUS.INACTIVE.toString()}>Inactive</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     )}
                                 />
-
                             </div>
-
+                            <div className="mt-4 grid gap-2">
+                                <Label>Initial Note</Label>
+                                <Input {...register('note')} />
+                            </div>
                         </div>
 
                         <div className="flex justify-end">
-
-                            <Button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="cursor-pointer"
-                            >
-
+                            <Button type="submit" disabled={isSubmitting} className="cursor-pointer">
                                 {isSubmitting ? (
                                     <>
                                         <RotateCw className="mr-2 h-4 w-4 animate-spin" />
@@ -159,13 +122,9 @@ export default function Create() {
                                 ) : (
                                     'Save Prospect'
                                 )}
-
                             </Button>
-
                         </div>
-
                     </form>
-
                 </div>
             </div>
         </AppLayout>
