@@ -67,7 +67,7 @@ class ClientController extends BaseController
     {
         return inertia('admin/client/edit', [
             'client' => $client,
-            'agreement' => $client->agreement()->first(),
+            'agreement' => $client->agreements()->first(),
             'industries' => Industry::select('id', 'name')->get(),
             'departments' => Department::select('id', 'name')->get(),
         ]);

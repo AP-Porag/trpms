@@ -66,7 +66,7 @@ export default function Index({ clients, meta, filters: initialFilters }) {
                 };
                 return (
                     <span className={`rounded px-2 py-1 text-xs font-medium ${statusStyles[row.status] || 'bg-gray-100 text-gray-800'}`}>
-                        {row.status === '1' ? 'Active' : 'Inactive'}
+                        {row.status === 1 ? 'Active' : 'Inactive'}
                     </span>
                 );
             },
