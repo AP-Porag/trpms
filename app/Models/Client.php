@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Client extends BaseModel
 {
@@ -50,9 +51,9 @@ class Client extends BaseModel
     }
 
     // Agreements
-    public function agreements(): HasMany
+    public function agreement(): hasOne
     {
-        return $this->hasMany(Agreement::class, "client_id");
+        return $this->hasOne(Agreement::class, "client_id");
     }
 
     // Industry

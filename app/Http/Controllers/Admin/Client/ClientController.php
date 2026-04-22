@@ -67,7 +67,7 @@ class ClientController extends BaseController
     {
         return inertia('admin/client/edit', [
             'client' => $client,
-            'agreements' => $client->agreements()->get(),
+            'agreement' => $client->agreement()->first(),
             'industries' => Industry::select('id', 'name')->get(),
             'departments' => Department::select('id', 'name')->get(),
         ]);
@@ -78,6 +78,7 @@ class ClientController extends BaseController
      */
     public function update(ClientRequest $request, Client $client)
     {
+        return $request;
         $this->service->update($client, $request);
 
         return redirect()

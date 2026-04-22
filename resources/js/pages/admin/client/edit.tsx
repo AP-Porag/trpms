@@ -43,7 +43,8 @@ const clientSchema = z.object({
     departments: z.array(z.string()).optional(),
 });
 
-export default function Edit({ client, industries = [], agreements, departments = [] }: any) {
+export default function Edit({ client, industries, agreement, departments }: any) {
+    console.log(agreement);
     const [files, setFiles] = useState<File[]>([]);
     const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
 
@@ -76,8 +77,8 @@ export default function Edit({ client, industries = [], agreements, departments 
 
             status: client?.status?.toString() || STATUS.ACTIVE.toString(),
 
-            agreement_type: client?.agreements?.[0]?.agreement_type || '',
-            signed_date: client?.agreements?.[0]?.signed_date || '',
+            agreement_type: agreement?.agreement_type || '',
+            signed_date: agreement?.signed_date || '',
 
             // FIXED SAFE DEFAULT
             departments: Array.isArray(client?.departments) ? client.departments.map((d: any) => String(d.id ?? d)) : [],
@@ -95,9 +96,9 @@ export default function Edit({ client, industries = [], agreements, departments 
 
         register('agreements');
 
-        if (client?.agreements?.length) {
-            setValue('agreement_type', client.agreements[0]?.agreement_type || '');
-            setValue('signed_date', client.agreements[0]?.signed_date || '');
+        if (agreement) {
+            setValue('agreement_type', agreement.agreement_type || '');
+            setValue('signed_date', agreement.signed_date || '');
         }
     }, [register, client, setValue]);
 

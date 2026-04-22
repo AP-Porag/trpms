@@ -19,8 +19,6 @@ class Agreement extends BaseModel
 
     public function client()
     {
-        return $this->belongsTo(Client::class,'client_id');
+        return $this->belongsTo(Client::class, 'client_id');
     }
-
-
 }
