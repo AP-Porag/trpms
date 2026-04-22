@@ -1,3 +1,148 @@
+// import PdfViewer from '@/components/common/PdfViewer';
+// import AddNoteModal from '@/components/notes/AddNoteModal';
+// import NotesTimeline from '@/components/notes/NotesTimeline';
+// import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+// import AppLayout from '@/layouts/app-layout';
+// import { Head } from '@inertiajs/react';
+// import { useState } from 'react';
+
+// const breadcrumbs = [{ title: 'Clients', href: '/clients' }, { title: 'View Client' }];
+
+// export default function Show({ client }: any) {
+//     const [openAgreement, setOpenAgreement] = useState(false);
+//     const [selectedIndex, setSelectedIndex] = useState(0);
+
+//     const openPdf = (index: number) => {
+//         setSelectedIndex(index);
+//         setOpenAgreement(true);
+//     };
+
+//     const closePdf = () => {
+//         setOpenAgreement(false);
+//     };
+
+//     const fileUrl = `${window.location.origin}/storage/${client.agreements[selectedIndex]?.file_path}`;
+
+//     return (
+//         <AppLayout breadcrumbs={breadcrumbs}>
+//             <Head title="Client Details" />
+
+//             <div className="grid grid-cols-2 gap-4 p-4 lg:grid-cols-2">
+//                 {/* ================= CLIENT INFORMATION ================= */}
+//                 <Card className="rounded-xl">
+//                     <CardHeader>
+//                         <CardTitle>Client Information</CardTitle>
+//                     </CardHeader>
+
+//                     <CardContent className="space-y-4">
+//                         <div>
+//                             <p className="text-sm font-semibold">Client Name</p>
+//                             <p className="text-sm text-gray-600">{client?.name}</p>
+//                         </div>
+
+//                         <div>
+//                             <p className="text-sm font-semibold">Company</p>
+//                             <p className="text-sm text-gray-600">{client?.company_name}</p>
+//                         </div>
+
+//                         <div>
+//                             <p className="text-sm font-semibold">Email</p>
+//                             <p className="text-sm text-gray-600">{client?.email}</p>
+//                         </div>
+
+//                         <div>
+//                             <p className="text-sm font-semibold">Phone</p>
+//                             <p className="text-sm text-gray-600">{client?.phone}</p>
+//                         </div>
+
+//                         <div>
+//                             <p className="text-sm font-semibold">Address</p>
+//                             <p className="text-sm text-gray-600">{client?.address}</p>
+//                         </div>
+
+//                         <div>
+//                             <p className="text-sm font-semibold">Type</p>
+//                             <p className="text-sm text-gray-600">{client?.client_type}</p>
+//                         </div>
+
+//                         <div>
+//                             <p className="text-sm font-semibold">Fee Value</p>
+//                             <p className="text-sm text-gray-600">${client?.fee_value ?? '—'}</p>
+//                         </div>
+
+//                         <div>
+//                             <p className="text-sm font-semibold">Status</p>
+//                             <p className="text-sm text-gray-600">{client?.status == 1 ? 'Active' : 'Inactive'}</p>
+//                         </div>
+
+//                         <div>
+//                             <p className="text-sm font-semibold">Created At</p>
+//                             <p className="text-sm text-gray-600">{new Date(client?.created_at).toLocaleString()}</p>
+//                         </div>
+
+//                         {/* ================= AGREEMENTS ================= */}
+//                         <div className="pt-2">
+//                             {client?.agreements?.length > 0 ? (
+//                                 <div className="space-y-2">
+//                                     <p className="text-sm font-semibold">Agreements</p>
+
+//                                     {client.agreements.map((a: any, index: number) => (
+//                                         <button
+//                                             key={a.id}
+//                                             onClick={() => openPdf(index)}
+//                                             className="flex items-center gap-2 text-sm text-blue-600 underline"
+//                                         >
+//                                             📄 {a.original_name}
+//                                         </button>
+//                                     ))}
+//                                 </div>
+//                             ) : (
+//                                 <p className="text-sm text-gray-400">No agreements found</p>
+//                             )}
+//                         </div>
+//                     </CardContent>
+//                 </Card>
+
+//                 {/* ================= NOTES ================= */}
+//                 <Card className="rounded-xl p-2">
+//                     <CardHeader>
+//                         <CardTitle>Client Notes</CardTitle>
+//                     </CardHeader>
+
+//                     <div className="mb-3 flex justify-between">
+//                         <div />
+//                         <AddNoteModal noteableType="client" noteableId={client.id} />
+//                     </div>
+
+//                     <Card>
+//                         <CardHeader>
+//                             <CardTitle>Notes</CardTitle>
+//                         </CardHeader>
+
+//                         <CardContent>
+//                             <NotesTimeline notes={client.notes} />
+//                         </CardContent>
+//                     </Card>
+//                 </Card>
+//             </div>
+
+//             {/* ================= PDF VIEWER MODAL ================= */}
+//             {openAgreement && client?.agreements?.[selectedIndex] && (
+//                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+//                     <div className="relative w-full max-w-5xl overflow-hidden rounded-lg bg-white shadow-lg">
+//                         {/* Close button */}
+//                         <button onClick={closePdf} className="absolute top-3 right-3 z-10 rounded bg-red-500 px-3 py-1 text-white">
+//                             Close
+//                         </button>
+
+//                         <PdfViewer src={fileUrl} title={client.agreements[selectedIndex]?.original_name} />
+//                     </div>
+//                 </div>
+//             )}
+//         </AppLayout>
+//     );
+// }
+
 import AddNoteModal from '@/components/notes/AddNoteModal';
 import NotesTimeline from '@/components/notes/NotesTimeline';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -82,11 +227,7 @@ export default function Show({ client }: any) {
                                         <p className="text-sm font-semibold">Agreements</p>
 
                                         {client.agreements.map((a: any, index: number) => (
-                                            <button
-                                                key={a.id}
-                                                onClick={() => openPdf(index)}
-                                                className="flex items-center gap-2 text-sm text-blue-600 underline"
-                                            >
+                                            <button key={a.id} onClick={() => openPdf(index)} className="flex items-center gap-2 text-sm">
                                                 📄 {a.original_name}
                                             </button>
                                         ))}
