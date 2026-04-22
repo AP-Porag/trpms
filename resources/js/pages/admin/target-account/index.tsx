@@ -127,6 +127,7 @@ export default function Index({ prospects, meta, filters: initialFilters }) {
                         searchPlaceholderText: meta.searchPlaceholderText,
                     }}
                     actions={(row) => ({
+                        view: true,
                         edit: true,
 
                         delete: true,
@@ -147,4 +148,3 @@ export default function Index({ prospects, meta, filters: initialFilters }) {
         </AppLayout>
     );
 }
-

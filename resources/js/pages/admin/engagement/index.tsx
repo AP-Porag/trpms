@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Head, router, usePage } from '@inertiajs/react';
-import { Button } from '@/components/ui/button';
-import { Plus } from 'lucide-react';
 import DataTable from '@/components/common/DataTable';
+import { Button } from '@/components/ui/button';
 import AppLayout from '@/layouts/app-layout.js';
+import { Head, router, usePage } from '@inertiajs/react';
+import { Plus } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 
 const breadcrumbs = [
@@ -13,8 +13,7 @@ const breadcrumbs = [
     },
 ];
 
-export default function Index({ jobs,meta, filters: initialFilters }) {
-
+export default function Index({ jobs, meta, filters: initialFilters }) {
     const { flash } = usePage().props;
 
     useEffect(() => {
@@ -78,7 +77,7 @@ export default function Index({ jobs,meta, filters: initialFilters }) {
             <Head title="Jobs" />
             <div className="p-4">
                 <div className="my-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">jobs</h1>
+                    <h1 className="text-2xl font-bold">Jobs</h1>
                     <Button onClick={() => router.visit(route('jobs.create'))} className="cursor-pointer bg-black text-white hover:bg-gray-800">
                         <Plus className="mr-2" /> Create Job
                     </Button>

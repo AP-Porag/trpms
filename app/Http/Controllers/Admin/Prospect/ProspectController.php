@@ -57,7 +57,7 @@ class ProspectController extends BaseController
         $prospect = Client::findOrFail($id);
 
 
-        $data = $this->service->prospecDetail($prospect);
+        $data = $this->service->prospectDetail($prospect);
 
         return Inertia::render('admin/prospect/show', $data);
     }

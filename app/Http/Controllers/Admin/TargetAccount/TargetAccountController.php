@@ -54,7 +54,12 @@ class TargetAccountController extends BaseController
      */
     public function show(string $id)
     {
-        //
+        $targetAccount = Client::findOrFail($id);
+
+
+        $data = $this->service->tergetAccountDetail($targetAccount);
+
+        return Inertia::render('admin/target-account/show', $data);
     }
 
 

@@ -176,10 +176,21 @@ class ClientService extends BaseService
         ];
     }
     //ProspectDetails
-    public function prospecDetail(Client $prospect): array
+    public function prospectDetail(Client $prospect): array
     {
         return [
             'prospect' => $prospect->load([
+                'notes',
+                'agreements:id,client_id,file_path,original_name,agreement_type,signed_date',
+            ]),
+        ];
+    }
+
+    //Target Account
+    public function tergetAccountDetail(Client $targetAccount): array
+    {
+        return [
+            'targetAccount' => $targetAccount->load([
                 'notes',
                 'agreements:id,client_id,file_path,original_name,agreement_type,signed_date',
             ]),

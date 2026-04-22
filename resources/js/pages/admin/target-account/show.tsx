@@ -6,8 +6,8 @@ import { Head } from '@inertiajs/react';
 
 const breadcrumbs = [{ title: 'Prospects', href: '/prospects' }, { title: 'View Prospect' }];
 
-export default function Show({ prospect }: any) {
-    console.log(prospect);
+export default function Show({ targetAccount }: any) {
+    console.log(targetAccount);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Prospect Details" />
@@ -22,37 +22,37 @@ export default function Show({ prospect }: any) {
                     <CardContent className="space-y-4">
                         <div>
                             <p className="text-sm font-semibold">Name</p>
-                            <p className="text-sm text-gray-600">{prospect?.name}</p>
+                            <p className="text-sm text-gray-600">{targetAccount?.name}</p>
                         </div>
 
                         <div>
                             <p className="text-sm font-semibold">Company</p>
-                            <p className="text-sm text-gray-600">{prospect?.company_name}</p>
+                            <p className="text-sm text-gray-600">{targetAccount?.company_name}</p>
                         </div>
 
                         <div>
                             <p className="text-sm font-semibold">Email</p>
-                            <p className="text-sm text-gray-600">{prospect?.email}</p>
+                            <p className="text-sm text-gray-600">{targetAccount?.email}</p>
                         </div>
 
                         <div>
                             <p className="text-sm font-semibold">Phone</p>
-                            <p className="text-sm text-gray-600">{prospect?.phone}</p>
+                            <p className="text-sm text-gray-600">{targetAccount?.phone}</p>
                         </div>
 
                         <div>
                             <p className="text-sm font-semibold">Address</p>
-                            <p className="text-sm text-gray-600">{prospect?.address}</p>
+                            <p className="text-sm text-gray-600">{targetAccount?.address}</p>
                         </div>
 
                         <div>
                             <p className="text-sm font-semibold">Status</p>
-                            <p className="text-sm text-gray-600">{prospect?.status == 1 ? 'Active' : 'Inactive'}</p>
+                            <p className="text-sm text-gray-600">{targetAccount?.status == 1 ? 'Active' : 'Inactive'}</p>
                         </div>
 
                         <div>
                             <p className="text-sm font-semibold">Created At</p>
-                            <p className="text-sm text-gray-600">{new Date(prospect?.created_at).toLocaleString()}</p>
+                            <p className="text-sm text-gray-600">{new Date(targetAccount?.created_at).toLocaleString()}</p>
                         </div>
                     </CardContent>
                 </Card>
@@ -65,7 +65,7 @@ export default function Show({ prospect }: any) {
 
                     <div className="mb-3 flex justify-between">
                         <div></div>
-                        <AddNoteModal noteableType="client" noteableId={prospect.id} />
+                        <AddNoteModal noteableType="client" noteableId={targetAccount.id} />
                     </div>
 
                     <Card>
@@ -74,7 +74,7 @@ export default function Show({ prospect }: any) {
                         </CardHeader>
 
                         <CardContent>
-                            <NotesTimeline notes={prospect.notes} />
+                            <NotesTimeline notes={targetAccount.notes} />
                         </CardContent>
                     </Card>
                 </Card>
