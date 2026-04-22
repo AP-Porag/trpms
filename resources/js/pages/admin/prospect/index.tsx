@@ -14,7 +14,6 @@ const breadcrumbs = [
 ];
 
 export default function Index({ prospects, meta, filters: initialFilters }) {
-
     const { flash } = usePage().props;
 
     useEffect(() => {
@@ -31,13 +30,11 @@ export default function Index({ prospects, meta, filters: initialFilters }) {
     });
 
     useEffect(() => {
-
         router.get(route('prospects.index'), filters, {
             preserveState: true,
             replace: true,
             preserveScroll: true,
         });
-
     }, [filters.search, filters.status, filters.perPage, filters.page]);
 
     /*
@@ -47,7 +44,6 @@ export default function Index({ prospects, meta, filters: initialFilters }) {
     */
 
     const columns = [
-
         { key: 'name', label: 'Contact Name' },
 
         { key: 'company_name', label: 'Company' },
@@ -55,21 +51,13 @@ export default function Index({ prospects, meta, filters: initialFilters }) {
         {
             key: 'email',
             label: 'Email',
-            render: (row) => (
-                <span className="block w-48 truncate">
-                    {row.email}
-                </span>
-            ),
+            render: (row) => <span className="block w-48 truncate">{row.email}</span>,
         },
 
         {
             key: 'phone',
             label: 'Phone',
-            render: (row) => (
-                <span className="block w-40 truncate">
-                    {row.phone}
-                </span>
-            ),
+            render: (row) => <span className="block w-40 truncate">{row.phone}</span>,
         },
 
         {
@@ -82,24 +70,18 @@ export default function Index({ prospects, meta, filters: initialFilters }) {
             key: 'status',
             label: 'Status',
             render: (row) => {
-
                 const statusStyles = {
                     1: 'bg-green-100 text-green-800',
                     0: 'bg-red-100 text-red-800',
                 };
 
                 return (
-                    <span
-                        className={`rounded px-2 py-1 text-xs font-medium ${
-                            statusStyles[row.status] || 'bg-gray-100 text-gray-800'
-                        }`}
-                    >
+                    <span className={`rounded px-2 py-1 text-xs font-medium ${statusStyles[row.status] || 'bg-gray-100 text-gray-800'}`}>
                         {row.status == 1 ? 'Active' : 'Inactive'}
                     </span>
                 );
             },
         },
-
     ];
 
     /*
@@ -109,7 +91,6 @@ export default function Index({ prospects, meta, filters: initialFilters }) {
     */
 
     const rowActions = (row) => ({
-
         view: false,
 
         edit: true,
@@ -117,7 +98,6 @@ export default function Index({ prospects, meta, filters: initialFilters }) {
         delete: true,
 
         convert: true,
-
     });
 
     return (
@@ -146,6 +126,7 @@ export default function Index({ prospects, meta, filters: initialFilters }) {
                         searchPlaceholderText: meta.searchPlaceholderText,
                     }}
                     actions={(row) => ({
+                        view: true,
                         edit: true,
                         delete: true,
 

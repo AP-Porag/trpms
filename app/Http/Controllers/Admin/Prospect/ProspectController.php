@@ -12,7 +12,7 @@ use Inertia\Inertia;
 class ProspectController extends BaseController
 {
 
-    public function __construct(protected ProspectService $service){}
+    public function __construct(protected ProspectService $service) {}
 
 
     /**
@@ -20,7 +20,8 @@ class ProspectController extends BaseController
      */
     public function index(Request $request)
     {
-        return Inertia::render('admin/prospect/index',
+        return Inertia::render(
+            'admin/prospect/index',
             $this->service->list($request)
         );
     }
@@ -53,7 +54,12 @@ class ProspectController extends BaseController
      */
     public function show(string $id)
     {
-        //
+        $client = Client::findOrFail($id);
+
+
+        $data = $this->service->detail($client);
+
+        return Inertia::render('admin/prospect/show', $data);
     }
 
 
@@ -88,5 +94,4 @@ class ProspectController extends BaseController
     {
         $this->service->delete($prospect->id);
     }
-
 }
