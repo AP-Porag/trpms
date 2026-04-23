@@ -119,10 +119,9 @@ class ClientService extends BaseService
         $keepIds = $data->input('existing_agreements', []);
 
         foreach ($client->agreements as $agreement) {
-
             if (!in_array($agreement->id, $keepIds)) {
 
-                Storage::delete($agreement->file_path);
+                Storage::disk('public')->delete($agreement->file_path);
 
                 $agreement->delete();
             }

@@ -156,7 +156,12 @@ export default function Edit({ client, industries, agreement, departments }: any
         // 🔹 departments fix
         (data.departments || []).forEach((id: string) => formData.append('departments[]', String(Number(id))));
 
-        // 🔹 FILE FIX
+        // 🔥 FIX: existing agreements IDs (NOT files)
+        (data.existing_agreements || []).forEach((id: number) => {
+            formData.append('existing_agreements[]', String(id));
+        });
+
+        // 🔹 NEW FILES upload
         files.forEach((file: File) => {
             formData.append('agreements[]', file);
         });
