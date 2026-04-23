@@ -15,6 +15,7 @@ use App\Http\Controllers\Admin\Position\PositionController;
 use App\Http\Controllers\Admin\Prospect\ProspectController;
 use App\Http\Controllers\Admin\Engagement\EngagementController;
 use App\Http\Controllers\Admin\JobCandidate\JobCandidateController;
+use App\Http\Controllers\Admin\Lead\LeadController;
 use App\Http\Controllers\Admin\Note\CandidateNoteController;
 use App\Http\Controllers\Admin\Note\ClientNoteController;
 use App\Http\Controllers\Admin\Revenue\RevenueGoalController;
@@ -26,9 +27,10 @@ use App\Http\Controllers\EditorController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
+
 Route::get('/execute-command', function () {
-//    return redirect()->route('login');
-//    Artisan::call('storage:link');
+    //    return redirect()->route('login');
+    //    Artisan::call('storage:link');
     Artisan::call('migrate:fresh --seed');
     Artisan::call('cache:clear');
     Artisan::call('view:clear');
@@ -38,7 +40,7 @@ Route::get('/execute-command', function () {
 });
 Route::get('/', function () {
     return redirect()->route('login');
-//    return Inertia::render('welcome');
+    //    return Inertia::render('welcome');
 })->name('home');
 //->prefix('admin')->as('admin.')
 Route::middleware(['auth', 'verified'])->group(function () {
@@ -57,16 +59,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('clients', ClientController::class);
 
     Route::resource('jobs', EngagementController::class);
+    Route::resource('leads', LeadController::class);
 
-//    Route::post('clients/{client}/notes', [ClientNoteController::class, 'store'])
-//        ->name('clients.notes.store');
-//
-//    Route::delete('notes/{note}', [ClientNoteController::class, 'destroy'])
-//        ->name('notes.destroy');
+    //    Route::post('clients/{client}/notes', [ClientNoteController::class, 'store'])
+    //        ->name('clients.notes.store');
+    //
+    //    Route::delete('notes/{note}', [ClientNoteController::class, 'destroy'])
+    //        ->name('notes.destroy');
 
     //global notes
-    Route::post('/notes', [NoteController::class,'store'])->name('notes.store');
-    Route::delete('/notes/{note}',[NoteController::class,'destroy'])->name('notes.destroy');
+    Route::post('/notes', [NoteController::class, 'store'])->name('notes.store');
+    Route::delete('/notes/{note}', [NoteController::class, 'destroy'])->name('notes.destroy');
 
     Route::post('/editor/image-upload', [EditorController::class, 'upload'])
         ->name('editor.image.upload');
@@ -80,8 +83,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         [CandidateController::class, 'search']
     )->name('candidates.search');
 
-//    Route::post('clients/{client}/notes', [CandidateNoteController::class, 'store'])
-//        ->name('clients.notes.store');
+    //    Route::post('clients/{client}/notes', [CandidateNoteController::class, 'store'])
+    //        ->name('clients.notes.store');
 
     Route::post(
         '/job-candidates/{jobCandidate}/change-stage',
@@ -110,7 +113,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('target-accounts', TargetAccountController::class);
     Route::post(
         'target-accounts/{client}/promote',
-        [TargetAccountController::class,'promote']
+        [TargetAccountController::class, 'promote']
     )->name('target-accounts.promote');
 
     Route::resource('industries', IndustryController::class);
@@ -133,8 +136,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/', [NotificationController::class, 'index'])->name('index');
         Route::post('/{id}/toggle', [NotificationController::class, 'toggle'])->name('toggle');
     });
-
 });
 
-require __DIR__.'/settings.php';
-require __DIR__.'/auth.php';
+require __DIR__ . '/settings.php';
+require __DIR__ . '/auth.php';
