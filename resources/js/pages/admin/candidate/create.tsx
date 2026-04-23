@@ -5,8 +5,8 @@ import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Head, router } from '@inertiajs/react';
-import { FileText, RotateCw, Trash2, Upload } from 'lucide-react';
-import { Controller, useForm } from 'react-hook-form';
+import { FileText, RotateCw, Upload } from 'lucide-react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -27,7 +27,7 @@ const candidateSchema = z.object({
     first_name: z.string().min(2, 'First name is required'),
     last_name: z.string().min(2, 'Last name is required'),
     email: z.string().email(),
-    phone: z.string().min(5),
+    phone: z.string().min(10, { message: 'Phone number must be at least 10 digits' }),
     address: z.string().min(3),
     expected_salary: z.string().optional(),
 
@@ -51,20 +51,14 @@ export default function Create() {
 
     const submit = async (data) => {
         return new Promise((resolve) => {
-            router.post(
-                route('candidates.store'),
-                data,
-                {
-                    forceFormData: true,
-                    onError: (errs) => {
-                        Object.keys(errs).forEach((k) =>
-                            setError(k, { message: errs[k] }),
-                        );
-                        toast.error('Please fix the errors.');
-                    },
-                    onFinish: () => resolve(),
+            router.post(route('candidates.store'), data, {
+                forceFormData: true,
+                onError: (errs) => {
+                    Object.keys(errs).forEach((k) => setError(k, { message: errs[k] }));
+                    toast.error('Please fix the errors.');
                 },
-            );
+                onFinish: () => resolve(),
+            });
         });
     };
 
