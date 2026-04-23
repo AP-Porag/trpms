@@ -107,7 +107,10 @@ class ClientService extends BaseService
             'status'       => $data->status,
             'agreement_type' => $data->agreement_type,
             'signed_date'    => $data->signed_date,
-            'departments' => $data->departments ? array_map('intval', $data->departments) : null
+            // 'departments' => $data->departments ? array_map('intval', $data->departments) : null
+            'departments'     => !empty($data->departments)
+                ? array_values(array_unique(array_map('intval', $data->departments)))
+                : null,
         ]);
 
         /*

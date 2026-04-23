@@ -126,4 +126,10 @@ class Client extends BaseModel
     {
         return $this->belongsToMany(Department::class);
     }
+
+    //For department edit
+    public function department()
+    {
+        return Department::whereIn('id', $this->departments ?? []);
+    }
 }
