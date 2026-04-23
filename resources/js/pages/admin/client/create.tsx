@@ -210,7 +210,7 @@ export default function Create({ industries = [], departments = [] }: any) {
                                         control={control}
                                         render={({ field }) => (
                                             <Select value={field.value} onValueChange={field.onChange}>
-                                                <SelectTrigger>
+                                                <SelectTrigger className="w-full">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -231,7 +231,7 @@ export default function Create({ industries = [], departments = [] }: any) {
                                         control={control}
                                         render={({ field }) => (
                                             <Select value={field.value || ''} onValueChange={field.onChange}>
-                                                <SelectTrigger>
+                                                <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Select Industry" />
                                                 </SelectTrigger>
                                                 <SelectContent>
@@ -264,7 +264,7 @@ export default function Create({ industries = [], departments = [] }: any) {
                                         control={control}
                                         render={({ field }) => (
                                             <Select value={field.value} onValueChange={field.onChange}>
-                                                <SelectTrigger>
+                                                <SelectTrigger className="w-full">
                                                     <SelectValue />
                                                 </SelectTrigger>
                                                 <SelectContent>

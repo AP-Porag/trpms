@@ -245,7 +245,7 @@ export default function Edit({ client, industries, agreement, departments }: any
                                     control={control}
                                     render={({ field }) => (
                                         <Select value={field.value} onValueChange={field.onChange}>
-                                            <SelectTrigger>
+                                            <SelectTrigger className="w-full">
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -261,7 +261,7 @@ export default function Edit({ client, industries, agreement, departments }: any
                                     control={control}
                                     render={({ field }) => (
                                         <Select value={field.value || ''} onValueChange={field.onChange}>
-                                            <SelectTrigger>
+                                            <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Select Industry" />
                                             </SelectTrigger>
                                             <SelectContent>
@@ -282,7 +282,7 @@ export default function Edit({ client, industries, agreement, departments }: any
                                     control={control}
                                     render={({ field }) => (
                                         <Select value={field.value} onValueChange={field.onChange}>
-                                            <SelectTrigger>
+                                            <SelectTrigger className="w-full">
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
