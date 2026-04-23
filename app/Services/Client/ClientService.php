@@ -119,29 +119,39 @@ class ClientService extends BaseService
         $keepIds = $data->input('existing_agreements', []);
 
         foreach ($client->agreements as $agreement) {
+
             if (!in_array($agreement->id, $keepIds)) {
 
-                Storage::disk('public')->delete($agreement->file_path);
+                if (
+                    $agreement->file_path &&
+                    Storage::disk('public')->exists($agreement->file_path)
+                ) {
+                    Storage::disk('public')->delete($agreement->file_path);
+                }
 
                 $agreement->delete();
             }
         }
 
         /*
-        |--------------------------------------------------------------------------
-        | Store new agreements
-        |--------------------------------------------------------------------------
+        |----------------------------------------------------
+        | 4. Store new agreements (FIXED STORAGE ISSUE)
+        |----------------------------------------------------
         */
+        if ($data->hasFile('agreements')) {
 
-        foreach ($data->file('agreements', []) as $file) {
+            foreach ($data->file('agreements') as $file) {
 
-            if ($file instanceof UploadedFile) {
+                if ($file instanceof UploadedFile) {
 
-                Agreement::create([
-                    'client_id'      => $client->id,
-                    'file_path'      => $file->store('agreements'),
-                    'original_name'  => $file->getClientOriginalName(),
-                ]);
+                    $path = $file->store('agreements', 'public'); // IMPORTANT FIX
+
+                    Agreement::create([
+                        'client_id'     => $client->id,
+                        'file_path'     => $path,
+                        'original_name' => $file->getClientOriginalName(),
+                    ]);
+                }
             }
         }
 
