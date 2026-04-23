@@ -66,7 +66,7 @@ return new class extends Migration
             | A / B / C (from Excel)
             */
 
-            $table->enum('rating', ['A','B','C'])->nullable();
+            $table->enum('rating', ['A', 'B', 'C'])->nullable();
             $table->foreignId('industry_id')->nullable();
             $table->json('departments')->nullable();
 
@@ -78,6 +78,16 @@ return new class extends Migration
             */
 
             $table->decimal('average_salary', 12, 2)->nullable();
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Agreement Type, Signed Date
+            |--------------------------------------------------------------------------
+            */
+
+            $table->string('agreement_type')->nullable();
+            $table->string('signed_date')->nullable();
 
 
             /*

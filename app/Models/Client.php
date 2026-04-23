@@ -28,6 +28,8 @@ class Client extends BaseModel
         'industry_id',
         'departments',
         'average_salary',
+        'agreement_type',
+        'signed_date',
         'status',
         'created_by',
     ];

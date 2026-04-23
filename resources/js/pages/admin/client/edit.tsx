@@ -43,8 +43,8 @@ const clientSchema = z.object({
     departments: z.array(z.string()).optional(),
 });
 
-export default function Edit({ client, industries, agreements, departments }: any) {
-    console.log(agreements);
+export default function Edit({ client, industries, agreement, departments }: any) {
+    console.log(client);
     const [files, setFiles] = useState<File[]>([]);
     const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
 
@@ -77,8 +77,8 @@ export default function Edit({ client, industries, agreements, departments }: an
 
             status: client?.status?.toString() || STATUS.ACTIVE.toString(),
 
-            agreement_type: agreements?.agreement_type || '',
-            signed_date: agreements?.signed_date || '',
+            agreement_type: client?.agreement_type || '',
+            signed_date: client?.signed_date || '',
 
             // FIXED SAFE DEFAULT
             departments: Array.isArray(client?.departments) ? client.departments.map((d: any) => String(d.id ?? d)) : [],
@@ -93,13 +93,6 @@ export default function Edit({ client, industries, agreements, departments }: an
 
         setSelectedDepartments(initialDepartments);
         setValue('departments', initialDepartments);
-
-        register('agreements');
-
-        if (agreements) {
-            setValue('agreement_type', agreements.agreement_type || '');
-            setValue('signed_date', agreements.signed_date || '');
-        }
     }, [register, client, setValue]);
 
     /* ================= FILE HANDLING (UNCHANGED) ================= */
@@ -118,22 +111,70 @@ export default function Edit({ client, industries, agreements, departments }: an
     };
 
     /* ================= UPDATE (ONLY FIXED TYPES) ================= */
+    // const updateClient = (data: any) => {
+    //     const payload = {
+    //         ...data,
+
+    //         fee_type: data.client_type === CLIENT_TYPE.CONTINGENCY ? JOB_FEE_TYPE.PERCENTAGE : JOB_FEE_TYPE.FIXED,
+
+    //         agreements: files,
+
+    //         // ✅ FIX ONLY: ensure backend safe numbers
+    //         departments: (data.departments || []).map((id: string) => Number(id)),
+    //     };
+
+    //     router.put(route('clients.update', client.id), payload, {
+    //         onError: (errs) => {
+    //             console.log('VALIDATION ERRORS:', errs); // 👈 add this
+    //             Object.keys(errs).forEach((k) => setError(k as any, { message: errs[k] }));
+
+    //             toast.error('Please fix validation errors');
+    //         },
+    //     });
+    // };
+
     const updateClient = (data: any) => {
-        const payload = {
-            ...data,
+        const formData = new FormData();
 
-            fee_type: data.client_type === CLIENT_TYPE.CONTINGENCY ? JOB_FEE_TYPE.PERCENTAGE : JOB_FEE_TYPE.FIXED,
+        // 🔹 append all normal fields
+        Object.keys(data).forEach((key) => {
+            const value = (data as any)[key];
 
-            agreements: files,
+            // skip agreements because handled separately
+            if (key === 'agreements') return;
 
-            // ✅ FIX ONLY: ensure backend safe numbers
-            departments: (data.departments || []).map((id: string) => Number(id)),
-        };
+            if (Array.isArray(value)) {
+                value.forEach((v) => formData.append(`${key}[]`, v));
+            } else {
+                formData.append(key, value ?? '');
+            }
+        });
 
-        router.put(route('clients.update', client.id), payload, {
+        // 🔹 fee_type (UNCHANGED LOGIC)
+        formData.append('fee_type', data.client_type === CLIENT_TYPE.CONTINGENCY ? JOB_FEE_TYPE.PERCENTAGE : JOB_FEE_TYPE.FIXED);
+
+        // 🔹 departments fix
+        (data.departments || []).forEach((id: string) => formData.append('departments[]', String(Number(id))));
+
+        // 🔹 FILE FIX
+        files.forEach((file: File) => {
+            formData.append('agreements[]', file);
+        });
+
+        // 🔹 IMPORTANT: Laravel PUT spoof
+        formData.append('_method', 'PUT');
+
+        router.post(route('clients.update', client.id), formData, {
+            forceFormData: true,
+
             onError: (errs) => {
-                console.log('VALIDATION ERRORS:', errs); // 👈 add this
-                Object.keys(errs).forEach((k) => setError(k as any, { message: errs[k] }));
+                console.log('VALIDATION ERRORS:', errs);
+
+                Object.keys(errs).forEach((k) =>
+                    setError(k as any, {
+                        message: Array.isArray(errs[k]) ? errs[k][0] : errs[k],
+                    }),
+                );
 
                 toast.error('Please fix validation errors');
             },

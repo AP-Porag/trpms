@@ -61,6 +61,8 @@ class ClientService extends BaseService
             'fee_type'     => $data->fee_type,
             'fee_value'    => $data->fee_value,
             'status'       => $data->status,
+            'agreement_type' => $data->agreement_type,
+            'signed_date'    => $data->signed_date,
             'departments' => $data->departments ? array_map('intval', $data->departments) : null
         ]);
 
@@ -74,8 +76,6 @@ class ClientService extends BaseService
                         'client_id'      => $client->id,
                         'file_path' => $file->store('agreements', 'public'),
                         'original_name'  => $file->getClientOriginalName(),
-                        'agreement_type' => $data->agreement_type,
-                        'signed_date'    => $data->signed_date,
                     ]);
                 }
             }
@@ -105,6 +105,8 @@ class ClientService extends BaseService
             'fee_type'     => $data->fee_type,
             'fee_value'    => $data->fee_value,
             'status'       => $data->status,
+            'agreement_type' => $data->agreement_type,
+            'signed_date'    => $data->signed_date,
             'departments' => $data->departments ? array_map('intval', $data->departments) : null
         ]);
 
@@ -140,31 +142,12 @@ class ClientService extends BaseService
                     'client_id'      => $client->id,
                     'file_path'      => $file->store('agreements'),
                     'original_name'  => $file->getClientOriginalName(),
-                    'agreement_type' => $data->agreement_type,
-                    'signed_date'    => $data->signed_date,
                 ]);
             }
         }
 
         return $client;
     }
-
-
-    // public function detail(Client $client): array
-    // {
-    //     return [
-    //         'client' => $client->load('notes'),
-    //     ];
-    // }
-    // public function detail(string $id): array
-    // {
-    //     $client = Client::with(['notes.author', 'agreements'])
-    //         ->findOrFail($id);
-
-    //     return [
-    //         'client' => $client,
-    //     ];
-    // }
 
     public function detail(Client $client): array
     {

@@ -41,6 +41,7 @@ class ClientController extends BaseController
      */
     public function store(ClientRequest $request)
     {
+
         $this->service->create($request);
         return redirect()
             ->route('clients.index')
@@ -78,7 +79,6 @@ class ClientController extends BaseController
      */
     public function update(ClientRequest $request, Client $client)
     {
-        return $request;
         $this->service->update($client, $request);
 
         return redirect()
