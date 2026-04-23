@@ -9,4 +9,9 @@ class Department extends Model
     protected $fillable = [
         'name',
     ];
+
+    public function clients()
+    {
+        return $this->belongsToMany(Client::class);
+    }
 }

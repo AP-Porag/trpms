@@ -67,7 +67,7 @@ class ClientController extends BaseController
     public function edit(Client $client)
     {
         return inertia('admin/client/edit', [
-            'client' => $client,
+            'client' => $client->load('departments:id,name'),
             'agreement' => $client->agreements()->first(),
             'industries' => Industry::select('id', 'name')->get(),
             'departments' => Department::select('id', 'name')->get(),

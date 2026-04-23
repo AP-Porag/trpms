@@ -81,19 +81,25 @@ export default function Edit({ client, industries, agreement, departments }: any
             signed_date: client?.signed_date || '',
 
             // FIXED SAFE DEFAULT
-            departments: Array.isArray(client?.departments) ? client.departments.map((d: any) => String(d.id ?? d)) : [],
+            // departments: Array.isArray(client?.departments) ? client.departments.map((d: any) => String(d.id ?? d)) : [],
         },
     });
 
     const clientType = watch('client_type');
 
     /* ================= INIT SYNC ================= */
+    // useEffect(() => {
+    //     const initialDepartments = Array.isArray(client?.departments) ? client.departments.map((d: any) => String(d.id ?? d)) : [];
+
+    //     setSelectedDepartments(initialDepartments);
+    //     setValue('departments', initialDepartments);
+    // }, [register, client, setValue]);
     useEffect(() => {
-        const initialDepartments = Array.isArray(client?.departments) ? client.departments.map((d: any) => String(d.id ?? d)) : [];
+        const initialDepartments = client?.departments?.map((d: any) => String(d.id)) || [];
 
         setSelectedDepartments(initialDepartments);
         setValue('departments', initialDepartments);
-    }, [register, client, setValue]);
+    }, [client, setValue]);
 
     /* ================= FILE HANDLING (UNCHANGED) ================= */
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -229,7 +235,6 @@ export default function Edit({ client, industries, agreement, departments }: any
                                         setSelectedDepartments(normalized);
                                         setValue('departments', normalized);
                                     }}
-                                    placeholder="Select Departments"
                                 />
                             </div>
 
