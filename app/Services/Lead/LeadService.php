@@ -63,27 +63,49 @@ class LeadService extends BaseService
      * Create lead
      * Controller: store()
      */
-    public function create(array $data)
+    public function create($data): Lead
     {
-        // If ownership is needed (recommended for SaaS rule)
-        if (Auth::check()) {
-            $data['user_id'] = Auth::id();
+
+
+        $lead = Lead::create([
+            'name'         => $data['name'],
+            'company_name' => $data['company_name'],
+            'industry_id'  => $data['industry_id'],
+            'source_id'    => $data['source_id'],
+            'current_openings'    => $data['current_openings'],
+            'status'    => $data['status'],
+            'mpc'          => $data['mpc'],
+        ]);
+        // 🔥 Pivot table insert (IMPORTANT)
+        if (!empty($data['departments'])) {
+            $lead->departments()->sync(
+                array_map('intval', $data['departments'])
+            );
         }
 
-        return $this->model->create($data);
+        return $lead;
     }
 
     /**
      * Update lead
      * Controller: update()
      */
-    public function update(int $id, array $data)
+    public function update($id, array $data): Lead
     {
-        $lead = $this->model->findOrFail($id);
+        $lead = Lead::findOrFail($id);
 
-        $this->authorizeAccess($lead);
+        $lead->update([
+            'name'             => $data['name'],
+            'company_name'     => $data['company_name'],
+            'industry_id'      => $data['industry_id'] ?? null,
+            'source_id'        => $data['source_id'] ?? null,
+            'mpc'              => $data['mpc'] ?? null,
+            'current_openings' => $data['current_openings'] ?? null,
+            'status'           => $data['status'],
+        ]);
 
-        $lead->update($data);
+        // departments sync (safe)
+        $lead->departments()->sync($data['departments'] ?? []);
 
         return $lead;
     }
@@ -117,5 +139,14 @@ class LeadService extends BaseService
         if ($user && isset($lead->user_id) && $lead->user_id !== $user->id) {
             abort(403, 'Unauthorized action.');
         }
+    }
+
+    public function leadtDetail(Lead $lead): array
+    {
+        return [
+            'lead' => $lead->load([
+                'departments',
+            ]),
+        ];
     }
 }

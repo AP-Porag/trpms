@@ -94,13 +94,13 @@ export default function Show({ client }: any) {
                                                 <FileText className="h-4 w-4" />
                                             </span>
                                             {agreement.original_name ?? 'View Agreement'}
-                                        
+
                                         </button>
 
                                    <Tooltip anchorSelect=".my-anchor-element" place="right" className="text-blue-100">
                                         Click to View, Download and Print
                                   </Tooltip>
-                                        
+
                                </div>
 
                                     ))}
@@ -113,9 +113,9 @@ export default function Show({ client }: any) {
                 </Card>
 
                 {/* ================= NOTES ================= */}
-                
+
                     <NoteComponent noteableType="client" noteableId={client.id} notes={client.notes}/>
-                
+
             </div>
 
             {/* ================= PDF MODAL (MULTIPLE SUPPORT) ================= */}

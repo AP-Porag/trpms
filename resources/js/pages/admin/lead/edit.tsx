@@ -1,0 +1,246 @@
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import AppLayout from '@/layouts/app-layout';
+import { cn } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Head, router } from '@inertiajs/react';
+import { RotateCw } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import { z } from 'zod';
+
+import MultiSelect, { MultiSelectOption } from '@/components/forms/MultiSelect';
+import { STATUS } from '@/utils/constants';
+
+const breadcrumbs = [{ title: 'Edit Lead', href: '/admin/leads' }];
+
+/* ================= SCHEMA ================= */
+const leadSchema = z.object({
+    name: z.string().min(3, { message: 'Name is Required!' }),
+    company_name: z.string().min(3, { message: 'Company name is required!' }),
+    industry_id: z.string().nullable().optional(),
+    source_id: z.string().nullable().optional(),
+    mpc: z.string().optional(),
+    departments: z.array(z.string()).optional(),
+    current_openings: z.string().optional(),
+    status: z.enum([String(STATUS.ACTIVE), String(STATUS.INACTIVE)]),
+});
+
+export default function Edit({ lead, industries = [], departments = [], source = [] }: any) {
+    const {
+        register,
+        control,
+        handleSubmit,
+        setError,
+        setValue,
+        reset,
+        formState: { errors, isSubmitting },
+    } = useForm({
+        resolver: zodResolver(leadSchema),
+        defaultValues: {
+            industry_id: '',
+            source_id: '',
+            status: String(STATUS.ACTIVE),
+        },
+    });
+
+    const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
+
+    /* ================= OPTIONS ================= */
+    const departmentOptions: MultiSelectOption[] =
+        departments?.map((item: any) => ({
+            label: item.name,
+            value: String(item.id),
+        })) || [];
+
+    /* ================= LOAD DATA ================= */
+    useEffect(() => {
+        if (!lead) return;
+
+        const deptIds = lead?.departments?.map((d: any) => String(d.id)) || [];
+
+        reset({
+            name: lead.name || '',
+            company_name: lead.company_name || '',
+            mpc: lead.mpc || '',
+            industry_id: lead.industry_id ? String(lead.industry_id) : null,
+            source_id: lead.source_id ? String(lead.source_id) : null,
+            current_openings: lead.current_openings || '',
+            status: lead.status ? String(lead.status) : String(STATUS.ACTIVE),
+            departments: deptIds,
+        });
+
+        setSelectedDepartments(deptIds);
+    }, [lead, reset]);
+
+    /* ================= UPDATE ================= */
+    const updateLead = async (data: any) => {
+        return new Promise((resolve) => {
+            router.put(route('leads.update', lead.id), data, {
+                onError: (errs) => {
+                    Object.keys(errs).forEach((k) =>
+                        setError(k as any, {
+                            message: Array.isArray(errs[k]) ? errs[k][0] : errs[k],
+                        }),
+                    );
+
+                    toast.error('Please fix the errors in the form.');
+                },
+                onFinish: () => resolve(),
+            });
+        });
+    };
+
+    return (
+        <AppLayout breadcrumbs={breadcrumbs}>
+            <Head title="Edit Lead" />
+
+            <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
+                <div className="rounded-xl border p-5">
+                    <form onSubmit={handleSubmit(updateLead)}>
+                        <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
+                            <h2 className="mb-4 text-lg font-semibold">Lead Information</h2>
+
+                            <div className="grid gap-4 md:grid-cols-3">
+                                {/* NAME / COMPANY / MPC */}
+                                {[
+                                    ['name', 'Name'],
+                                    ['company_name', 'Company Name'],
+                                    ['mpc', 'MPC'],
+                                ].map(([f, l]) => (
+                                    <div key={f} className="grid gap-2">
+                                        <Label>{l}</Label>
+                                        <Input {...register(f as any)} className={cn(errors[f] && 'border-red-500')} />
+                                        {errors[f] && <span className="text-sm text-red-500">{errors[f].message}</span>}
+                                    </div>
+                                ))}
+
+                                {/* INDUSTRY */}
+                                <div className="grid gap-2">
+                                    <Label>Industry</Label>
+
+                                    <Controller
+                                        name="industry_id"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select value={field.value ?? undefined} onValueChange={(val) => field.onChange(val)}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select Industry" />
+                                                </SelectTrigger>
+
+                                                <SelectContent>
+                                                    {industries.map((i: any) => (
+                                                        <SelectItem key={i.id} value={String(i.id)}>
+                                                            {i.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </div>
+
+                                {/* SOURCE */}
+                                <div className="grid gap-2">
+                                    <Label>Source</Label>
+
+                                    <Controller
+                                        name="source_id"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select value={field.value ?? undefined} onValueChange={(val) => field.onChange(val)}>
+                                                <SelectTrigger>
+                                                    <SelectValue placeholder="Select Source" />
+                                                </SelectTrigger>
+
+                                                <SelectContent>
+                                                    {source.map((i: any) => (
+                                                        <SelectItem key={i.id} value={String(i.id)}>
+                                                            {i.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </div>
+
+                                {/* STATUS */}
+                                <div className="grid gap-2">
+                                    <Label>Status</Label>
+
+                                    <Controller
+                                        name="status"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select value={field.value ?? undefined} onValueChange={(val) => field.onChange(val)}>
+                                                <SelectTrigger>
+                                                    <SelectValue />
+                                                </SelectTrigger>
+
+                                                <SelectContent>
+                                                    <SelectItem value={String(STATUS.ACTIVE)}>Active</SelectItem>
+                                                    <SelectItem value={String(STATUS.INACTIVE)}>Inactive</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </div>
+                            </div>
+
+                            {/* DEPARTMENTS */}
+                            <div className="mt-4 grid gap-2">
+                                <Label>Departments</Label>
+
+                                <MultiSelect
+                                    options={departmentOptions}
+                                    value={selectedDepartments}
+                                    onChange={(val) => {
+                                        const normalized = val.map(String);
+                                        setSelectedDepartments(normalized);
+                                        setValue('departments', normalized);
+                                    }}
+                                />
+
+                                {selectedDepartments.length > 0 && (
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                        {selectedDepartments.map((id) => {
+                                            const dept = departmentOptions.find((d) => d.value === id);
+
+                                            return (
+                                                <span key={id} className="rounded-full border bg-blue-100 px-3 py-1 text-xs text-blue-700">
+                                                    {dept?.label}
+                                                </span>
+                                            );
+                                        })}
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="mt-4 grid gap-2">
+                                <Label>Current Openings</Label>
+                                <Input {...register('current_openings')} />
+                            </div>
+                        </div>
+
+                        <div className="flex justify-end">
+                            <Button type="submit" disabled={isSubmitting}>
+                                {isSubmitting ? (
+                                    <>
+                                        <RotateCw className="mr-2 h-4 w-4 animate-spin" />
+                                        Updating...
+                                    </>
+                                ) : (
+                                    'Update Lead'
+                                )}
+                            </Button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </AppLayout>
+    );
+}

@@ -8,8 +8,8 @@ import { toast } from 'sonner';
 
 const breadcrumbs = [
     {
-        title: 'Clients',
-        href: '/clients/index',
+        title: 'Leads',
+        href: '/leads/index',
     },
 ];
 
@@ -39,7 +39,7 @@ export default function Index({ leads, meta, filters: initialFilters }) {
     }, [filters.search, filters.status, filters.perPage, filters.page]);
 
     const columns = [
-        { key: 'contact_name', label: 'Name' },
+        { key: 'name', label: 'Name' },
         { key: 'company_name', label: 'Company' },
         { key: 'mpc', label: 'MPC' },
         // {
@@ -76,12 +76,12 @@ export default function Index({ leads, meta, filters: initialFilters }) {
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
-            <Head title="Clients" />
+            <Head title="Leads" />
             <div className="p-4">
                 <div className="my-4 flex items-center justify-between">
-                    <h1 className="text-2xl font-bold">Clients</h1>
-                    <Button onClick={() => router.visit(route('clients.create'))} className="cursor-pointer bg-black text-white hover:bg-gray-800">
-                        <Plus className="mr-2" /> Create Client
+                    <h1 className="text-2xl font-bold">Leads</h1>
+                    <Button onClick={() => router.visit(route('leads.create'))} className="cursor-pointer bg-black text-white hover:bg-gray-800">
+                        <Plus className="mr-2" /> Create Lead
                     </Button>
                 </div>
                 <DataTable

@@ -13,11 +13,13 @@ return new class extends Migration
     {
         Schema::create('leads', function (Blueprint $table) {
             $table->id();
-
-            $table->boolean('status'); // Contract Sent, Prospect
+            $table->string('name'); // Exactech
             $table->string('company_name'); // Exactech
 
+            $table->boolean('status'); // Contract Sent, Prospect
+
             $table->foreignId('industry_id')->nullable()->constrained()->nullOnDelete();
+            $table->string('current_openings')->nullable();
 
             $table->foreignId('source_id')->nullable()->constrained()->nullOnDelete(); // Dripify / LinkedIn
             $table->string('mpc')->nullable(); // Max Johnson

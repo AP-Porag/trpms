@@ -56,7 +56,7 @@ class ClientController extends BaseController
         $client = Client::findOrFail($id);
 
 
-        $data = $this->service->detail($client);
+        return $data = $this->service->detail($client);
 
         return Inertia::render('admin/client/show', $data);
     }
