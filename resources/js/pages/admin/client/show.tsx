@@ -97,11 +97,12 @@ export default function Show({ client }: any) {
                                             {agreement.original_name ?? 'View Agreement'}
                                         
                                         </button>
-       <Tooltip anchorSelect=".my-anchor-element" place="right" className="text-blue-100">
-  Click to View, Download and Print
-</Tooltip>
                                         
-</div>
+                                   <Tooltip anchorSelect=".my-anchor-element" place="right" className="text-blue-100">
+                                        Click to View, Download and Print
+                                  </Tooltip>
+                                        
+                               </div>
 
                                     ))}
                                 </div>
