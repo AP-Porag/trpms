@@ -13,6 +13,9 @@ class Note extends BaseModel
         'created_by',
     ];
 
+    protected $appends = ['author_name'];
+    protected $hidden = ['author'];
+
     public function noteable()
     {
         return $this->morphTo();
@@ -21,5 +24,14 @@ class Note extends BaseModel
     public function author()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function getAuthorNameAttribute()
+    {
+        if (!$this->author) {
+            return 'Unknown';
+        }
+
+        return $this->author->first_name . ' ' . $this->author->last_name;
     }
 }
