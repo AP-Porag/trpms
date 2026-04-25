@@ -2,10 +2,10 @@ import AddNoteModal from '@/components/notes/AddNoteModal';
 import NotesTimeline from '@/components/notes/NotesTimeline';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
+import { Button } from '@headlessui/react';
 import { Head } from '@inertiajs/react';
 import { FileText } from 'lucide-react';
 import { useState } from 'react';
-
 const breadcrumbs = [{ title: 'Clients', href: '/clients' }, { title: 'View Client' }];
 
 export default function Show({ client }: any) {
@@ -123,6 +123,41 @@ export default function Show({ client }: any) {
                     </Card>
                 </Card>
             </div>
+
+            {/* ================= CONTACTS ================= */}
+            <Card className="mt-4 rounded-xl p-2">
+                <CardHeader>
+                    <CardTitle>Client Contacts</CardTitle>
+                </CardHeader>
+
+                <div className="mb-3 flex justify-between">
+                    <div></div>
+
+                    <Button onClick={() => console.log('open contact modal')}>+ Add Contact</Button>
+                </div>
+
+                <Card>
+                    <CardHeader>
+                        <CardTitle>Contacts</CardTitle>
+                    </CardHeader>
+
+                    <CardContent>
+                        {client?.contacts?.length > 0 ? (
+                            <div className="space-y-2">
+                                {client.contacts.map((contact: any) => (
+                                    <div key={contact.id} className="rounded-lg border p-3 hover:bg-gray-50">
+                                        <p className="font-medium">{contact.name}</p>
+                                        <p className="text-sm text-gray-500">{contact.email}</p>
+                                        <p className="text-sm text-gray-500">{contact.phone}</p>
+                                    </div>
+                                ))}
+                            </div>
+                        ) : (
+                            <p className="text-sm text-gray-500">No contacts yet</p>
+                        )}
+                    </CardContent>
+                </Card>
+            </Card>
 
             {/* ================= PDF MODAL (MULTIPLE SUPPORT) ================= */}
             {openAgreement && client?.agreements?.length > 0 && (

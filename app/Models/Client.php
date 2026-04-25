@@ -122,6 +122,11 @@ class Client extends BaseModel
         return null;
     }
 
+    public function contacts()
+    {
+        return $this->morphMany(Contact::class, 'contactable');
+    }
+
     public function departments()
     {
         return $this->belongsToMany(Department::class);

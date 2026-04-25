@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Models\Placement;
 use App\Models\Candidate;
 use App\Models\Client;
+use App\Models\Contact;
 use App\Models\Engagement;
 use Inertia\Inertia;
 
@@ -35,6 +36,7 @@ class AppServiceProvider extends ServiceProvider
             'client' => Client::class, //done
             'engagement' => Engagement::class, //done
             'invoice' => Invoice::class,
+            'contact' => Contact::class,
         ]);
 
         Inertia::share([
