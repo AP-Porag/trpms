@@ -32,16 +32,24 @@ export default function NotesTimeline({ notes }) {
                     {/* note card */}
                     <div className="flex-1 rounded-lg border bg-white p-4 shadow-sm">
                         <div className="mb-2 flex items-center justify-between">
-                            <div className="text-sm font-medium">{note.creator?.name}</div>
-
-                            <button onClick={() => deleteNote(note.id)} className="text-red-500 bg-gray-200 hover:bg-gray-300 p-2 rounded-full hover:text-red-700">
+                            <span className="inline-flex items-center gap-1.5 rounded-md border border-gray-100 bg-gray-200 px-3 py-1 text-sm font-medium text-gray-500">
+                                <span className="h-2 w-2 rounded-full bg-green-500"></span>
+                                {note.author_name}
+                            </span>
+                            <button
+                                onClick={() => deleteNote(note.id)}
+                                className="rounded-full bg-gray-200 p-2 text-red-500 hover:bg-gray-300 hover:text-red-700"
+                            >
                                 <Trash2 size={16} />
                             </button>
                         </div>
 
                         <div className="text-sm text-gray-700">{note.note}</div>
 
-                        <div className="text-muted-foreground mt-2 text-xs">{formatDateUS(note.created_at, DATE_PRESETS.SHORT)}</div>
+                        <div className="text-muted-foreground mt-2 flex justify-between text-xs">
+                            <span></span>
+                            <span> {formatDateUS(note.created_at, DATE_PRESETS.SHORT)}</span>
+                        </div>
                     </div>
                 </div>
             ))}

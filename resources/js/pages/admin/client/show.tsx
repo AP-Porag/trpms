@@ -1,10 +1,11 @@
+import NoteComponent from '@/components/common/NoteComponent';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
+import { DATE_PRESETS, formatDateUS } from '@/utils/helpers';
 import { Head } from '@inertiajs/react';
 import { FileText } from 'lucide-react';
 import { useState } from 'react';
-import { Tooltip } from 'react-tooltip'
-import NoteComponent from '@/components/common/NoteComponent';
+import { Tooltip } from 'react-tooltip';
 
 const breadcrumbs = [{ title: 'Clients', href: '/clients' }, { title: 'View Client' }];
 
@@ -21,7 +22,7 @@ export default function Show({ client }: any) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Client Details" />
 
-            <div className="grid grid-cols-1 gap-10 lg:gap-4 p-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-10 p-4 lg:grid-cols-2 lg:gap-4">
                 {/* ================= CLIENT INFORMATION ================= */}
                 <Card className="rounded-xl">
                     <CardHeader>
@@ -71,7 +72,7 @@ export default function Show({ client }: any) {
 
                         <div>
                             <p className="text-sm font-semibold">Created At</p>
-                            <p className="text-sm text-gray-600">{new Date(client?.created_at).toLocaleString()}</p>
+                            <p className="text-sm text-gray-600">{formatDateUS(client.created_at, DATE_PRESETS.SHORT)}</p>
                         </div>
 
                         {/* ================= AGREEMENTS LIST ================= */}
@@ -82,31 +83,28 @@ export default function Show({ client }: any) {
 
                                     {client.agreements.map((agreement) => (
                                         <div>
-                                        <button
-                                            key={agreement.id}
-                                            onClick={() => {
-                                                setSelectedIndex(client.agreements.findIndex((r) => r.id === agreement.id));
-                                                setOpenAgreement(true);
-                                            }}
-                                            className="my-anchor-element flex items-center gap-2 p-2 rounded-sm text-black bg-gray-100 shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/10"
-                                        >
-                                            <span className="rounded-full p-2 bg-gray-300">
-                                                <FileText className="h-4 w-4" />
-                                            </span>
-                                            {agreement.original_name ?? 'View Agreement'}
+                                            <button
+                                                key={agreement.id}
+                                                onClick={() => {
+                                                    setSelectedIndex(client.agreements.findIndex((r) => r.id === agreement.id));
+                                                    setOpenAgreement(true);
+                                                }}
+                                                className="my-anchor-element flex items-center gap-2 rounded-sm bg-gray-100 p-2 text-black shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/10"
+                                            >
+                                                <span className="rounded-full bg-gray-300 p-2">
+                                                    <FileText className="h-4 w-4" />
+                                                </span>
+                                                {agreement.original_name ?? 'View Agreement'}
+                                            </button>
 
-                                        </button>
-
-                                   <Tooltip anchorSelect=".my-anchor-element" place="right" className="text-blue-100">
-                                        Click to View, Download and Print
-                                  </Tooltip>
-
-                               </div>
-
+                                            <Tooltip anchorSelect=".my-anchor-element" place="right" className="text-blue-100">
+                                                Click to View, Download and Print
+                                            </Tooltip>
+                                        </div>
                                     ))}
                                 </div>
                             ) : (
-                                <p className="text-sm text-gray-500">No resume uploaded</p>
+                                <p className="text-sm text-gray-500">No Agreement Uploaded</p>
                             )}
                         </div>
                     </CardContent>
@@ -114,8 +112,7 @@ export default function Show({ client }: any) {
 
                 {/* ================= NOTES ================= */}
 
-                    <NoteComponent noteableType="client" noteableId={client.id} notes={client.notes}/>
-
+                <NoteComponent noteableType="client" noteableId={client.id} notes={client.notes} />
             </div>
 
             {/* ================= PDF MODAL (MULTIPLE SUPPORT) ================= */}
@@ -150,7 +147,7 @@ export default function Show({ client }: any) {
                         <div className="text-center text-sm font-semibold">{client.agreements[selectedIndex]?.original_name}</div>
 
                         {/* PDF VIEW */}
-                        <iframe src={`/storage/${client.agreements[selectedIndex]?.file_path}`} className="h-[94%] w-full rounded mt-4 bg-red-800" />
+                        <iframe src={`/storage/${client.agreements[selectedIndex]?.file_path}`} className="mt-4 h-[94%] w-full rounded bg-red-800" />
                     </div>
                 </div>
             )}
