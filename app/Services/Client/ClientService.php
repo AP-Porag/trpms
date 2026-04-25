@@ -71,7 +71,7 @@ class ClientService extends BaseService
             );
         }
 
-        return $client;
+       
 
         if ($client) {
 
