@@ -5,6 +5,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { FileText } from 'lucide-react';
 import { useState } from 'react';
+import NoteComponent from '@/components/common/NoteComponent';
 
 const breadcrumbs = [{ title: 'Candidates', href: '/candidates' }, { title: 'View Candidate' }];
 
@@ -21,7 +22,7 @@ export default function Show({ candidate }: any) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Candidate Details" />
 
-            <div className="grid grid-cols-2 gap-4 p-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 lg:gap-4 gap-10 p-4 lg:grid-cols-2">
                 {/* ================= CANDIDATE INFO ================= */}
                 <Card className="rounded-xl">
                     <CardHeader>
@@ -87,28 +88,11 @@ export default function Show({ candidate }: any) {
                     </CardContent>
                 </Card>
 
-                <Card className="rounded-xl p-2">
-                    <CardHeader>
-                        <CardTitle>Candidate Notes</CardTitle>
-                    </CardHeader>
-
-                    <div className="mb-3 flex justify-between">
-                        <div className=""></div>
-                        <AddNoteModal noteableType="candidate" noteableId={candidate.id} />
-                    </div>
-
                     {/* NOTES */}
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Notes</CardTitle>
-                        </CardHeader>
+                <NoteComponent noteableType="candidate" noteableId={candidate.id} notes={candidate.notes}/>
+                
 
-                        <CardContent>
-                            <NotesTimeline notes={candidate.notes} />
-                        </CardContent>
-                    </Card>
-                </Card>
                 {/* ================= RESUME MODAL (MULTIPLE SUPPORT) ================= */}
                 {openResume && candidate?.resumes?.length > 0 && (
                     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">

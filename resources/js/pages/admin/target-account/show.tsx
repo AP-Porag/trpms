@@ -3,8 +3,9 @@ import NotesTimeline from '@/components/notes/NotesTimeline';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
+import NoteComponent from '@/components/common/NoteComponent';
 
-const breadcrumbs = [{ title: 'Prospects', href: '/prospects' }, { title: 'View Prospect' }];
+const breadcrumbs = [{ title: 'Target', href: '/targets' }, { title: 'View Target' }];
 
 export default function Show({ targetAccount }: any) {
     console.log(targetAccount);
@@ -12,11 +13,11 @@ export default function Show({ targetAccount }: any) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Prospect Details" />
 
-            <div className="grid grid-cols-2 gap-4 p-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-10 lg:gap-4 p-4 lg:grid-cols-2">
                 {/* ================= CLIENT INFORMATION ================= */}
                 <Card className="rounded-xl">
                     <CardHeader>
-                        <CardTitle>Prospect Information</CardTitle>
+                        <CardTitle>Target Information</CardTitle>
                     </CardHeader>
 
                     <CardContent className="space-y-4">
@@ -58,26 +59,9 @@ export default function Show({ targetAccount }: any) {
                 </Card>
 
                 {/* ================= NOTES ================= */}
-                <Card className="rounded-xl p-2">
-                    <CardHeader>
-                        <CardTitle>Client Notes</CardTitle>
-                    </CardHeader>
+                
+            <NoteComponent noteableType="client" noteableId={targetAccount.id} notes={targetAccount.notes}/>
 
-                    <div className="mb-3 flex justify-between">
-                        <div></div>
-                        <AddNoteModal noteableType="client" noteableId={targetAccount.id} />
-                    </div>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Notes</CardTitle>
-                        </CardHeader>
-
-                        <CardContent>
-                            <NotesTimeline notes={targetAccount.notes} />
-                        </CardContent>
-                    </Card>
-                </Card>
             </div>
         </AppLayout>
     );

@@ -1,8 +1,7 @@
-import AddNoteModal from '@/components/notes/AddNoteModal';
-import NotesTimeline from '@/components/notes/NotesTimeline';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
+import NoteComponent from '@/components/common/NoteComponent';
 
 const breadcrumbs = [{ title: 'Prospects', href: '/prospects' }, { title: 'View Prospect' }];
 
@@ -12,7 +11,7 @@ export default function Show({ prospect }: any) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Prospect Details" />
 
-            <div className="grid grid-cols-2 gap-4 p-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-10 lg:gap-4 p-4 lg:grid-cols-2">
                 {/* ================= CLIENT INFORMATION ================= */}
                 <Card className="rounded-xl">
                     <CardHeader>
@@ -58,26 +57,9 @@ export default function Show({ prospect }: any) {
                 </Card>
 
                 {/* ================= NOTES ================= */}
-                <Card className="rounded-xl p-2">
-                    <CardHeader>
-                        <CardTitle>Client Notes</CardTitle>
-                    </CardHeader>
 
-                    <div className="mb-3 flex justify-between">
-                        <div></div>
-                        <AddNoteModal noteableType="client" noteableId={prospect.id} />
-                    </div>
+                <NoteComponent noteableType="client" noteableId={prospect.id}notes={prospect.notes}/>
 
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Notes</CardTitle>
-                        </CardHeader>
-
-                        <CardContent>
-                            <NotesTimeline notes={prospect.notes} />
-                        </CardContent>
-                    </Card>
-                </Card>
             </div>
         </AppLayout>
     );

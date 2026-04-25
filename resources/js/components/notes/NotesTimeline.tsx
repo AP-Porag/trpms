@@ -34,7 +34,7 @@ export default function NotesTimeline({ notes }) {
                         <div className="mb-2 flex items-center justify-between">
                             <div className="text-sm font-medium">{note.creator?.name}</div>
 
-                            <button onClick={() => deleteNote(note.id)} className="text-red-500 hover:text-red-700">
+                            <button onClick={() => deleteNote(note.id)} className="text-red-500 bg-gray-200 hover:bg-gray-300 p-2 rounded-full hover:text-red-700">
                                 <Trash2 size={16} />
                             </button>
                         </div>

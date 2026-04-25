@@ -1,11 +1,10 @@
-import AddNoteModal from '@/components/notes/AddNoteModal';
-import NotesTimeline from '@/components/notes/NotesTimeline';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { FileText } from 'lucide-react';
 import { useState } from 'react';
 import { Tooltip } from 'react-tooltip'
+import NoteComponent from '@/components/common/NoteComponent';
 
 const breadcrumbs = [{ title: 'Clients', href: '/clients' }, { title: 'View Client' }];
 
@@ -22,7 +21,7 @@ export default function Show({ client }: any) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Client Details" />
 
-            <div className="grid grid-cols-2 gap-4 p-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-10 lg:gap-4 p-4 lg:grid-cols-2">
                 {/* ================= CLIENT INFORMATION ================= */}
                 <Card className="rounded-xl">
                     <CardHeader>
@@ -97,7 +96,7 @@ export default function Show({ client }: any) {
                                             {agreement.original_name ?? 'View Agreement'}
                                         
                                         </button>
-                                        
+
                                    <Tooltip anchorSelect=".my-anchor-element" place="right" className="text-blue-100">
                                         Click to View, Download and Print
                                   </Tooltip>
@@ -114,26 +113,9 @@ export default function Show({ client }: any) {
                 </Card>
 
                 {/* ================= NOTES ================= */}
-                <Card className="rounded-xl p-2">
-                    <CardHeader>
-                        <CardTitle>Client Notes</CardTitle>
-                    </CardHeader>
-
-                    <div className="mb-3 flex justify-between">
-                        <div></div>
-                        <AddNoteModal noteableType="client" noteableId={client.id} />
-                    </div>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Notes</CardTitle>
-                        </CardHeader>
-
-                        <CardContent>
-                            <NotesTimeline notes={client.notes} />
-                        </CardContent>
-                    </Card>
-                </Card>
+                
+                    <NoteComponent noteableType="client" noteableId={client.id} notes={client.notes}/>
+                
             </div>
 
             {/* ================= PDF MODAL (MULTIPLE SUPPORT) ================= */}
