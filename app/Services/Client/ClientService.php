@@ -71,8 +71,6 @@ class ClientService extends BaseService
             );
         }
 
-        return $client;
-
         if ($client) {
 
             foreach ($data->file('agreements', []) as $file) {

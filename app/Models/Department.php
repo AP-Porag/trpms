@@ -14,4 +14,8 @@ class Department extends Model
     {
         return $this->belongsToMany(Client::class);
     }
+    public function leads()
+    {
+        return $this->belongsToMany(Lead::class);
+    }
 }
