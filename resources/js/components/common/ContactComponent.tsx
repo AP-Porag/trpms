@@ -1,25 +1,24 @@
-import AddNoteModal from '@/components/notes/AddNoteModal';
-import NotesTimeline from '@/components/notes/NotesTimeline';
+import AddContactModal from '@/components/contacts/AddContactModal';
+import ContactTimeline from '@/components/contacts/ContactTimeline';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default function NoteComponent({ noteableType, noteableId, notes }) {
-    console.log(notes);
+export default function ContactComponent({ contactableType, contactableId, contacts }) {
     return (
         <div className="">
             <div className="mb-3 flex justify-between">
                 <div></div>
-                <AddNoteModal noteableType={noteableType} noteableId={noteableId} />
+                <AddContactModal contactableType={contactableType} contactableId={contactableId} />
             </div>
 
             <Card className="bg-gray-100">
                 <CardHeader>
-                    <CardTitle>Notes</CardTitle>
+                    <CardTitle>Contacts</CardTitle>
                 </CardHeader>
 
                 <hr className="-mt-2 border-1 border-gray-200" />
 
                 <CardContent>
-                    <NotesTimeline notes={notes} />
+                    <ContactTimeline contacts={contacts} />
                 </CardContent>
             </Card>
         </div>

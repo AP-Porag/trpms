@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\MorphMany;
 
 class Lead extends Model
 {
@@ -15,6 +16,11 @@ class Lead extends Model
         'mpc',
         'current_openings'
     ];
+
+    public function notes(): MorphMany
+    {
+        return $this->morphMany(Note::class, 'noteable')->latest();
+    }
     public function departments()
     {
         return $this->belongsToMany(Department::class, 'lead_department');

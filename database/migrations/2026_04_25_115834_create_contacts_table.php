@@ -14,13 +14,19 @@ return new class extends Migration
         Schema::create('contacts', function (Blueprint $table) {
             $table->id();
 
-            $table->morphs('contactable'); // polymorphic relation
+            // Polymorphic relation
+            $table->morphs('contactable');
+            // creates: contable_id, contable_type
 
-            $table->string('label')->nullable();
-            $table->string('name')->nullable();
-            $table->string('contact_type')->nullable();
+            $table->string('name');
+            $table->string('type');
+            $table->string('contact');
 
-            $table->text('contact')->nullable();
+            // optional: who created the note
+            $table->foreignId('created_by')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
 
             $table->timestamps();
         });

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\Activity\ActivityLogController;
 use App\Http\Controllers\Admin\Candidate\CandidateController;
 use App\Http\Controllers\Admin\Client\ClientController;
+use App\Http\Controllers\Admin\Contact\ContactController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Department\DepartmentController;
 use App\Http\Controllers\Admin\Event\EventController;
@@ -70,6 +71,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //global notes
     Route::post('/notes', [NoteController::class, 'store'])->name('notes.store');
     Route::delete('/notes/{note}', [NoteController::class, 'destroy'])->name('notes.destroy');
+
+    //global contact
+    Route::post('/contacts', [ContactController::class, 'store'])->name('contacts.store');
+    Route::delete('/contacts/{contact}', [ContactController::class, 'destroy'])->name('contacts.destroy');
+
 
     Route::post('/editor/image-upload', [EditorController::class, 'upload'])
         ->name('editor.image.upload');

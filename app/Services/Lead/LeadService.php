@@ -3,6 +3,7 @@
 namespace App\Services\Lead;
 
 use App\Models\Lead;
+use App\Models\Note;
 use App\Services\BaseService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -70,8 +71,8 @@ class LeadService extends BaseService
         $lead = Lead::create([
             'name'         => $data['name'],
             'company_name' => $data['company_name'],
-            'industry_id'  => $data['industry_id'],
-            'source_id'    => $data['source_id'],
+            'industry_id'  => $data['industry_id'] ?? null,
+            'source_id' => $data['source_id'] ?? null,
             'current_openings'    => $data['current_openings'],
             'status'    => $data['status'],
             'mpc'          => $data['mpc'],
@@ -81,6 +82,19 @@ class LeadService extends BaseService
             $lead->departments()->sync(
                 array_map('intval', $data['departments'])
             );
+        }
+
+        $note = $data->validated()['note'] ?? null;
+
+
+
+        if (!empty($note)) {
+            Note::create([
+                'note' => $note,
+                'noteable_id' => $lead->id,
+                'noteable_type' => 'client',
+                'created_by' => auth()->id(), // IMPORTANT if column exists
+            ]);
         }
 
         return $lead;
@@ -146,6 +160,7 @@ class LeadService extends BaseService
         return [
             'lead' => $lead->load([
                 'departments',
+                'notes',
             ]),
         ];
     }

@@ -91,7 +91,7 @@ export default function Index({ prospects, meta, filters: initialFilters }) {
     */
 
     const rowActions = (row) => ({
-        view: false,
+        view: true,
 
         edit: true,
 

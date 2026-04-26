@@ -52,6 +52,12 @@ class Client extends BaseModel
         return $this->morphMany(Note::class, 'noteable')->latest();
     }
 
+    //Contact (ploymorphic)
+    public function contacts()
+    {
+        return $this->morphMany(Contact::class, 'contactable')->latest();
+    }
+
     // Agreements
     public function agreements(): hasMany
     {
@@ -122,10 +128,6 @@ class Client extends BaseModel
         return null;
     }
 
-    public function contacts()
-    {
-        return $this->morphMany(Contact::class, 'contactable');
-    }
 
     public function departments()
     {

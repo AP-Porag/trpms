@@ -1,3 +1,4 @@
+import NoteComponent from '@/components/common/NoteComponent';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
@@ -5,7 +6,6 @@ import { Head } from '@inertiajs/react';
 const breadcrumbs = [{ title: 'Prospects', href: '/leads' }, { title: 'View Leads' }];
 
 export default function Show({ lead }: any) {
-    console.log(lead);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Lead Details" />
@@ -55,26 +55,8 @@ export default function Show({ lead }: any) {
                 </Card>
 
                 {/* ================= NOTES ================= */}
-                {/* <Card className="rounded-xl p-2">
-                    <CardHeader>
-                        <CardTitle>Client Notes</CardTitle>
-                    </CardHeader>
 
-                    <div className="mb-3 flex justify-between">
-                        <div></div>
-                        <AddNoteModal noteableType="client" noteableId={prospect.id} />
-                    </div>
-
-                    <Card>
-                        <CardHeader>
-                            <CardTitle>Notes</CardTitle>
-                        </CardHeader>
-
-                        <CardContent>
-                            <NotesTimeline notes={prospect.notes} />
-                        </CardContent>
-                    </Card>
-                </Card> */}
+                <NoteComponent noteableType="client" noteableId={lead.id} notes={lead.notes} />
             </div>
         </AppLayout>
     );

@@ -37,6 +37,7 @@ class AppServiceProvider extends ServiceProvider
             'engagement' => Engagement::class, //done
             'invoice' => Invoice::class,
             'contact' => Contact::class,
+            'prospect' => Client::class,
         ]);
 
         Inertia::share([

@@ -3,7 +3,7 @@ import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function NotesTimeline({ notes }) {
+export default function NotesTimeline({ notes = [] }) {
     function deleteNote(id) {
         router.delete(route('notes.destroy', id), {
             preserveScroll: true,

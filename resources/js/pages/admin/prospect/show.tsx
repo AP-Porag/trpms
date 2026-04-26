@@ -1,17 +1,18 @@
+import ContactComponent from '@/components/common/ContactComponent';
+import NoteComponent from '@/components/common/NoteComponent';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
-import NoteComponent from '@/components/common/NoteComponent';
 
 const breadcrumbs = [{ title: 'Prospects', href: '/prospects' }, { title: 'View Prospect' }];
 
 export default function Show({ prospect }: any) {
-    console.log(prospect);
+    console.log(prospect.contacts);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Prospect Details" />
 
-            <div className="grid grid-cols-1 gap-10 lg:gap-4 p-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-10 p-4 lg:grid-cols-2 lg:gap-4">
                 {/* ================= CLIENT INFORMATION ================= */}
                 <Card className="rounded-xl">
                     <CardHeader>
@@ -58,8 +59,11 @@ export default function Show({ prospect }: any) {
 
                 {/* ================= NOTES ================= */}
 
-                <NoteComponent noteableType="client" noteableId={prospect.id}notes={prospect.notes}/>
+                <NoteComponent noteableType="client" noteableId={prospect.id} notes={prospect.notes} />
 
+                {/* ================= Contact ================= */}
+
+                <ContactComponent contactableType="client" contactableId={prospect.id} contacts={prospect.contacts} />
             </div>
         </AppLayout>
     );

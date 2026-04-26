@@ -3,34 +3,43 @@
 namespace App\Http\Controllers\Admin\Contact;
 
 use App\Http\Controllers\Controller;
-use App\Models\Note;
+use App\Models\Contact;
 use Illuminate\Http\Request;
 
 class ContactController extends Controller
 {
     public function store(Request $request)
     {
+
         $validated = $request->validate([
-            'Label' => ['required', 'string'],
-            'name' => ['required', 'integer'],
-            'contact_type' => ['required', 'string'],
-            'contact' => ['required', 'string']
+            'contacts' => ['required', 'array'],
+            'contacts.*.name' => ['required', 'string'],
+            'contacts.*.type' => ['required', 'string'],
+            'contacts.*.contact' => ['required', 'string'],
+
+            'contactable_id' => ['required', 'integer'],
+            'contactable_type' => ['required', 'string'],
         ]);
 
-        Note::create([
-            'label' => $validated['label'],
-            'name' => $validated['name'],
-            'contact_type' => $validated['contact_type'],
-            'contact' => ['contact']
-        ]);
+        foreach ($validated['contacts'] as $contact) {
+            Contact::create([
+                'name' => $contact['name'],
+                'type' => $contact['type'],
+                'contact' => $contact['contact'],
 
-        return back()->with('success', 'Note added successfully');
+                // ✅ FIX HERE
+                'contactable_id' => $validated['contactable_id'],
+                'contactable_type' => $validated['contactable_type'],
+
+                'created_by' => auth()->id(),
+            ]);
+        }
     }
 
-    public function destroy(Note $note)
+    public function destroy(Contact $contact)
     {
-        $note->delete();
+        $contact->delete();
 
-        return back()->with('success', 'Note deleted successfully');
+        return back()->with('success', 'Contact deleted successfully');
     }
 }
