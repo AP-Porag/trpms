@@ -2,6 +2,7 @@ import NoteComponent from '@/components/common/NoteComponent';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
+import ContactComponent from '@/components/common/ContactComponent';
 
 const breadcrumbs = [{ title: 'Prospects', href: '/leads' }, { title: 'View Leads' }];
 
@@ -56,7 +57,11 @@ export default function Show({ lead }: any) {
 
                 {/* ================= NOTES ================= */}
 
-                <NoteComponent noteableType="client" noteableId={lead.id} notes={lead.notes} />
+                <NoteComponent noteableType="lead" noteableId={lead.id} notes={lead.notes} />
+
+                {/* ================= Contact ================= */}
+                
+                <ContactComponent contactableType="lead" contactableId={lead.id} contacts={lead.contacts} />
             </div>
         </AppLayout>
     );
