@@ -2,12 +2,8 @@ import ContactComponent from '@/components/common/ContactComponent';
 import NoteComponent from '@/components/common/NoteComponent';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
-import { Head } from '@inertiajs/react';
-<<<<<<< HEAD
-=======
-import NoteComponent from '@/components/common/NoteComponent';
 import { DATE_PRESETS, formatDateUS } from '@/utils/helpers';
->>>>>>> ratul-4-26
+import { Head } from '@inertiajs/react';
 
 const breadcrumbs = [{ title: 'Prospects', href: '/prospects' }, { title: 'View Prospect' }];
 
