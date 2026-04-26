@@ -70,8 +70,8 @@ class LeadService extends BaseService
         $lead = Lead::create([
             'name'         => $data['name'],
             'company_name' => $data['company_name'],
-            'industry_id'  => $data['industry_id'],
-            'source_id'    => $data['source_id'],
+            'industry_id'  => $data['industry_id'] ?? null,
+            'source_id'    => $data['source_id'] ?? null,
             'current_openings'    => $data['current_openings'],
             'status'    => $data['status'],
             'mpc'          => $data['mpc'],

@@ -4,6 +4,7 @@ import { Head } from '@inertiajs/react';
 import { FileText } from 'lucide-react';
 import { useState } from 'react';
 import NoteComponent from '@/components/common/NoteComponent';
+import { DATE_PRESETS, formatDateUS } from '@/utils/helpers';
 import { Tooltip } from 'react-tooltip'
 
 const breadcrumbs = [{ title: 'Candidates', href: '/candidates' }, { title: 'View Candidate' }];
@@ -58,7 +59,7 @@ export default function Show({ candidate }: any) {
 
                         <div>
                             <p className="text-sm font-semibold">Created At</p>
-                            <p className="text-sm text-gray-600">{candidate?.created_at ? new Date(candidate.created_at).toLocaleString() : '—'}</p>
+                            <p className="text-sm text-gray-600">{formatDateUS(candidate.created_at, DATE_PRESETS.SHORT)}</p>
                         </div>
                         {/* ================= RESUME INFO ================= */}
                         <div className="pt-2">

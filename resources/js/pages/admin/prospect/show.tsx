@@ -2,6 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import NoteComponent from '@/components/common/NoteComponent';
+import { DATE_PRESETS, formatDateUS } from '@/utils/helpers';
 
 const breadcrumbs = [{ title: 'Prospects', href: '/prospects' }, { title: 'View Prospect' }];
 
@@ -51,7 +52,7 @@ export default function Show({ prospect }: any) {
 
                         <div>
                             <p className="text-sm font-semibold">Created At</p>
-                            <p className="text-sm text-gray-600">{new Date(prospect?.created_at).toLocaleString()}</p>
+                            <p className="text-sm text-gray-600">{formatDateUS(prospect.created_at, DATE_PRESETS.SHORT)}</p>
                         </div>
                     </CardContent>
                 </Card>
