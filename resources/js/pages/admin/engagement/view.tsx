@@ -13,7 +13,8 @@ import { DATE_PRESETS, formatDateUS } from '@/utils/helpers';
 import AddCandidateToJobModal from './partials/addCandidateToJobModal';
 import JobCandidateKanban from './partials/jobCandidateKanban';
 import AddNoteModal from '@/components/notes/AddNoteModal';
-import NotesTimeline from '@/components/notes/NotesTimeline';
+// import NotesTimeline from '@/components/notes/NotesTimeline';
+import NoteComponent from '@/components/common/NoteComponent';
 
 const breadcrumbs = [{ title: 'Jobs', href: '/jobs' }, { title: 'View Job' }];
 
@@ -84,21 +85,17 @@ export default function View({ job, pipeline }) {
                         </TabsList>
 
                         {/* ================= OVERVIEW ================= */}
-                        <TabsContent value="overview">
-                            <div className="mb-3 flex justify-between">
-                                <div className=""></div>
-                                <AddNoteModal noteableType="engagement" noteableId={job.id} />
-                            </div>
-                            <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
+                        <TabsContent value="overview" className="mt-4">
+                            <div className="grid grid-cols-1 gap-8 lg:gap-4 lg:grid-cols-2">
                                 {/* Job Info */}
-                                <Card className="md:col-span-2">
-                                    <CardHeader>
+                                <Card className="grid grid-cols-2">
+                                    <div>
+                                    <CardHeader className="pb-6">
                                         <CardTitle>Job Information</CardTitle>
                                     </CardHeader>
                                     <CardContent className="space-y-4">
-                                        <div className="flex justify-between">
+                                        <div className="">
                                             <InfoRow label="Title" value={job.title} />
-                                            <InfoRow label="Job Created" value={formatDateUS(job.created_at, DATE_PRESETS.SHORT)} />
                                         </div>
 
                                         <InfoRow label="Fee Type" value={job.fee_type === JOB_FEE_TYPE.PERCENTAGE ? 'Percentage' : 'Fixed'} />
@@ -116,12 +113,16 @@ export default function View({ job, pipeline }) {
                                                 }}
                                             />
                                         </div>
+                                        <div>
+                                            <InfoRow label="Job Created" value={formatDateUS(job.created_at, DATE_PRESETS.SHORT)} />
+                                        </div>
                                     </CardContent>
-                                </Card>
+                                    </div>
 
-                                {/* Client Info */}
-                                <Card>
-                                    <CardHeader>
+
+                                     {/* Client Info */}
+                                    <div>
+                                    <CardHeader className="pb-6">
                                         <CardTitle>Client Information</CardTitle>
                                     </CardHeader>
                                     <CardContent className="space-y-3">
@@ -135,19 +136,21 @@ export default function View({ job, pipeline }) {
                                         <InfoRow label="Status" value={job.client?.status == STATUS.ACTIVE ? 'Active' : 'Inactive'} />
                                         <InfoRow label="Client Created" value={formatDateUS(job.client?.created_at, DATE_PRESETS.SHORT)} />
                                     </CardContent>
+                                    </div>
                                 </Card>
+
+                                
+                                {/* <Card>
+                                    
+                                </Card> */}
+
+
+                                {/* NOTES */}
+                             <NoteComponent noteableType="engagement" noteableId={job.id} notes={job.notes} />
+
+
                             </div>
-                            {/* NOTES */}
-
-                            <Card className="mt-3">
-                                <CardHeader>
-                                    <CardTitle>Notes</CardTitle>
-                                </CardHeader>
-
-                                <CardContent>
-                                    <NotesTimeline notes={job.notes} />
-                                </CardContent>
-                            </Card>
+                            
                         </TabsContent>
 
                         {/* ================= CANDIDATES ================= */}
