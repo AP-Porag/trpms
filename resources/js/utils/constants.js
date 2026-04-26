@@ -1,6 +1,6 @@
 export const USER_ROLE = {
-    ADMIN: "admin",
-    USER: "user",
+    ADMIN: 'admin',
+    USER: 'user',
 };
 
 export const STATUS = {
@@ -9,8 +9,8 @@ export const STATUS = {
 };
 
 export const FLASH = {
-    SUCCESS: "success",
-    ERROR: "error",
+    SUCCESS: 'success',
+    ERROR: 'error',
 };
 
 /*
@@ -20,8 +20,8 @@ export const FLASH = {
 */
 
 export const CLIENT_TYPE = {
-    RETAINER: "retainer",
-    CONTINGENCY: "contingency",
+    RETAINER: 'retainer',
+    CONTINGENCY: 'contingency',
 };
 
 /*
@@ -31,9 +31,9 @@ export const CLIENT_TYPE = {
 */
 
 export const CLIENT_CATEGORY = {
-    CLIENT: "client",
-    PROSPECT: "prospect",
-    TARGET_ACCOUNT: "target_account",
+    CLIENT: 'client',
+    PROSPECT: 'prospect',
+    TARGET_ACCOUNT: 'target_account',
 };
 
 /*
@@ -43,9 +43,9 @@ export const CLIENT_CATEGORY = {
 */
 
 export const JOB_FEE_TYPE = {
-    PERCENTAGE: "percentage",
-    FIXED: "fixed",
-    RETAINED: "retained",
+    PERCENTAGE: 'percentage',
+    FIXED: 'fixed',
+    RETAINED: 'retained',
 };
 
 export const PLACEMENT_INVOICE_STATUS = {
@@ -58,4 +58,16 @@ export const INVOICE_STATUS = {
     ISSUED: 'issued',
     PAID: 'paid',
     CANCELED: 'canceled',
+};
+
+/*
+|--------------------------------------------------------------------------
+| Job Constant
+|--------------------------------------------------------------------------
+*/
+
+export const PRIORITY = {
+    HIGH: 'high',
+    MEDIUM: 'medium',
+    LOW: 'low',
 };

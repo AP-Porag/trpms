@@ -20,7 +20,7 @@ import { ChevronsUpDown, RotateCw } from 'lucide-react';
 import RichTextEditor from '@/components/forms/RichTextEditor';
 
 // ✅ project-level constants
-import { JOB_FEE_TYPE, STATUS } from '@/utils/constants';
+import { JOB_FEE_TYPE, PRIORITY, STATUS } from '@/utils/constants';
 
 const breadcrumbs = [{ title: 'Create Job', href: '/jobs/create' }];
 
@@ -30,11 +30,13 @@ const jobSchema = z.object({
     description: z.string().min(3, 'Description is required'),
     salary_range: z.string().min(3, 'Salary range is required'),
     fee_type: z.enum(Object.values(JOB_FEE_TYPE)),
+    location: z.string().nullable().optional(),
+    priority: z.string().nullable().optional(),
     fee_value: z.string().min(1, 'Fee value is required'),
     status: z.enum([String(STATUS.ACTIVE), String(STATUS.INACTIVE)]),
 });
 
-export default function Create({ clients }) {
+export default function Create({ clients, departments }) {
     const editorRef = useRef(null);
 
     const {
@@ -84,7 +86,7 @@ export default function Create({ clients }) {
                         <h2 className="text-lg font-semibold">Job Information</h2>
 
                         {/* Client + Fee */}
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-4 gap-4">
                             {/* Client Combobox */}
                             <Controller
                                 name="client_id"
@@ -169,6 +171,31 @@ export default function Create({ clients }) {
                                 <Input type="number" {...register('fee_value')} />
                                 {errors.fee_value && <span className="text-sm text-red-500">{errors.fee_value.message}</span>}
                             </div>
+
+                            {/* Department */}
+                            <Controller
+                                name="departments"
+                                control={control}
+                                render={({ field }) => (
+                                    <div className="grid gap-2">
+                                        <Label>Department</Label>
+
+                                        <Select value={field.value?.toString()} onValueChange={(val) => field.onChange(Number(val))}>
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Select Department" />
+                                            </SelectTrigger>
+
+                                            <SelectContent>
+                                                {departments?.map((dept) => (
+                                                    <SelectItem key={dept.id} value={dept.id.toString()}>
+                                                        {dept.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                )}
+                            />
                         </div>
                         <div className="grid grid-cols-2 gap-4">
                             {/* Salary Range */}
@@ -204,12 +231,41 @@ export default function Create({ clients }) {
                                 )}
                             />
                         </div>
+                        <div className="grid grid-cols-3 gap-4">
+                            {/* Title */}
+                            <div className="grid gap-2">
+                                <Label>Title</Label>
+                                <Input {...register('title')} />
+                                {errors.title && <span className="text-sm text-red-500">{errors.title.message}</span>}
+                            </div>
 
-                        {/* Title */}
-                        <div className="grid gap-2">
-                            <Label>Title</Label>
-                            <Input {...register('title')} />
-                            {errors.title && <span className="text-sm text-red-500">{errors.title.message}</span>}
+                            {/* Location */}
+                            <div className="grid gap-2">
+                                <Label>Location</Label>
+                                <Input {...register('location')} />
+                                {errors.location && <span className="text-sm text-red-500">{errors.location.message}</span>}
+                            </div>
+
+                            {/* Priority */}
+                            <Controller
+                                name="priority"
+                                control={control}
+                                render={({ field }) => (
+                                    <div className="grid gap-2">
+                                        <Label>Priority</Label>
+                                        <Select value={field.value} onValueChange={field.onChange}>
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Select Priority" />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value={String(PRIORITY.HIGH)}>High</SelectItem>
+                                                <SelectItem value={String(PRIORITY.MEDIUM)}>Medium</SelectItem>
+                                                <SelectItem value={String(PRIORITY.LOW)}>Low</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                )}
+                            />
                         </div>
 
                         {/* Description */}

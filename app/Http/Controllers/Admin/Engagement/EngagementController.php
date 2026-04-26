@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Engagement;
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Engagement\EngagementRequest;
 use App\Models\Client;
+use App\Models\Department;
 use App\Models\Engagement;
 use App\Models\JobCandidate;
 use App\Services\Engagement\EngagementService;
@@ -15,7 +16,7 @@ use Inertia\Inertia;
 
 class EngagementController extends BaseController
 {
-    public function __construct(protected EngagementService $service){}
+    public function __construct(protected EngagementService $service) {}
 
 
     /**
@@ -31,11 +32,11 @@ class EngagementController extends BaseController
      */
     public function create()
     {
-        $clients = Client::select('id','name','company_name')
-            ->where('status',GlobalConstant::STATUS_ACTIVE)
-            ->orderBy('id','desc')
+        $clients = Client::select('id', 'name', 'company_name')
+            ->where('status', GlobalConstant::STATUS_ACTIVE)
+            ->orderBy('id', 'desc')
             ->get();
-        return Inertia('admin/engagement/create',['clients'=>$clients]);
+        return Inertia('admin/engagement/create', ['clients' => $clients, 'departments' => Department::select('id', 'name')->get()]);
     }
 
     /**
@@ -58,7 +59,7 @@ class EngagementController extends BaseController
         JobCandidateService $jobCandidateService
     ) {
 
-        $job = Engagement::with('client','notes')->findOrFail($id);
+        $job = Engagement::with('client', 'notes')->findOrFail($id);
 
         $pipeline = null;
 
@@ -79,9 +80,9 @@ class EngagementController extends BaseController
     public function edit(int $id)
     {
         $engagement = Engagement::findOrFail($id);
-        $clients = Client::select('id','name','company_name')
-            ->where('status',GlobalConstant::STATUS_ACTIVE)
-            ->orderBy('id','desc')
+        $clients = Client::select('id', 'name', 'company_name')
+            ->where('status', GlobalConstant::STATUS_ACTIVE)
+            ->orderBy('id', 'desc')
             ->get();
         return inertia('admin/engagement/edit', [
             'job' => $engagement,

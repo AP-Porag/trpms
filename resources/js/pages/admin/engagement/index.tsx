@@ -43,18 +43,38 @@ export default function Index({ jobs, meta, filters: initialFilters }) {
         {
             key: 'fee_type',
             label: 'Fee Type',
-            render: (row) => <span className="block w-48 truncate">{row.fee_type}</span>,
+            render: (row) => <span className="block w-10">{row.fee_type}</span>,
         },
         {
             key: 'fee_value',
             label: 'Fee Value',
-            render: (row) => <span className="block w-48 truncate">{row.fee_value}</span>,
+            render: (row) => <span className="block w-10 truncate">{row.fee_value}</span>,
         },
-        // {
-        //     key: 'Job_type',
-        //     label: 'Type',
-        //     render: (row) => <span className="block w-48 truncate capitalize">{row.Job_type}</span>,
-        // },
+        {
+            key: 'days_in_process',
+            label: 'Days in Process',
+            render: (row) => {
+                if (!row.created_at) return '-';
+
+                const created = new Date(row.created_at);
+                const today = new Date();
+
+                const diffTime = today.getTime() - created.getTime();
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                return <span className="block w-20 truncate">{diffDays} days</span>;
+            },
+        },
+        {
+            key: 'priotiry',
+            label: 'Priotiry',
+            render: (row) => <span className="block w-20 truncate capitalize">{row.priotiry}</span>,
+        },
+        {
+            key: 'stage',
+            label: 'Stage',
+            render: (row) => <span className="block w-20 truncate capitalize">{row.stage}</span>,
+        },
         {
             key: 'status',
             label: 'Status',

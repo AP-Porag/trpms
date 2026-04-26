@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('fee_type')->default(GlobalConstant::JOB_FEE_TYPE_PERCENTAGE);
             $table->string('fee_value')->nullable();
             $table->string('status')->default(GlobalConstant::STATUS_ACTIVE);
+            $table->string('stage')->default('sourcing');
             $table->timestamps();
         });
     }

@@ -1,7 +1,6 @@
 import DataTable from '@/components/common/DataTable';
 import { formatDateUS } from '@/utils/helpers';
 import { router } from '@inertiajs/react';
-import { FileText, MessageSquare } from 'lucide-react';
 
 export default function PlacementsTable({ placements, meta, filters }) {
     console.log(placements);
@@ -14,8 +13,28 @@ export default function PlacementsTable({ placements, meta, filters }) {
         },
         {
             key: 'candidate',
-            label: 'Candidate',
+            label: 'Candidate Placed',
             render: (row) => `${row.candidate?.first_name} ${row.candidate?.last_name}`,
+        },
+        // {
+        //     key: 'placement_date',
+        //     label: 'Time to Close',
+        //     render: (row) => `${row.placement_date}-${row.job.created_at}`,
+        // },
+        {
+            key: 'placement_date',
+            label: 'Time to Close',
+            render: (row) => {
+                if (!row.placement_date || !row.job?.created_at) return '-';
+
+                const placement = new Date(row.placement_date);
+                const created = new Date(row.job.created_at);
+
+                const diffTime = placement.getTime() - created.getTime();
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                return <span className="block w-48 truncate">{diffDays} days</span>;
+            },
         },
         {
             key: 'client',
