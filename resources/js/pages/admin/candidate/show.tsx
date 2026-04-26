@@ -1,11 +1,10 @@
-import AddNoteModal from '@/components/notes/AddNoteModal';
-import NotesTimeline from '@/components/notes/NotesTimeline';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import { FileText } from 'lucide-react';
 import { useState } from 'react';
 import NoteComponent from '@/components/common/NoteComponent';
+import { Tooltip } from 'react-tooltip'
 
 const breadcrumbs = [{ title: 'Candidates', href: '/candidates' }, { title: 'View Candidate' }];
 
@@ -68,17 +67,28 @@ export default function Show({ candidate }: any) {
                                     <p className="text-sm font-semibold">Resumes</p>
 
                                     {candidate.resumes.map((resume) => (
+                                        <div>
                                         <button
                                             key={resume.id}
                                             onClick={() => {
                                                 setSelectedIndex(candidate.resumes.findIndex((r) => r.id === resume.id));
                                                 setOpenResume(true);
                                             }}
-                                            className="flex items-center gap-2"
+                                              className="my-anchor-element flex items-center gap-2 p-2 rounded-sm text-black bg-gray-100 shadow-md shadow-gray-900/10 transition-all hover:shadow-lg hover:shadow-gray-900/10"
                                         >
-                                            <FileText className="bg h-4 w-4" />
+                                            <span className="rounded-full p-2 bg-gray-300">
+                                                <FileText className="h-4 w-4" />
+                                            </span>
                                             {resume.original_name ?? 'View Resume'}
                                         </button>
+
+
+                                    <Tooltip anchorSelect=".my-anchor-element" place="right" className="text-blue-100">
+                                        Click to View, Download and Print
+                                  </Tooltip>
+
+                                        </div>
+
                                     ))}
                                 </div>
                             ) : (
@@ -125,7 +135,7 @@ export default function Show({ candidate }: any) {
                             <div className="text-center text-sm font-semibold">{candidate.resumes[selectedIndex]?.original_name}</div>
 
                             {/* PDF VIEW */}
-                            <iframe src={`/storage/${candidate.resumes[selectedIndex]?.file_path}`} className="h-full w-full rounded" />
+                            <iframe src={`/storage/${candidate.resumes[selectedIndex]?.file_path}`} className="h-[94%] w-full rounded mt-4" />
                         </div>
                     </div>
                 )}

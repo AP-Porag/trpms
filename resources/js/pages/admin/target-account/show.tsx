@@ -1,5 +1,4 @@
-import AddNoteModal from '@/components/notes/AddNoteModal';
-import NotesTimeline from '@/components/notes/NotesTimeline';
+
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
