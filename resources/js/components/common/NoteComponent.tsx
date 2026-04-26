@@ -8,7 +8,7 @@ export default function NoteComponent({noteableType, noteableId, notes}){
        
                            <div className="mb-3 flex justify-between">
                                <div></div>
-                               <AddNoteModal noteableType={noteableType}noteableId={noteableId} />
+                               <AddNoteModal noteableType={noteableType} noteableId={noteableId} />
                            </div>
        
                            <Card className="bg-gray-100">

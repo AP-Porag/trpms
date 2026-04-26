@@ -150,7 +150,7 @@ export default function Show({ client }: any) {
                         <div className="text-center text-sm font-semibold">{client.agreements[selectedIndex]?.original_name}</div>
 
                         {/* PDF VIEW */}
-                        <iframe src={`/storage/${client.agreements[selectedIndex]?.file_path}`} className="h-[94%] w-full rounded mt-4 bg-red-800" />
+                        <iframe src={`/storage/${client.agreements[selectedIndex]?.file_path}`} className="h-[94%] w-full rounded mt-4" />
                     </div>
                 </div>
             )}
