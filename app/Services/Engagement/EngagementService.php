@@ -52,6 +52,9 @@ class EngagementService extends BaseService
             'fee_type' => $data->fee_type,
             'fee_value' => $data->fee_value,
             'salary_range' => $data->salary_range,
+            'department' => $data->department,
+            'location' => $data->location,
+            'priority' => $data->priority,
             'status' => $data->status,
         ]);
     }

@@ -14,7 +14,9 @@ class EngagementRequest extends BaseRequest
             'description' => 'required',
             'fee_type' => 'required',
             'fee_value' => 'required',
-            'status' => 'required',
+            'department' => 'required',
+            'location' => 'required',
+            'priority' => 'required',
         ];
     }
 }
