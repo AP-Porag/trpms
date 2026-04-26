@@ -11,6 +11,7 @@ use App\Models\Candidate;
 use App\Models\Client;
 use App\Models\Contact;
 use App\Models\Engagement;
+use App\Models\Lead;
 use Inertia\Inertia;
 
 //use App\Models\Invoice;
@@ -38,6 +39,8 @@ class AppServiceProvider extends ServiceProvider
             'invoice' => Invoice::class,
             'contact' => Contact::class,
             'prospect' => Client::class,
+            'target_account' => Client::class,
+            'lead' => Lead::class,
         ]);
 
         Inertia::share([

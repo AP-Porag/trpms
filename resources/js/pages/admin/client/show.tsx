@@ -112,7 +112,8 @@ export default function Show({ client }: any) {
 
                 {/* ================= NOTES ================= */}
 
-                <NoteComponent noteableType="client" noteableId={client.id} notes={client.notes} />
+                
+                
             </div>
 
             {/* ================= PDF MODAL (MULTIPLE SUPPORT) ================= */}
