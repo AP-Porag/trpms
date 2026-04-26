@@ -5,8 +5,9 @@ import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Head, router } from '@inertiajs/react';
-import { FileText, RotateCw, Upload } from 'lucide-react';
+import { FileText, RotateCw, Upload, Trash2 } from 'lucide-react';
 import { useForm } from 'react-hook-form';
+import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -48,6 +49,7 @@ export default function Create() {
 
     // const resume = watch('file');
     const resumes = watch('file');
+    const [files, setFiles] = useState<File[]>([]);
 
     const submit = async (data) => {
         return new Promise((resolve) => {
@@ -60,6 +62,14 @@ export default function Create() {
                 onFinish: () => resolve(),
             });
         });
+    };
+
+
+
+ const removeFile = (index: number) => {
+        const updated = resumes.filter((_, i) => i !== index);
+        setFiles(updated);
+        setValue('file', updated);
     };
 
     return (
@@ -100,9 +110,9 @@ export default function Create() {
                         <div className="mb-6 rounded-xl bg-white p-6 shadow">
                             <h2 className="mb-4 text-lg font-semibold">Resume</h2>
 
-                            <label className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed text-center">
-                                <Upload className="mb-1 h-5 w-5" />
-                                <span className="text-xs">Upload</span>
+                            <label className="flex p-6 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed text-center">
+                                <Upload className="mb-2 h-6 w-6" />
+                                <span className="text-sm">Upload</span>
                                 <input type="file" hidden multiple onChange={(e) => setValue('file', Array.from(e.target.files))} />
                                 {/*<input type="file" hidden onChange={(e) => setValue('file', e.target.files[0])} />*/}
                             </label>
@@ -116,10 +126,20 @@ export default function Create() {
                             {resumes?.length > 0 && (
                                 <div className="mt-3 space-y-1 text-sm">
                                     {resumes.map((file, index) => (
-                                        <div key={index} className="flex items-center gap-2">
-                                            <FileText className="h-4 w-4" />
-                                            <span className="truncate">{file.name}</span>
+                                        // <div key={index} className="flex items-center gap-2">
+                                        //     <FileText className="h-4 w-4" />
+                                        //     <span className="truncate">{file.name}</span>
+                                        // </div>
+                                        <div key={index} className="flex items-center justify-between rounded border p-2">
+                                        <div className="flex items-center gap-2">
+                                            <FileText className="h-5 w-5" />
+                                            <span className="truncate text-sm">{file.name}</span>
                                         </div>
+
+                                        <button type="button" onClick={() => removeFile(index)}>
+                                            <Trash2 className="h-4 w-4 text-red-600" />
+                                        </button>
+                                    </div>
                                     ))}
                                 </div>
                             )}

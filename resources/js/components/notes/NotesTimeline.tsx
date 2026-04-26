@@ -34,7 +34,7 @@ export default function NotesTimeline({ notes = [] }) {
                         <div className="mb-2 flex items-center justify-between">
                             <span className="inline-flex items-center gap-1.5 rounded-md border border-gray-100 bg-gray-200 px-3 py-1 text-sm font-medium text-gray-500">
                                 <span className="h-2 w-2 rounded-full bg-green-500"></span>
-                                {note.author_name}
+                                Added by - {note.author_name}
                             </span>
                             <button
                                 onClick={() => deleteNote(note.id)}

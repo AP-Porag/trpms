@@ -218,7 +218,7 @@ function Avatar({ candidate }) {
 
     const initials = `${candidate.first_name?.[0] ?? ''}${candidate.last_name?.[0] ?? ''}`;
 
-    return <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-200 text-sm font-semibold">{initials}</div>;
+    return <div className="flex h-9 w-9 items-center justify-center rounded-full bg-slate-200 text-[13px] font-semibold">{initials}</div>;
 }
 
 function StageDateLabel({ jc }) {
@@ -257,17 +257,18 @@ function CandidateCard({ jc, openPlacementModal }) {
 
     return (
         <Card ref={setNodeRef} style={style} {...listeners} {...attributes} className="cursor-grab active:cursor-grabbing">
-            <CardHeader className="space-y-3 p-3">
+            <CardHeader className="space-y-3 p-2">
                 {/* Top Row */}
-                <div className="flex items-start gap-3">
+                <div className="flex items-start gap-2">
                     {/* Avatar */}
+                    <div>
                     <Avatar candidate={candidate} />
-
+                    </div>
                     {/* Name + Role */}
                     <div className="flex-1">
                         <div className="flex items-start justify-between">
                             <div>
-                                <p className="text-sm font-semibold">
+                                <p className="text-[13px] font-semibold">
                                     {candidate.first_name} {candidate.last_name}
                                 </p>
                                 <p className="text-muted-foreground text-xs">{candidate.current_position ?? '—'}</p>
@@ -298,8 +299,10 @@ function CandidateCard({ jc, openPlacementModal }) {
                 {/* Footer */}
                 <div className="items-center text-xs">
                     <StageDateLabel jc={jc} />
-
-                    <Badge className="text-xs">{JOB_CANDIDATE_STAGES[jc.stage].label}</Badge>
+                    <div className="text-center">
+                        <Badge className="text-xs translate-y-3">{JOB_CANDIDATE_STAGES[jc.stage].label}</Badge>
+                    </div>
+                    
                 </div>
             </CardHeader>
         </Card>

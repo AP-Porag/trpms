@@ -3,7 +3,6 @@ import NotesTimeline from '@/components/notes/NotesTimeline';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
 export default function NoteComponent({ noteableType, noteableId, notes }) {
-    console.log(notes);
     return (
         <div className="">
             <div className="mb-3 flex justify-between">
