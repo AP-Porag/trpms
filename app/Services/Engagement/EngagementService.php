@@ -45,14 +45,15 @@ class EngagementService extends BaseService
 
     public function create($data): Engagement
     {
+
         return Engagement::create([
             'client_id' => $data->client_id,
             'title' => $data->title,
-            'description_id' => $data->description,
+            'description' => $data->description,
             'fee_type' => $data->fee_type,
             'fee_value' => $data->fee_value,
             'salary_range' => $data->salary_range,
-            'department' => $data->department,
+            'department_id' => $data->department_id,
             'location' => $data->location,
             'priority' => $data->priority,
             'status' => $data->status,
@@ -68,7 +69,11 @@ class EngagementService extends BaseService
             'title' => $data->title,
             'description' => $data->description,
             'fee_type' => $data->fee_type,
+            'salary_range' => $data->salary_range,
             'fee_value' => $data->fee_value,
+            'department_id' => $data->department_id,
+            'location' => $data->location,
+            'priority' => $data->priority,
             'status' => $data->status,
         ]);
         return $job;

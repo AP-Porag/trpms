@@ -14,7 +14,10 @@ class Engagement extends BaseModel
     protected $fillable = [
         'client_id',
         'title',
-        'description_id',
+        'description',
+        'department_id',
+        'location',
+        'priority',
         'fee_type',
         'fee_value',
         'salary_range',
@@ -29,5 +32,9 @@ class Engagement extends BaseModel
     public function notes()
     {
         return $this->morphMany(Note::class, 'noteable')->latest();
+    }
+    public function department()
+    {
+        return $this->belongsTo(Department::class);
     }
 }
