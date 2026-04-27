@@ -1,85 +1,101 @@
+import type { MultiSelectOption } from '@/components/forms/MultiSelect';
+import MultiSelect from '@/components/forms/MultiSelect';
+
 import { Button } from '@/components/ui/button';
+import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Head, router } from '@inertiajs/react';
 import { RotateCw } from 'lucide-react';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { STATUS } from '@/utils/constants';
+import { RATING, STATUS } from '@/utils/constants';
 
-const breadcrumbs = [{ title: 'Edit Target Account', href: '#' }];
+const breadcrumbs = [{ title: 'Edit Client', href: '/clients/edit' }];
 
-const prospectSchema = z.object({
-    name: z.string().min(3, { message: 'Name is required' }),
-    company_name: z.string().min(3, { message: 'Company name is required' }),
-    email: z.string().email({ message: 'Invalid email address' }),
-    phone: z.string().min(5, { message: 'Phone is required' }),
-    address: z.string().optional(),
+/* ================= SCHEMA ================= */
+const clientSchema = z.object({
+    name: z.string().min(3),
+    company_name: z.string().min(3),
+    rating: z.string().optional(),
+    industry_id: z.string().nullable().optional(),
     status: z.enum([STATUS.ACTIVE.toString(), STATUS.INACTIVE.toString()]),
+    departments: z.array(z.string()).optional(),
+    is_use_agency: z.boolean().optional(),
+    current_openings: z.string().optional(),
+    revenue_potential: z.string().optional(),
 });
 
-export default function Edit({ prospect }) {
+export default function Edit({ client, industries = [], departments = [] }: any) {
+    /* ================= STATE ================= */
+    const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
+
+    const departmentOptions: MultiSelectOption[] =
+        departments?.map((item: any) => ({
+            label: item.name,
+            value: String(item.id),
+        })) || [];
+
     const {
         register,
         control,
         handleSubmit,
+        setValue,
         setError,
-        reset,
         formState: { errors, isSubmitting },
     } = useForm({
-        resolver: zodResolver(prospectSchema),
+        resolver: zodResolver(clientSchema),
+        defaultValues: {
+            name: '',
+            company_name: '',
+            revenue_potential: '',
+            rating: '',
+            industry_id: '',
+            status: STATUS.ACTIVE.toString(),
+            departments: [],
+            is_use_agency: false,
+            current_openings: '',
+        },
     });
 
-    /*
-    |--------------------------------------------------------------------------
-    | Populate Form Values
-    |--------------------------------------------------------------------------
-    */
+    /* ================= PREFILL DATA ================= */
+    useEffect(() => {
+        if (!client) return;
+
+        setValue('name', client.name || '');
+        setValue('company_name', client.company_name || '');
+        setValue('rating', client.rating || '');
+        setValue('industry_id', client.industry_id ? String(client.industry_id) : '');
+        setValue('status', client.status || STATUS.ACTIVE.toString());
+        setValue('current_openings', client.current_openings || '');
+        setValue('revenue_potential', client.revenue_potential || '');
+        setValue('is_use_agency', !!client.is_use_agency);
+
+        const deptIds = client.departments?.map((d: any) => String(d.id)) || [];
+
+        setSelectedDepartments(deptIds);
+        setValue('departments', deptIds);
+    }, [client, setValue]);
 
     useEffect(() => {
-        if (prospect) {
-            reset({
-                name: prospect.name || '',
-                company_name: prospect.company_name || '',
-                email: prospect.email || '',
-                phone: prospect.phone || '',
-                address: prospect.address || '',
-                status: prospect.status?.toString() || STATUS.ACTIVE.toString(),
-            });
-        }
-    }, [prospect, reset]);
+        register('departments');
+    }, [register]);
 
-    /*
-    |--------------------------------------------------------------------------
-    | Update Prospect
-    |--------------------------------------------------------------------------
-    */
-
-    const updateProspect = async (data) => {
-        return new Promise((resolve) => {
-            router.post(
-                route('target-accounts.update', prospect.id),
-                {
-                    ...data,
-                    _method: 'PUT',
-                },
-                {
-                    onError: (errs) => {
-                        Object.keys(errs).forEach((k) => setError(k, { message: errs[k] }));
-
-                        toast.error('Please fix the errors in the form.');
-                    },
-
-                    onFinish: () => resolve(),
-                },
-            );
+    /* ================= SUBMIT ================= */
+    const updateClient = (data: any) => {
+        router.put(route('target-accounts.update', client.id), data, {
+            onError: (errs) => {
+                Object.keys(errs).forEach((k) => setError(k as any, { message: errs[k] }));
+                toast.error('Please fix the errors in the form.');
+            },
         });
     };
 
@@ -89,38 +105,87 @@ export default function Edit({ prospect }) {
 
             <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="rounded-xl border p-5">
-                    <form onSubmit={handleSubmit(updateProspect)}>
-                        {/* Prospect Info */}
-
+                    <form onSubmit={handleSubmit(updateClient)}>
+                        {/* ================= TARGET ACCOUNT INFO ================= */}
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
                             <h2 className="mb-4 text-lg font-semibold">Target Account Information</h2>
 
-                            <div className="grid gap-4 md:grid-cols-2">
+                            <div className="grid gap-4 md:grid-cols-3">
                                 {[
                                     ['name', 'Name'],
                                     ['company_name', 'Company Name'],
-                                    ['email', 'Email'],
-                                    ['phone', 'Phone'],
-                                ].map(([field, label]) => (
-                                    <div key={field} className="grid gap-2">
-                                        <Label>{label}</Label>
+                                    ['current_openings', 'Current Openings'],
+                                    ['revenue_potential', 'Revenue Potential'],
+                                ].map(([f, l]) => (
+                                    <div key={f} className="grid gap-2">
+                                        <Label>{l}</Label>
 
-                                        <Input {...register(field)} className={cn(errors[field] && 'border-red-500')} />
+                                        <Input {...register(f as any)} className={cn(errors[f as keyof typeof errors] && 'border-red-500')} />
 
-                                        {errors[field] && <span className="text-sm text-red-500">{errors[field].message}</span>}
+                                        {errors[f as keyof typeof errors] && (
+                                            <span className="text-sm text-red-500">{(errors[f as keyof typeof errors] as any)?.message}</span>
+                                        )}
                                     </div>
                                 ))}
                             </div>
 
+                            {/* ================= DEPARTMENTS ================= */}
                             <div className="mt-4 grid gap-2">
-                                <Label>Address</Label>
+                                <Label>Departments</Label>
 
-                                <Input {...register('address')} />
+                                <MultiSelect
+                                    options={departmentOptions}
+                                    value={selectedDepartments}
+                                    onChange={(val) => {
+                                        const normalized = val.map(String);
+                                        setSelectedDepartments(normalized);
+                                        setValue('departments', normalized);
+                                    }}
+                                    placeholder="Select Departments"
+                                />
+
+                                {selectedDepartments.length > 0 && (
+                                    <div className="mt-2 flex flex-wrap gap-2">
+                                        {selectedDepartments.map((id) => {
+                                            const dept = departmentOptions.find((d) => d.value === id);
+
+                                            return (
+                                                <span key={id} className="rounded-md border bg-blue-100 px-3 py-1 text-xs text-blue-700">
+                                                    {dept?.label}
+                                                </span>
+                                            );
+                                        })}
+                                    </div>
+                                )}
                             </div>
 
-                            <div className="mt-4 grid gap-4 md:grid-cols-3">
-                                {/* Status */}
+                            {/* ================= GRID ================= */}
+                            <div className="mt-4 grid grid-cols-3 gap-4">
+                                {/* INDUSTRY */}
+                                <div className="grid gap-2">
+                                    <Label>Industry</Label>
 
+                                    <Controller
+                                        name="industry_id"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select value={field.value || ''} onValueChange={field.onChange}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select Industry" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {industries.map((i: any) => (
+                                                        <SelectItem key={i.id} value={String(i.id)}>
+                                                            {i.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </div>
+
+                                {/* STATUS */}
                                 <div className="grid gap-2">
                                     <Label>Status</Label>
 
@@ -132,50 +197,62 @@ export default function Edit({ prospect }) {
                                                 <SelectTrigger className="w-full">
                                                     <SelectValue />
                                                 </SelectTrigger>
-
                                                 <SelectContent>
                                                     <SelectItem value={STATUS.ACTIVE.toString()}>Active</SelectItem>
-
                                                     <SelectItem value={STATUS.INACTIVE.toString()}>Inactive</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         )}
                                     />
                                 </div>
+
+                                {/* RATINGS */}
+                                <div className="grid gap-2">
+                                    <Label>Ratings</Label>
+
+                                    <Controller
+                                        name="rating"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select value={field.value || ''} onValueChange={field.onChange}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select Rating" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value={RATING.RATING_A.toString()}>A</SelectItem>
+                                                    <SelectItem value={RATING.RATING_B.toString()}>B</SelectItem>
+                                                    <SelectItem value={RATING.RATING_C.toString()}>C</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </div>
+
+                                {/* CHECKBOX */}
+                                <div className="mt-4 flex items-center space-x-2">
+                                    <Controller
+                                        name="is_use_agency"
+                                        control={control}
+                                        render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} />}
+                                    />
+                                    <Label>Use Agency</Label>
+                                </div>
                             </div>
                         </div>
 
-                        {/* Submit */}
-
-                        <div className="flex justify-end gap-2">
-
-                            <Button
-                                type="button"
-                                onClick={() => router.visit(route('clients.edit', prospect.id))}
-                                className="cursor-pointer bg-blue-600 text-white hover:bg-blue-700"
-                            >
-                                Convert to Prospect
-                            </Button>
-
-                            <Button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="cursor-pointer"
-                            >
-
+                        {/* ================= SUBMIT ================= */}
+                        <div className="flex justify-end">
+                            <Button type="submit" disabled={isSubmitting}>
                                 {isSubmitting ? (
                                     <>
                                         <RotateCw className="mr-2 h-4 w-4 animate-spin" />
-                                        Updating...
+                                        Processing...
                                     </>
                                 ) : (
-                                    'Update Target Account'
+                                    'Update Client'
                                 )}
-
                             </Button>
-
                         </div>
-
                     </form>
                 </div>
             </div>

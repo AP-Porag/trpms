@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin\TargetAccount;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Client\ClientRequest;
+use App\Http\Requests\TargetAccount\TargetAccountRequest;
 use App\Models\Client;
+use App\Models\Department;
+use App\Models\Industry;
 use App\Services\TargetAccount\TargetAccountService;
 use App\Utils\GlobalConstant;
 use Illuminate\Http\Request;
@@ -32,14 +35,17 @@ class TargetAccountController extends BaseController
      */
     public function create()
     {
-        return Inertia('admin/target-account/create');
+        return Inertia::render('admin/target-account/create', [
+            'industries' => Industry::select('id', 'name')->get(),
+            'departments' => Department::select('id', 'name')->get(),
+        ]);
     }
 
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ClientRequest $request)
+    public function store(TargetAccountRequest $request)
     {
         $this->service->create($request);
 
@@ -69,7 +75,9 @@ class TargetAccountController extends BaseController
     public function edit(Client $targetAccount)
     {
         return inertia('admin/target-account/edit', [
-            'prospect' => $targetAccount,
+            'client' => $targetAccount->load('departments:id,name'),
+            'industries' => Industry::select('id', 'name')->get(),
+            'departments' => Department::select('id', 'name')->get(),
         ]);
     }
 

@@ -25,9 +25,9 @@ export const CLIENT_TYPE = {
 };
 
 export const RATING = {
-    RATING_A: 'a',
-    RATING_B: 'b',
-    RATING_C: 'c',
+    RATING_A: 'A',
+    RATING_B: 'B',
+    RATING_C: 'C',
 };
 
 /*

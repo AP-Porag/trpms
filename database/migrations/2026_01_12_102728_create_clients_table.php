@@ -66,6 +66,9 @@ return new class extends Migration
             */
 
             $table->string('rating')->nullable();
+            $table->string('current_openings')->nullable();
+            $table->string('revenue_potential')->nullable();
+            $table->boolean('is_use_agency')->default(false);
             $table->foreignId('industry_id')->nullable();
             $table->json('departments')->nullable();
 
