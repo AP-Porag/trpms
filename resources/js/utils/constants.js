@@ -24,6 +24,12 @@ export const CLIENT_TYPE = {
     CONTINGENCY: 'contingency',
 };
 
+export const RATING = {
+    RATING_A: 'a',
+    RATING_B: 'b',
+    RATING_C: 'c',
+};
+
 /*
 |--------------------------------------------------------------------------
 | Client Categories

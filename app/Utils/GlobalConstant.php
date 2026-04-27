@@ -38,6 +38,8 @@ class GlobalConstant
     public const JOB_FEE_TYPE_FIXED = 'fixed';
     public const JOB_FEE_TYPE_RETAINED = 'retained';
 
+    //ratings
+
 
     //placement invoice status
     public const PLACEMENT_INVOICE_STATUS_NOT_INVOICED = 'not_invoiced';
@@ -56,24 +58,24 @@ class GlobalConstant
 |--------------------------------------------------------------------------
 */
 
-// Pipeline
+    // Pipeline
     const EVENT_TYPE_INTERVIEW = 'interview';
     const EVENT_TYPE_OFFER = 'offer';
     const EVENT_TYPE_PLACED = 'placed';
     const EVENT_TYPE_REJECTED = 'rejected';
 
-// Placement
+    // Placement
     const EVENT_TYPE_PLACEMENT_START = 'placement_start';
     const EVENT_TYPE_GUARANTEE_END = 'guarantee_end';
 
-// Invoice
+    // Invoice
     const EVENT_TYPE_INVOICE_SENT = 'invoice_sent';
     const EVENT_TYPE_INVOICE_PAID = 'invoice_paid';
 
-// Agreement
+    // Agreement
     const EVENT_TYPE_AGREEMENT_SIGNED = 'agreement_signed';
 
-// Job / Engagement
+    // Job / Engagement
     const EVENT_TYPE_JOB_CREATED = 'job_created';
 
 

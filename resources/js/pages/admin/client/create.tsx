@@ -17,7 +17,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { CLIENT_TYPE, JOB_FEE_TYPE, STATUS } from '@/utils/constants';
+import { CLIENT_TYPE, JOB_FEE_TYPE, RATING, STATUS } from '@/utils/constants';
 
 const breadcrumbs = [{ title: 'Create Client', href: '/clients/create' }];
 
@@ -28,6 +28,7 @@ const clientSchema = z.object({
     email: z.string().email(),
     phone: z.string().min(10, { message: 'Phone number must be at least 10 digits' }),
     address: z.string().optional(),
+    rating: z.string().optional(),
 
     industry_id: z.string().nullable().optional(),
 
@@ -71,6 +72,7 @@ export default function Create({ industries = [], departments = [] }: any) {
             email: '',
             phone: '',
             address: '',
+            rating: '',
 
             industry_id: '',
 
@@ -270,6 +272,28 @@ export default function Create({ industries = [], departments = [] }: any) {
                                                 <SelectContent>
                                                     <SelectItem value={STATUS.ACTIVE.toString()}>Active</SelectItem>
                                                     <SelectItem value={STATUS.INACTIVE.toString()}>Inactive</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </div>
+
+                                {/* Ratings */}
+                                <div className="grid gap-2">
+                                    <Label>Ratings</Label>
+
+                                    <Controller
+                                        name="rating"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select value={field.value} onValueChange={field.onChange}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select Rating" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value={RATING.RATING_A.toString()}>A</SelectItem>
+                                                    <SelectItem value={RATING.RATING_B.toString()}>B</SelectItem>
+                                                    <SelectItem value={RATING.RATING_C.toString()}>C</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         )}

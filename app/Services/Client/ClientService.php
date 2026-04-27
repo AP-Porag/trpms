@@ -61,6 +61,7 @@ class ClientService extends BaseService
             'fee_type'     => $data->fee_type,
             'fee_value'    => $data->fee_value,
             'status'       => $data->status,
+            'rating'       => $data->rating,
             'agreement_type' => $data->agreement_type,
             'signed_date'    => $data->signed_date,
         ]);
@@ -109,6 +110,7 @@ class ClientService extends BaseService
             'client_type'  => $data->client_type,
             'fee_type'     => $data->fee_type,
             'fee_value'    => $data->fee_value,
+            'rating'      => $data->rating,
             'status'       => $data->status,
             'agreement_type' => $data->agreement_type,
             'signed_date'    => $data->signed_date,
@@ -172,6 +174,7 @@ class ClientService extends BaseService
         return [
             'client' => $client->load([
                 'notes',
+                'departments',
                 'contacts',
                 'agreements:id,client_id,file_path,original_name,agreement_type,signed_date',
             ]),

@@ -131,6 +131,7 @@ class Client extends BaseModel
 
     public function departments()
     {
-        return $this->belongsToMany(Department::class);
+        return $this->belongsToMany(Department::class, 'client_department')
+            ->withTimestamps(); // ✅ only this
     }
 }

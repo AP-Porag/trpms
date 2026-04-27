@@ -15,7 +15,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { CLIENT_TYPE, JOB_FEE_TYPE, STATUS } from '@/utils/constants';
+import { CLIENT_TYPE, JOB_FEE_TYPE, RATING, STATUS } from '@/utils/constants';
 
 const breadcrumbs = [{ title: 'Edit Client', href: '/clients/edit' }];
 
@@ -35,6 +35,7 @@ const clientSchema = z.object({
     status: z.enum([STATUS.ACTIVE.toString(), STATUS.INACTIVE.toString()]),
 
     agreement_type: z.string().optional(),
+    rating: z.string().optional(),
     signed_date: z.string().optional(),
 
     agreements: z.any().optional(),
@@ -76,6 +77,7 @@ export default function Edit({ client, industries, agreement, departments }: any
             fee_value: client?.fee_value || '',
 
             status: client?.status?.toString() || STATUS.ACTIVE.toString(),
+            rating: client?.rating ? String(client.rating) : '',
 
             agreement_type: client?.agreement_type || '',
             signed_date: client?.signed_date || '',
@@ -277,6 +279,7 @@ export default function Edit({ client, industries, agreement, departments }: any
 
                                 <Input {...register('fee_value')} />
 
+                                {/* Status */}
                                 <Controller
                                     name="status"
                                     control={control}
@@ -288,6 +291,24 @@ export default function Edit({ client, industries, agreement, departments }: any
                                             <SelectContent>
                                                 <SelectItem value={STATUS.ACTIVE.toString()}>Active</SelectItem>
                                                 <SelectItem value={STATUS.INACTIVE.toString()}>Inactive</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    )}
+                                />
+
+                                {/* Rating */}
+                                <Controller
+                                    name="rating"
+                                    control={control}
+                                    render={({ field }) => (
+                                        <Select value={field.value || ''} onValueChange={field.onChange}>
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value={RATING.RATING_A.toString()}>A</SelectItem>
+                                                <SelectItem value={RATING.RATING_B.toString()}>B</SelectItem>
+                                                <SelectItem value={RATING.RATING_C.toString()}>C</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     )}
