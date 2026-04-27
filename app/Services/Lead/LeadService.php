@@ -4,6 +4,7 @@ namespace App\Services\Lead;
 
 use App\Models\Lead;
 use App\Models\Note;
+use App\Models\Contact;
 use App\Services\BaseService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
@@ -160,6 +161,7 @@ class LeadService extends BaseService
         return [
             'lead' => $lead->load([
                 'departments',
+                'contacts',
                 'notes',
             ]),
         ];
