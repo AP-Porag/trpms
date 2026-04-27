@@ -8,7 +8,7 @@ import { Head } from '@inertiajs/react';
 const breadcrumbs = [{ title: 'Prospects', href: '/prospects' }, { title: 'View Prospect' }];
 
 export default function Show({ prospect }: any) {
-    console.log(prospect.contacts);
+    console.log(prospect);
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Prospect Details" />
@@ -60,11 +60,11 @@ export default function Show({ prospect }: any) {
 
                 {/* ================= NOTES ================= */}
 
-                <NoteComponent noteableType="client" noteableId={prospect.id} notes={prospect.notes} />
+                <NoteComponent noteableType="prospect" noteableId={prospect.id} notes={prospect.notes} />
 
                 {/* ================= Contact ================= */}
 
-                <ContactComponent contactableType="client" contactableId={prospect.id} contacts={prospect.contacts} />
+                <ContactComponent contactableType="prospect" contactableId={prospect.id} contacts={prospect.contacts} />
             </div>
         </AppLayout>
     );

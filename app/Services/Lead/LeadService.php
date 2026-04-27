@@ -84,7 +84,7 @@ class LeadService extends BaseService
             );
         }
 
-        $note = $data->validated()['note'] ?? null;
+        $note = $data['note'] ?? null;
 
 
 

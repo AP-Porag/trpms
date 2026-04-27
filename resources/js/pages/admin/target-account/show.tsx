@@ -4,6 +4,7 @@ import AppLayout from '@/layouts/app-layout';
 import { Head } from '@inertiajs/react';
 import NoteComponent from '@/components/common/NoteComponent';
 import { DATE_PRESETS, formatDateUS } from '@/utils/helpers';
+import ContactComponent from '@/components/common/ContactComponent';
 
 const breadcrumbs = [{ title: 'Target', href: '/targets' }, { title: 'View Target' }];
 
@@ -60,8 +61,11 @@ export default function Show({ targetAccount }: any) {
 
                 {/* ================= NOTES ================= */}
                 
-            <NoteComponent noteableType="client" noteableId={targetAccount.id} notes={targetAccount.notes}/>
+            <NoteComponent noteableType="target_account" noteableId={targetAccount.id} notes={targetAccount.notes}/>
 
+             {/* ================= Contact ================= */}
+                            
+             <ContactComponent contactableType="target_account" contactableId={targetAccount.id} contacts={targetAccount.contacts} />
             </div>
         </AppLayout>
     );
