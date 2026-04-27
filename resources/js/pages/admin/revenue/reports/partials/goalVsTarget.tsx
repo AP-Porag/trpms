@@ -1,6 +1,7 @@
 import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import RunRateGauge from '@/pages/admin/revenue/reports/partials/RunRateGauge';
 
 export default function GoalVsTarget({ goal }) {
     if (!goal?.has_goal) {
@@ -21,6 +22,22 @@ export default function GoalVsTarget({ goal }) {
         Target: m.target,
         Actual: m.actual,
     }));
+
+    const getStatusColor = () => {
+        if (run_rate.status === 'ahead') return '#22c55e'; // green
+        if (run_rate.status === 'on_track') return '#f59e0b'; // yellow
+        return '#ef4444'; // red
+    };
+
+    const diffLabel = () => {
+        if (run_rate.status === 'ahead') {
+            return `Ahead by ${currency(run_rate.difference)}`;
+        }
+        if (run_rate.status === 'behind') {
+            return `Behind by ${currency(Math.abs(run_rate.difference))}`;
+        }
+        return 'On Track';
+    };
 
     return (
         <div className="space-y-6">
@@ -76,31 +93,82 @@ export default function GoalVsTarget({ goal }) {
             </Card>
 
             {/* ================= RUN RATE ================= */}
+            {/*<Card>*/}
+            {/*    <CardHeader>*/}
+            {/*        <CardTitle>Run Rate Insight</CardTitle>*/}
+            {/*    </CardHeader>*/}
+            {/*    <CardContent className="h-64">*/}
+            {/*        <ResponsiveContainer width="100%" height="100%">*/}
+            {/*            <BarChart*/}
+            {/*                data={[*/}
+            {/*                    {*/}
+            {/*                        name: 'Revenue',*/}
+            {/*                        Expected: run_rate.expected,*/}
+            {/*                        Actual: run_rate.actual,*/}
+            {/*                    },*/}
+            {/*                ]}*/}
+            {/*            >*/}
+            {/*                <CartesianGrid strokeDasharray="3 3" />*/}
+            {/*                <XAxis dataKey="name" />*/}
+            {/*                <YAxis />*/}
+            {/*                <Tooltip formatter={(val) => currency(val)} />*/}
+            {/*                <Bar dataKey="Expected" fill="#94a3b8" />*/}
+            {/*                <Bar dataKey="Actual" fill={run_rate.status === 'ahead' ? '#22c55e' : '#ef4444'} />*/}
+            {/*            </BarChart>*/}
+            {/*        </ResponsiveContainer>*/}
+            {/*    </CardContent>*/}
+            {/*</Card>*/}
+
             <Card>
                 <CardHeader>
-                    <CardTitle>Run Rate Insight</CardTitle>
+                    <CardTitle>Revenue Pace (Expected vs Actual)</CardTitle>
+
+                    <p className="text-muted-foreground text-xs">
+                        Based on today’s date, this shows how much revenue you should have earned by now versus what you’ve actually earned.
+                    </p>
                 </CardHeader>
-                <CardContent className="h-64">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <BarChart
-                            data={[
-                                {
-                                    name: 'Revenue',
-                                    Expected: run_rate.expected,
-                                    Actual: run_rate.actual,
-                                },
-                            ]}
-                        >
-                            <CartesianGrid strokeDasharray="3 3" />
-                            <XAxis dataKey="name" />
-                            <YAxis />
-                            <Tooltip formatter={(val) => currency(val)} />
-                            <Bar dataKey="Expected" fill="#94a3b8" />
-                            <Bar dataKey="Actual" fill={run_rate.status === 'ahead' ? '#22c55e' : '#ef4444'} />
-                        </BarChart>
-                    </ResponsiveContainer>
+
+                <CardContent className="space-y-4">
+                    {/* 🔢 Numbers */}
+                    <div className="flex justify-between text-sm">
+                        <span>Expected: {currency(run_rate.expected)}</span>
+                        <span>Actual: {currency(run_rate.actual)}</span>
+                    </div>
+
+                    {/* 📊 Chart */}
+                    <div className="h-52">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart
+                                data={[
+                                    {
+                                        name: 'Revenue',
+                                        Expected: run_rate.expected,
+                                        Actual: run_rate.actual,
+                                    },
+                                ]}
+                            >
+                                <CartesianGrid strokeDasharray="3 3" />
+                                <XAxis dataKey="name" />
+                                <YAxis />
+                                <Tooltip formatter={(val) => currency(val)} />
+
+                                <Bar dataKey="Expected" fill="#94a3b8" radius={[6, 6, 0, 0]} />
+
+                                <Bar dataKey="Actual" fill={getStatusColor()} radius={[6, 6, 0, 0]} animationDuration={800} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+
+                    {/* 🚦 Status */}
+                    <div className="text-center">
+                        <p className="text-sm font-semibold" style={{ color: getStatusColor() }}>
+                            {diffLabel()}
+                        </p>
+                    </div>
                 </CardContent>
             </Card>
+
+            {/*<RunRateGauge run_rate={run_rate} summary={summary} />*/}
 
             {/* ================= MONTHLY ================= */}
             <Card>

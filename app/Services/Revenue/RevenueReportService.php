@@ -88,6 +88,14 @@ class RevenueReportService
             ->orderByDesc('revenue')
             ->get();
 
+        $byDepartment = (clone $query)
+            ->join('engagements', 'engagements.id', '=', 'invoices.engagement_id')
+            ->join('departments', 'departments.id', '=', 'engagements.department_id')
+            ->selectRaw('departments.name as department, SUM(invoices.amount) as revenue')
+            ->groupBy('departments.name')
+            ->orderByDesc('revenue')
+            ->get();
+
         return [
             'summary' => [
                 'total' => (float) $totalRevenue,
@@ -99,6 +107,7 @@ class RevenueReportService
             'yearly' => $yearly,
             'by_client' => $byClient,
             'by_industry' => $byIndustry,
+            'by_department' => $byDepartment,
         ];
     }
 
