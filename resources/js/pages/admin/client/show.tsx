@@ -6,6 +6,7 @@ import { Head } from '@inertiajs/react';
 import { FileText } from 'lucide-react';
 import { useState } from 'react';
 import { Tooltip } from 'react-tooltip';
+import ContactComponent from '@/components/common/ContactComponent';
 
 const breadcrumbs = [{ title: 'Clients', href: '/clients' }, { title: 'View Client' }];
 
@@ -111,8 +112,13 @@ export default function Show({ client }: any) {
                 </Card>
 
                 {/* ================= NOTES ================= */}
+                 <NoteComponent noteableType="client" noteableId={client.id} notes={client.notes} />
+                
 
-                <NoteComponent noteableType="client" noteableId={client.id} notes={client.notes} />
+                 {/* ================= Contact ================= */}
+                                
+                <ContactComponent contactableType="client" contactableId={client.id} contacts={client.contacts} />
+                
             </div>
 
             {/* ================= PDF MODAL (MULTIPLE SUPPORT) ================= */}
