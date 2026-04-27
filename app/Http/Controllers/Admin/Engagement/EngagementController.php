@@ -44,7 +44,6 @@ class EngagementController extends BaseController
      */
     public function store(EngagementRequest $request)
     {
-        return $request;
         $this->service->create($request);
         return redirect()
             ->route('jobs.index')
@@ -80,14 +79,22 @@ class EngagementController extends BaseController
      */
     public function edit(int $id)
     {
-        $engagement = Engagement::findOrFail($id);
+        $engagement = Engagement::with('department')
+            ->findOrFail($id);
+
         $clients = Client::select('id', 'name', 'company_name')
             ->where('status', GlobalConstant::STATUS_ACTIVE)
             ->orderBy('id', 'desc')
             ->get();
+
+        $departments = Department::select('id', 'name')
+            ->orderBy('name', 'asc')
+            ->get();
+
         return inertia('admin/engagement/edit', [
             'job' => $engagement,
             'clients' => $clients,
+            'departments' => $departments, // ✅ FIXED
         ]);
     }
 

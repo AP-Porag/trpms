@@ -1,80 +1,71 @@
-import { useRef, useState } from 'react';
 import AppLayout from '@/layouts/app-layout';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Head, router } from '@inertiajs/react';
+import axios from 'axios';
+import { useRef, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import axios from 'axios';
 
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from '@/components/ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
-import {
-    Popover,
-    PopoverContent,
-    PopoverTrigger,
-} from '@/components/ui/popover';
-
-import {
-    Command,
-    CommandEmpty,
-    CommandGroup,
-    CommandInput,
-    CommandItem,
-} from '@/components/ui/command';
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
+import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
 import { ChevronsUpDown, RotateCw } from 'lucide-react';
+
 import RichTextEditor from '@/components/forms/RichTextEditor';
 
-import { JOB_FEE_TYPE, STATUS } from '@/utils/constants';
+import { JOB_FEE_TYPE, PRIORITY, STATUS } from '@/utils/constants';
 
-const breadcrumbs = [
-    { title: 'Edit Job', href: '#' },
-];
+const breadcrumbs = [{ title: 'Edit Job', href: '/jobs' }];
 
 const jobSchema = z.object({
     title: z.string().min(3, 'Title is required'),
     client_id: z.string().min(1, 'Client is required'),
     description: z.string().min(3, 'Description is required'),
+    department_id: z.number().nullable(),
+    salary_range: z.string().min(3, 'Salary range is required'),
     fee_type: z.enum(Object.values(JOB_FEE_TYPE)),
+    location: z.string().nullable().optional(),
+    priority: z.string().nullable().optional(),
     fee_value: z.string().min(1, 'Fee value is required'),
     status: z.enum([String(STATUS.ACTIVE), String(STATUS.INACTIVE)]),
 });
 
-export default function Edit({ job, clients }) {
+export default function Edit({ job, clients, departments }) {
     const editorRef = useRef(null);
+
+    // ✅ FIX: state MUST be top-level (layout stability fix)
+    const [clientOpen, setClientOpen] = useState(false);
 
     const {
         register,
         control,
         handleSubmit,
-        formState: { errors, isSubmitting },
+        formState: { isSubmitting },
     } = useForm({
         resolver: zodResolver(jobSchema),
         defaultValues: {
-            title: job.title,
-            client_id: String(job.client_id),
-            description: job.description, // ✅ HTML from DB
-            fee_type: job.fee_type,
-            fee_value: job.fee_value,
-            status: String(job.status),
+            title: job?.title || '',
+            client_id: job?.client_id ? String(job.client_id) : '',
+            description: job?.description || '',
+            department_id: job?.department_id ?? null,
+            salary_range: job?.salary_range || '',
+            fee_type: job?.fee_type || JOB_FEE_TYPE.PERCENTAGE,
+            location: job?.location || '',
+            priority: job?.priority || '',
+            fee_value: job?.fee_value || '',
+            status: job?.status || String(STATUS.ACTIVE),
         },
     });
 
-    const updateJob = async (data) => {
+    const saveJob = async (data) => {
         let html = data.description;
 
-        // only NEW images (temp ones)
-        const tempImages =
-            editorRef.current?.editor?.storage?.tempImages || [];
+        const tempImages = editorRef.current?.editor?.storage?.tempImages || [];
 
         if (tempImages.length) {
             const formData = new FormData();
@@ -84,11 +75,7 @@ export default function Edit({ job, clients }) {
                 formData.append(`images[${i}]`, img.file);
             });
 
-            const response = await axios.post(
-                route('editor.finalize'),
-                formData
-            );
-
+            const response = await axios.post(route('editor.finalize'), formData);
             html = response.data.html;
         }
 
@@ -104,170 +91,127 @@ export default function Edit({ job, clients }) {
 
             <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="rounded-xl border p-5">
-                    <form
-                        onSubmit={handleSubmit(updateJob)}
-                        className="space-y-6"
-                    >
-                        <h2 className="text-lg font-semibold">
-                            Edit Job
-                        </h2>
+                    <form onSubmit={handleSubmit(saveJob)} className="space-y-6">
+                        <h2 className="text-lg font-semibold">Edit Job Information</h2>
 
-                        {/* Client + Fee */}
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                            {/* Client Combobox */}
+                        {/* GRID BLOCK */}
+                        <div className="grid grid-cols-4 gap-4">
+                            {/* CLIENT */}
                             <Controller
                                 name="client_id"
                                 control={control}
-                                render={({ field }) => {
-                                    const [open, setOpen] = useState(false);
+                                render={({ field }) => (
+                                    <div className="grid min-w-0">
+                                        <Label>Client</Label>
 
-                                    const selectedClient = clients.find(
-                                        c => String(c.id) === field.value
-                                    );
+                                        <Popover open={clientOpen} onOpenChange={setClientOpen}>
+                                            <PopoverTrigger asChild>
+                                                <Button variant="outline" className="w-full justify-between">
+                                                    <span className="truncate">
+                                                        {clients.find((c) => String(c.id) === field.value)
+                                                            ? `${clients.find((c) => String(c.id) === field.value)?.name} – ${clients.find((c) => String(c.id) === field.value)?.company_name}`
+                                                            : 'Select client'}
+                                                    </span>
+                                                    <ChevronsUpDown className="h-4 w-4 opacity-50" />
+                                                </Button>
+                                            </PopoverTrigger>
 
-                                    return (
-                                        <div className="md:col-span-1 grid gap-2 min-w-0">
-                                            <Label>Client</Label>
+                                            <PopoverContent className="w-[--radix-popover-trigger-width] p-0">
+                                                <Command>
+                                                    <CommandInput placeholder="Search client..." />
+                                                    <CommandEmpty>No client found.</CommandEmpty>
 
-                                            <Popover
-                                                open={open}
-                                                onOpenChange={setOpen}
-                                            >
-                                                <PopoverTrigger asChild>
-                                                    <Button
-                                                        variant="outline"
-                                                        role="combobox"
-                                                        className="w-full justify-between overflow-hidden"
-                                                    >
-                                                        <span className="truncate">
-                                                            {selectedClient
-                                                                ? `${selectedClient.name} – ${selectedClient.company_name}`
-                                                                : 'Select client'}
-                                                        </span>
-                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                    </Button>
-                                                </PopoverTrigger>
-
-                                                <PopoverContent
-                                                    align="start"
-                                                    className="w-[--radix-popover-trigger-width] p-0"
-                                                >
-                                                    <Command>
-                                                        <CommandInput placeholder="Search client..." />
-                                                        <CommandEmpty>
-                                                            No client found.
-                                                        </CommandEmpty>
-                                                        <CommandGroup>
-                                                            {clients.map(
-                                                                (client) => (
-                                                                    <CommandItem
-                                                                        key={
-                                                                            client.id
-                                                                        }
-                                                                        value={`${client.name} ${client.company_name}`}
-                                                                        onSelect={() => {
-                                                                            field.onChange(
-                                                                                String(
-                                                                                    client.id
-                                                                                )
-                                                                            );
-                                                                            setOpen(
-                                                                                false
-                                                                            );
-                                                                        }}
-                                                                    >
-                                                                        <span className="truncate">
-                                                                            {
-                                                                                client.name
-                                                                            }{' '}
-                                                                            –{' '}
-                                                                            {
-                                                                                client.company_name
-                                                                            }
-                                                                        </span>
-                                                                    </CommandItem>
-                                                                )
-                                                            )}
-                                                        </CommandGroup>
-                                                    </Command>
-                                                </PopoverContent>
-                                            </Popover>
-
-                                            {errors.client_id && (
-                                                <span className="text-sm text-red-500">
-                                                    {
-                                                        errors.client_id
-                                                            .message
-                                                    }
-                                                </span>
-                                            )}
-                                        </div>
-                                    );
-                                }}
+                                                    <CommandGroup>
+                                                        {clients.map((client) => (
+                                                            <CommandItem
+                                                                key={client.id}
+                                                                value={client.name}
+                                                                onSelect={() => {
+                                                                    field.onChange(String(client.id));
+                                                                    setClientOpen(false);
+                                                                }}
+                                                            >
+                                                                {client.name} – {client.company_name}
+                                                            </CommandItem>
+                                                        ))}
+                                                    </CommandGroup>
+                                                </Command>
+                                            </PopoverContent>
+                                        </Popover>
+                                    </div>
+                                )}
                             />
 
-                            {/* Fee Type */}
+                            {/* FEE TYPE */}
                             <Controller
                                 name="fee_type"
                                 control={control}
                                 render={({ field }) => (
                                     <div className="grid gap-2">
                                         <Label>Fee Type</Label>
-                                        <Select
-                                            value={field.value}
-                                            onValueChange={field.onChange}
-                                        >
-                                            <SelectTrigger className="w-full">
+                                        <Select value={field.value} onValueChange={field.onChange}>
+                                            <SelectTrigger>
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value={JOB_FEE_TYPE.PERCENTAGE}>
-                                                    Percentage
-                                                </SelectItem>
-                                                <SelectItem value={JOB_FEE_TYPE.FIXED}>
-                                                    Fixed
-                                                </SelectItem>
+                                                <SelectItem value={JOB_FEE_TYPE.PERCENTAGE}>Percentage</SelectItem>
+                                                <SelectItem value={JOB_FEE_TYPE.FIXED}>Fixed</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
                                 )}
                             />
 
-                            {/* Fee Value */}
+                            {/* FEE VALUE */}
                             <div className="grid gap-2">
                                 <Label>Fee Value</Label>
-                                <Input
-                                    type="number"
-                                    {...register('fee_value')}
-                                />
-                                {errors.fee_value && (
-                                    <span className="text-sm text-red-500">
-                                        {errors.fee_value.message}
-                                    </span>
-                                )}
+                                <Input type="number" {...register('fee_value')} />
                             </div>
 
-                            {/* Status */}
+                            {/* DEPARTMENT */}
+                            <Controller
+                                name="department_id"
+                                control={control}
+                                render={({ field }) => (
+                                    <div className="grid gap-2">
+                                        <Label>Department</Label>
+                                        <Select value={field.value?.toString() || ''} onValueChange={(val) => field.onChange(Number(val))}>
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                {departments.map((d) => (
+                                                    <SelectItem key={d.id} value={d.id.toString()}>
+                                                        {d.name}
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                )}
+                            />
+                        </div>
+
+                        {/* ROW 2 */}
+                        <div className="grid grid-cols-2 gap-4">
+                            <div className="grid gap-2">
+                                <Label>Salary Range</Label>
+                                <Input {...register('salary_range')} />
+                            </div>
+
                             <Controller
                                 name="status"
                                 control={control}
                                 render={({ field }) => (
                                     <div className="grid gap-2">
                                         <Label>Status</Label>
-                                        <Select
-                                            value={field.value}
-                                            onValueChange={field.onChange}
-                                        >
-                                            <SelectTrigger className="w-full">
+                                        <Select value={field.value} onValueChange={field.onChange}>
+                                            <SelectTrigger>
                                                 <SelectValue />
                                             </SelectTrigger>
                                             <SelectContent>
-                                                <SelectItem value={String(STATUS.ACTIVE)}>
-                                                    Active
-                                                </SelectItem>
-                                                <SelectItem value={String(STATUS.INACTIVE)}>
-                                                    Inactive
-                                                </SelectItem>
+                                                <SelectItem value={String(STATUS.ACTIVE)}>Active</SelectItem>
+                                                <SelectItem value={String(STATUS.INACTIVE)}>Inactive</SelectItem>
                                             </SelectContent>
                                         </Select>
                                     </div>
@@ -275,48 +219,55 @@ export default function Edit({ job, clients }) {
                             />
                         </div>
 
-                        {/* Title */}
+                        {/* ROW 3 */}
+                        <div className="grid grid-cols-3 gap-4">
+                            <div className="grid gap-2">
+                                <Label>Location</Label>
+                                <Input {...register('location')} />
+                            </div>
+
+                            <Controller
+                                name="priority"
+                                control={control}
+                                render={({ field }) => (
+                                    <div className="grid gap-2">
+                                        <Label>Priority</Label>
+                                        <Select value={field.value} onValueChange={field.onChange}>
+                                            <SelectTrigger>
+                                                <SelectValue />
+                                            </SelectTrigger>
+                                            <SelectContent>
+                                                <SelectItem value={String(PRIORITY.HIGH)}>High</SelectItem>
+                                                <SelectItem value={String(PRIORITY.MEDIUM)}>Medium</SelectItem>
+                                                <SelectItem value={String(PRIORITY.LOW)}>Low</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                )}
+                            />
+                        </div>
+
+                        {/* TITLE */}
                         <div className="grid gap-2">
                             <Label>Title</Label>
                             <Input {...register('title')} />
-                            {errors.title && (
-                                <span className="text-sm text-red-500">
-                                    {errors.title.message}
-                                </span>
-                            )}
                         </div>
 
-                        {/* Description */}
+                        {/* DESCRIPTION */}
                         <Controller
                             name="description"
                             control={control}
                             render={({ field }) => (
                                 <div className="grid gap-2">
                                     <Label>Description</Label>
-                                    <RichTextEditor
-                                        ref={editorRef}
-                                        value={field.value}
-                                        onChange={field.onChange}
-                                    />
-                                    {errors.description && (
-                                        <span className="text-sm text-red-500">
-                                            {
-                                                errors.description
-                                                    .message
-                                            }
-                                        </span>
-                                    )}
+                                    <RichTextEditor ref={editorRef} value={field.value || ''} onChange={field.onChange} />
                                 </div>
                             )}
                         />
 
-                        {/* Submit */}
+                        {/* SUBMIT */}
                         <div className="flex justify-end">
-                            <Button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="cursor-pointer"
-                            >
+                            <Button type="submit" disabled={isSubmitting}>
                                 {isSubmitting ? (
                                     <>
                                         <RotateCw className="mr-2 h-4 w-4 animate-spin" />
