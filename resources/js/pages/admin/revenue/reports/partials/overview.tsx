@@ -11,12 +11,13 @@ import {
 } from 'recharts';
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import DonutChart from '@/pages/admin/revenue/reports/partials/DonutChart';
 
 export default function Overview({ overview }) {
 
     if (!overview) return null;
 
-    const { summary, monthly, quarterly, by_client, by_industry } = overview;
+    const { summary, monthly, quarterly, by_client, by_industry, by_department } = overview;
 
     const currency = (val) => `$${Number(val).toLocaleString()}`;
 
@@ -125,6 +126,19 @@ export default function Overview({ overview }) {
                     </ResponsiveContainer>
                 </CardContent>
             </Card>
+
+            {/* ================= PIE CHARTS ================= */}
+            <div className="grid gap-6 md:grid-cols-2">
+                {/* INDUSTRY */}
+                <div className="rounded-xl border p-5 shadow-sm transition hover:shadow-md">
+                    <DonutChart data={by_industry} dataKey="revenue" nameKey="industry" title="Revenue by Industry" />
+                </div>
+
+                {/* DEPARTMENT */}
+                <div className="rounded-xl border p-5 shadow-sm transition hover:shadow-md">
+                    <DonutChart data={by_department} dataKey="revenue" nameKey="department" title="Revenue by Department" />
+                </div>
+            </div>
         </div>
     );
 }
