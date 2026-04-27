@@ -95,24 +95,24 @@ export default function Edit({ job, clients, departments }) {
                         <h2 className="text-lg font-semibold">Edit Job Information</h2>
 
                         {/* GRID BLOCK */}
-                        <div className="grid grid-cols-4 gap-4">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
                             {/* CLIENT */}
                             <Controller
                                 name="client_id"
                                 control={control}
                                 render={({ field }) => (
-                                    <div className="grid min-w-0">
+                                    <div className="grid min-w-0 gap-2">
                                         <Label>Client</Label>
 
                                         <Popover open={clientOpen} onOpenChange={setClientOpen}>
                                             <PopoverTrigger asChild>
-                                                <Button variant="outline" className="w-full justify-between">
-                                                    <span className="truncate">
+                                                <Button variant="outline" className="w-full min-w-0 justify-between overflow-hidden">
+                                                    <span className="block min-w-0 truncate">
                                                         {clients.find((c) => String(c.id) === field.value)
                                                             ? `${clients.find((c) => String(c.id) === field.value)?.name} – ${clients.find((c) => String(c.id) === field.value)?.company_name}`
                                                             : 'Select client'}
                                                     </span>
-                                                    <ChevronsUpDown className="h-4 w-4 opacity-50" />
+                                                    <ChevronsUpDown className="h-4 w-4 shrink-0 opacity-50" />
                                                 </Button>
                                             </PopoverTrigger>
 
@@ -147,11 +147,11 @@ export default function Edit({ job, clients, departments }) {
                                 name="fee_type"
                                 control={control}
                                 render={({ field }) => (
-                                    <div className="grid gap-2">
+                                    <div className="grid min-w-0 gap-2">
                                         <Label>Fee Type</Label>
                                         <Select value={field.value} onValueChange={field.onChange}>
-                                            <SelectTrigger>
-                                                <SelectValue />
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Select Fee Type" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value={JOB_FEE_TYPE.PERCENTAGE}>Percentage</SelectItem>
@@ -163,9 +163,9 @@ export default function Edit({ job, clients, departments }) {
                             />
 
                             {/* FEE VALUE */}
-                            <div className="grid gap-2">
+                            <div className="grid min-w-0 gap-2">
                                 <Label>Fee Value</Label>
-                                <Input type="number" {...register('fee_value')} />
+                                <Input type="number" className="w-full" {...register('fee_value')} />
                             </div>
 
                             {/* DEPARTMENT */}
@@ -173,11 +173,11 @@ export default function Edit({ job, clients, departments }) {
                                 name="department_id"
                                 control={control}
                                 render={({ field }) => (
-                                    <div className="grid gap-2">
+                                    <div className="grid min-w-0 gap-2">
                                         <Label>Department</Label>
                                         <Select value={field.value?.toString() || ''} onValueChange={(val) => field.onChange(Number(val))}>
-                                            <SelectTrigger>
-                                                <SelectValue />
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Select Department" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 {departments.map((d) => (
@@ -206,8 +206,8 @@ export default function Edit({ job, clients, departments }) {
                                     <div className="grid gap-2">
                                         <Label>Status</Label>
                                         <Select value={field.value} onValueChange={field.onChange}>
-                                            <SelectTrigger>
-                                                <SelectValue />
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Select Status" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value={String(STATUS.ACTIVE)}>Active</SelectItem>
@@ -220,7 +220,7 @@ export default function Edit({ job, clients, departments }) {
                         </div>
 
                         {/* ROW 3 */}
-                        <div className="grid grid-cols-3 gap-4">
+                        <div className="grid grid-cols-2 gap-4">
                             <div className="grid gap-2">
                                 <Label>Location</Label>
                                 <Input {...register('location')} />
@@ -233,8 +233,8 @@ export default function Edit({ job, clients, departments }) {
                                     <div className="grid gap-2">
                                         <Label>Priority</Label>
                                         <Select value={field.value} onValueChange={field.onChange}>
-                                            <SelectTrigger>
-                                                <SelectValue />
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Select Priority" />
                                             </SelectTrigger>
                                             <SelectContent>
                                                 <SelectItem value={String(PRIORITY.HIGH)}>High</SelectItem>
