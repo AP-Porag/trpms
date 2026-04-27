@@ -22,6 +22,7 @@ class Engagement extends BaseModel
         'fee_value',
         'salary_range',
         'status',
+        'stage',
     ];
 
     public function client(): BelongsTo
@@ -36,5 +37,10 @@ class Engagement extends BaseModel
     public function department()
     {
         return $this->belongsTo(Department::class);
+    }
+
+    public function jobCandidates()
+    {
+        return $this->hasMany(JobCandidate::class, 'job_id');
     }
 }

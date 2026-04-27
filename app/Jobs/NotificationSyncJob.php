@@ -6,10 +6,8 @@ use App\Services\Notification\NotificationService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
-class NotificationSyncJob implements ShouldQueue
+class NotificationSyncJob
 {
-    use Queueable;
-
     /**
      * Create a new job instance.
      */

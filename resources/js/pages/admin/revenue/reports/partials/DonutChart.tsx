@@ -17,15 +17,30 @@ const COLORS = [
     "#14b8a6",
 ];
 
-export default function DonutChart({ data, dataKey, nameKey, title }) {
+export default function DonutChart({ data = [], dataKey, nameKey, title }) {
 
     const [activeIndex, setActiveIndex] = useState(null);
 
-    const total = data.reduce((sum, item) => sum + Number(item[dataKey]), 0);
+    // 🔥 ENSURE NUMBERS
+    const safeData = data.map(item => ({
+        ...item,
+        [dataKey]: Number(item[dataKey]) || 0,
+    }));
+
+    const total = safeData.reduce((sum, item) => sum + item[dataKey], 0);
 
     const currency = (val) => `$${Number(val || 0).toLocaleString()}`;
 
-    // ================= ACTIVE SLICE (EXPAND EFFECT) =================
+    // ❌ Prevent crash / invisible chart
+    if (!safeData.length || total === 0) {
+        return (
+            <div className="h-72 flex items-center justify-center text-sm text-muted-foreground border rounded-xl">
+                No data available
+            </div>
+        );
+    }
+
+    // ================= ACTIVE SLICE =================
     const renderActiveShape = (props) => {
         const {
             cx, cy, innerRadius, outerRadius,
@@ -38,7 +53,7 @@ export default function DonutChart({ data, dataKey, nameKey, title }) {
                     cx={cx}
                     cy={cy}
                     innerRadius={innerRadius}
-                    outerRadius={outerRadius + 8} // expand
+                    outerRadius={outerRadius + 8}
                     startAngle={startAngle}
                     endAngle={endAngle}
                     fill={fill}
@@ -47,12 +62,9 @@ export default function DonutChart({ data, dataKey, nameKey, title }) {
         );
     };
 
-    // ================= CENTER DISPLAY =================
-    const activeItem = activeIndex !== null ? data[activeIndex] : null;
+    const activeItem = activeIndex !== null ? safeData[activeIndex] : null;
 
-    const centerLabel = activeItem
-        ? activeItem[nameKey]
-        : "Total";
+    const centerLabel = activeItem ? activeItem[nameKey] : "Total";
 
     const centerValue = activeItem
         ? currency(activeItem[dataKey])
@@ -62,26 +74,27 @@ export default function DonutChart({ data, dataKey, nameKey, title }) {
         ? ((activeItem[dataKey] / total) * 100).toFixed(1) + "%"
         : "";
 
-    const showLabels = data.length <= 6;
+    const showLabels = safeData.length <= 6;
 
     return (
         <div className="space-y-4">
 
             <h3 className="text-sm font-semibold">{title}</h3>
 
-            <div className="h-72 relative">
+            {/* 🔥 IMPORTANT: fixed height wrapper */}
+            <div style={{ width: "100%", height: 280, position: "relative" }}>
 
                 <ResponsiveContainer width="100%" height="100%">
                     <PieChart>
 
                         <Pie
-                            data={data}
+                            data={safeData}
                             dataKey={dataKey}
                             nameKey={nameKey}
                             innerRadius={70}
                             outerRadius={100}
                             paddingAngle={3}
-                            activeIndex={activeIndex}
+                            activeIndex={activeIndex ?? undefined}
                             activeShape={renderActiveShape}
                             onMouseEnter={(_, index) => setActiveIndex(index)}
                             onMouseLeave={() => setActiveIndex(null)}
@@ -93,7 +106,7 @@ export default function DonutChart({ data, dataKey, nameKey, title }) {
                                     : false
                             }
                         >
-                            {data.map((entry, index) => (
+                            {safeData.map((entry, index) => (
                                 <Cell
                                     key={index}
                                     fill={COLORS[index % COLORS.length]}
@@ -114,7 +127,7 @@ export default function DonutChart({ data, dataKey, nameKey, title }) {
                     </PieChart>
                 </ResponsiveContainer>
 
-                {/* ================= CENTER ================= */}
+                {/* CENTER */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center text-center pointer-events-none">
                     <p className="text-sm text-muted-foreground">
                         {centerLabel}
@@ -133,9 +146,9 @@ export default function DonutChart({ data, dataKey, nameKey, title }) {
 
             </div>
 
-            {/* ================= LEGEND ================= */}
+            {/* LEGEND */}
             <div className="space-y-2 text-sm">
-                {data.map((item, index) => (
+                {safeData.map((item, index) => (
                     <div
                         key={index}
                         className="flex justify-between items-center hover:bg-muted/50 px-2 py-1 rounded transition"

@@ -6,10 +6,8 @@ use App\Services\Event\EventService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 
-class EventSyncJob implements ShouldQueue
+class EventSyncJob
 {
-    use Queueable;
-
     /**
      * Create a new job instance.
      */

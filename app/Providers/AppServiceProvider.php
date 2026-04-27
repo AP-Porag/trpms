@@ -3,7 +3,9 @@
 namespace App\Providers;
 
 use App\Models\Invoice;
+use App\Models\JobCandidate;
 use App\Models\Notification;
+use App\Observers\JobCandidateObserver;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Database\Eloquent\Relations\Relation;
 use App\Models\Placement;
@@ -56,5 +58,7 @@ class AppServiceProvider extends ServiceProvider
                 return Notification::where('status', 0)->count();
             },
         ]);
+
+        JobCandidate::observe(JobCandidateObserver::class);
     }
 }
