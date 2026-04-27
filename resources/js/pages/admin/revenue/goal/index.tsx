@@ -51,7 +51,7 @@ export default function Index({ goal, breakdowns }) {
         }
 
         if (!aCompanies || !bCompanies || !cCompanies) {
-            toast.error('Company count is required for A, B and C tiers');
+            toast.error('Company count is required for A, B and C ranks');
             return;
         }
 
@@ -113,6 +113,14 @@ export default function Index({ goal, breakdowns }) {
         );
     };
 
+    const getHelperText = (count, percent) => {
+        if (!count || !percent) {
+            return 'Example: 5 clients contributing 50% of your total revenue goal.';
+        }
+
+        return `These ${count} client${count == 1 ? '' : 's'} will contribute ${percent}% of your total revenue goal.`;
+    };
+
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Revenue Goals" />
@@ -155,14 +163,14 @@ export default function Index({ goal, breakdowns }) {
                 {breakdowns?.length > 0 && (
                     <div className="overflow-hidden rounded-lg bg-gray-200 shadow">
                         <div className="m-4 text-sm text-gray-600">
-                            Define how your yearly revenue will be distributed across client tiers.
-                            <br />A = High-value clients, B = Mid-level, C = Low-value.
+                            Define how your yearly revenue will be distributed across client ranks.
+                            <br />A = High-value clients, B = Mid-value clients, C = Low-value clients.
                         </div>
                         <table className="w-full bg-white text-sm">
                             <thead className="border-b bg-gray-50">
                                 <tr>
                                     <th className="px-4 py-3 text-left">Rank</th>
-                                    <th className="px-4 py-3 text-left">Companies</th>
+                                    <th className="px-4 py-3 text-left">Clients</th>
                                     <th className="px-4 py-3 text-left">Revenue %</th>
                                     <th className="px-4 py-3 text-left">Low</th>
                                     <th className="px-4 py-3 text-left">Target</th>
@@ -247,16 +255,24 @@ export default function Index({ goal, breakdowns }) {
 
                                 <hr className="my-4" />
 
-                                <h3 className="mb-2 font-medium">Client Rank Breakdown</h3>
+                                <h3 className="mb-2 font-medium">Client Rating Breakdown</h3>
 
                                 <div className="space-y-3">
-                                    <p className="text-sm">Number of Companies</p>
+                                    <p className="text-sm">Number of Clients</p>
                                     <div className="grid grid-cols-3 gap-4">
                                         <div>
-                                            <label className="text-sm">A Tier</label>
+                                            <label className="text-sm">A – High Value Clients</label>
+                                            {/*<input*/}
+                                            {/*    type="number"*/}
+                                            {/*    min="1"*/}
+                                            {/*    className="w-full rounded border p-2"*/}
+                                            {/*    value={aCompanies}*/}
+                                            {/*    onChange={(e) => setACompanies(e.target.value)}*/}
+                                            {/*/>*/}
                                             <input
                                                 type="number"
                                                 min="1"
+                                                placeholder="e.g. 5"
                                                 className="w-full rounded border p-2"
                                                 value={aCompanies}
                                                 onChange={(e) => setACompanies(e.target.value)}
@@ -265,22 +281,40 @@ export default function Index({ goal, breakdowns }) {
 
                                         <div>
                                             <label className="text-sm">Revenue %</label>
+                                            {/*<input*/}
+                                            {/*    className="w-full rounded border p-2"*/}
+                                            {/*    value={aPercent}*/}
+                                            {/*    onChange={(e) => setAPercent(e.target.value)}*/}
+                                            {/*/>*/}
                                             <input
+                                                type="number"
+                                                min="0"
+                                                max="100"
+                                                placeholder="e.g. 50"
                                                 className="w-full rounded border p-2"
                                                 value={aPercent}
                                                 onChange={(e) => setAPercent(e.target.value)}
                                             />
                                         </div>
 
-                                        <div className="flex items-end text-sm text-gray-500">~80% per company of revenue goal</div>
+                                        {/*<div className="flex items-end text-sm text-gray-500">~80% per company of revenue goal</div>*/}
+                                        <div className="flex items-end text-xs text-gray-500">{getHelperText(aCompanies, aPercent)}</div>
                                     </div>
 
                                     <div className="grid grid-cols-3 gap-4">
                                         <div>
-                                            <label className="text-sm">B Tier</label>
+                                            <label className="text-sm">B – Mid Value Clients</label>
+                                            {/*<input*/}
+                                            {/*    type="number"*/}
+                                            {/*    min="1"*/}
+                                            {/*    className="w-full rounded border p-2"*/}
+                                            {/*    value={bCompanies}*/}
+                                            {/*    onChange={(e) => setBCompanies(e.target.value)}*/}
+                                            {/*/>*/}
                                             <input
                                                 type="number"
                                                 min="1"
+                                                placeholder="e.g. 5"
                                                 className="w-full rounded border p-2"
                                                 value={bCompanies}
                                                 onChange={(e) => setBCompanies(e.target.value)}
@@ -289,22 +323,40 @@ export default function Index({ goal, breakdowns }) {
 
                                         <div>
                                             <label className="text-sm">Revenue %</label>
+                                            {/*<input*/}
+                                            {/*    className="w-full rounded border p-2"*/}
+                                            {/*    value={bPercent}*/}
+                                            {/*    onChange={(e) => setBPercent(e.target.value)}*/}
+                                            {/*/>*/}
                                             <input
+                                                type="number"
+                                                min="0"
+                                                max="100"
+                                                placeholder="e.g. 30"
                                                 className="w-full rounded border p-2"
                                                 value={bPercent}
                                                 onChange={(e) => setBPercent(e.target.value)}
                                             />
                                         </div>
 
-                                        <div className="flex items-end text-sm text-gray-500">5-10% per company of revenue goal</div>
+                                        {/*<div className="flex items-end text-sm text-gray-500">5-10% per company of revenue goal</div>*/}
+                                        <div className="flex items-end text-xs text-gray-500">{getHelperText(bCompanies, bPercent)}</div>
                                     </div>
 
                                     <div className="grid grid-cols-3 gap-4">
                                         <div>
-                                            <label className="text-sm">C Tier</label>
+                                            <label className="text-sm">C – Low Value Clients</label>
+                                            {/*<input*/}
+                                            {/*    type="number"*/}
+                                            {/*    min="1"*/}
+                                            {/*    className="w-full rounded border p-2"*/}
+                                            {/*    value={cCompanies}*/}
+                                            {/*    onChange={(e) => setCCompanies(e.target.value)}*/}
+                                            {/*/>*/}
                                             <input
                                                 type="number"
                                                 min="1"
+                                                placeholder="e.g. 10"
                                                 className="w-full rounded border p-2"
                                                 value={cCompanies}
                                                 onChange={(e) => setCCompanies(e.target.value)}
@@ -313,14 +365,24 @@ export default function Index({ goal, breakdowns }) {
 
                                         <div>
                                             <label className="text-sm">Revenue %</label>
+                                            {/*<input*/}
+                                            {/*    className="w-full rounded border p-2"*/}
+                                            {/*    value={cPercent}*/}
+                                            {/*    onChange={(e) => setCPercent(e.target.value)}*/}
+                                            {/*/>*/}
                                             <input
+                                                type="number"
+                                                min="0"
+                                                max="100"
+                                                placeholder="e.g. 20"
                                                 className="w-full rounded border p-2"
                                                 value={cPercent}
                                                 onChange={(e) => setCPercent(e.target.value)}
                                             />
                                         </div>
 
-                                        <div className="flex items-end text-sm text-gray-500">1-5% per company of revenue goal</div>
+                                        {/*<div className="flex items-end text-sm text-gray-500">1-5% per company of revenue goal</div>*/}
+                                        <div className="flex items-end text-xs text-gray-500">{getHelperText(cCompanies, cPercent)}</div>
                                     </div>
                                 </div>
 
