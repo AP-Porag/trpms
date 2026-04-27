@@ -11,7 +11,7 @@ class EngagementRequest extends BaseRequest
         return [
             'client_id' => 'required',
             'title' => 'required',
-            'description' => 'required',
+            'description_id' => 'required',
             'fee_type' => 'required',
             'fee_value' => 'required',
             'department' => 'required',

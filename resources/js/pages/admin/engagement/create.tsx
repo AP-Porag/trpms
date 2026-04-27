@@ -11,15 +11,12 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
+import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
 import { Popover, PopoverContent, PopoverTrigger } from '@/components/ui/popover';
 
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem } from '@/components/ui/command';
-
+import RichTextEditor from '@/components/forms/RichTextEditor';
 import { ChevronsUpDown, RotateCw } from 'lucide-react';
 
-import RichTextEditor from '@/components/forms/RichTextEditor';
-
-// ✅ project-level constants
 import { JOB_FEE_TYPE, PRIORITY, STATUS } from '@/utils/constants';
 
 const breadcrumbs = [{ title: 'Create Job', href: '/jobs/create' }];
@@ -27,6 +24,7 @@ const breadcrumbs = [{ title: 'Create Job', href: '/jobs/create' }];
 const jobSchema = z.object({
     title: z.string().min(3, 'Title is required'),
     client_id: z.string().min(1, 'Client is required'),
+    department_id: z.string().min(1, 'Department is required'),
     description: z.string().min(3, 'Description is required'),
     salary_range: z.string().min(3, 'Salary range is required'),
     fee_type: z.enum(Object.values(JOB_FEE_TYPE)),
@@ -38,6 +36,7 @@ const jobSchema = z.object({
 
 export default function Create({ clients, departments }) {
     const editorRef = useRef(null);
+    const [clientOpen, setClientOpen] = useState(false);
 
     const {
         register,
@@ -49,31 +48,42 @@ export default function Create({ clients, departments }) {
         defaultValues: {
             fee_type: JOB_FEE_TYPE.PERCENTAGE,
             status: String(STATUS.ACTIVE),
+
+            client_id: '',
+            department_id: '',
+            priority: '',
+            description: '',
+            location: '',
+            salary_range: '',
+            fee_value: '',
         },
     });
 
     const saveJob = async (data) => {
-        let html = data.description;
+        try {
+            let html = data.description;
 
-        const tempImages = editorRef.current?.editor?.storage?.tempImages || [];
+            const tempImages = editorRef.current?.editor?.storage?.tempImages || [];
 
-        if (tempImages.length) {
-            const formData = new FormData();
-            formData.append('content', html);
+            if (tempImages.length) {
+                const formData = new FormData();
+                formData.append('content', html);
 
-            tempImages.forEach((img, i) => {
-                formData.append(`images[${i}]`, img.file);
+                tempImages.forEach((img, i) => {
+                    formData.append(`images[${i}]`, img.file);
+                });
+
+                const response = await axios.post(route('editor.finalize'), formData);
+                html = response.data.html;
+            }
+
+            router.post(route('jobs.store'), {
+                ...data,
+                description: html,
             });
-
-            const response = await axios.post(route('editor.finalize'), formData);
-
-            html = response.data.html;
+        } catch (err) {
+            console.error('SUBMIT ERROR:', err);
         }
-
-        router.post(route('jobs.store'), {
-            ...data,
-            description: html,
-        });
     };
 
     return (
@@ -82,67 +92,67 @@ export default function Create({ clients, departments }) {
 
             <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="rounded-xl border p-5">
-                    <form onSubmit={handleSubmit(saveJob)} className="space-y-6">
+                    <form
+                        onSubmit={handleSubmit(saveJob, (errors) => {
+                            console.log('FORM ERROR:', errors);
+                        })}
+                        className="space-y-6"
+                    >
                         <h2 className="text-lg font-semibold">Job Information</h2>
 
-                        {/* Client + Fee */}
                         <div className="grid grid-cols-4 gap-4">
-                            {/* Client Combobox */}
+                            {/* Client */}
                             <Controller
                                 name="client_id"
                                 control={control}
-                                render={({ field }) => {
-                                    const [open, setOpen] = useState(false);
+                                render={({ field }) => (
+                                    <div className="grid min-w-0 gap-2 md:col-span-1">
+                                        <Label>Client</Label>
 
-                                    return (
-                                        <div className="grid min-w-0 gap-2 md:col-span-1">
-                                            <Label>Client</Label>
+                                        <Popover open={clientOpen} onOpenChange={setClientOpen}>
+                                            <PopoverTrigger asChild>
+                                                <Button variant="outline" role="combobox" className="w-full justify-between overflow-hidden">
+                                                    <span className="truncate">
+                                                        {field.value
+                                                            ? (() => {
+                                                                  const c = clients.find((x) => String(x.id) === field.value);
+                                                                  return c ? `${c.name} – ${c.company_name}` : 'Select client';
+                                                              })()
+                                                            : 'Select client'}
+                                                    </span>
 
-                                            <Popover open={open} onOpenChange={setOpen}>
-                                                <PopoverTrigger asChild>
-                                                    <Button variant="outline" role="combobox" className="w-full justify-between overflow-hidden">
-                                                        <span className="truncate">
-                                                            {field.value
-                                                                ? (() => {
-                                                                      const c = clients.find((x) => String(x.id) === field.value);
-                                                                      return c ? `${c.name} – ${c.company_name}` : 'Select client';
-                                                                  })()
-                                                                : 'Select client'}
-                                                        </span>
+                                                    <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                                </Button>
+                                            </PopoverTrigger>
 
-                                                        <ChevronsUpDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
-                                                    </Button>
-                                                </PopoverTrigger>
+                                            <PopoverContent align="start" className="w-[--radix-popover-trigger-width] p-0">
+                                                <Command>
+                                                    <CommandInput placeholder="Search client..." />
+                                                    <CommandEmpty>No client found.</CommandEmpty>
 
-                                                <PopoverContent align="start" className="w-[--radix-popover-trigger-width] p-0">
-                                                    <Command>
-                                                        <CommandInput placeholder="Search client..." />
-                                                        <CommandEmpty>No client found.</CommandEmpty>
+                                                    <CommandGroup>
+                                                        {clients.map((client) => (
+                                                            <CommandItem
+                                                                key={client.id}
+                                                                value={`${client.name} ${client.company_name}`}
+                                                                onSelect={() => {
+                                                                    field.onChange(String(client.id));
+                                                                    setClientOpen(false);
+                                                                }}
+                                                            >
+                                                                <span className="truncate">
+                                                                    {client.name} – {client.company_name}
+                                                                </span>
+                                                            </CommandItem>
+                                                        ))}
+                                                    </CommandGroup>
+                                                </Command>
+                                            </PopoverContent>
+                                        </Popover>
 
-                                                        <CommandGroup>
-                                                            {clients.map((client) => (
-                                                                <CommandItem
-                                                                    key={client.id}
-                                                                    value={`${client.name} ${client.company_name}`}
-                                                                    onSelect={() => {
-                                                                        field.onChange(String(client.id));
-                                                                        setOpen(false);
-                                                                    }}
-                                                                >
-                                                                    <span className="truncate">
-                                                                        {client.name} – {client.company_name}
-                                                                    </span>
-                                                                </CommandItem>
-                                                            ))}
-                                                        </CommandGroup>
-                                                    </Command>
-                                                </PopoverContent>
-                                            </Popover>
-
-                                            {errors.client_id && <span className="text-sm text-red-500">{errors.client_id.message}</span>}
-                                        </div>
-                                    );
-                                }}
+                                        {errors.client_id && <span className="text-sm text-red-500">{errors.client_id.message}</span>}
+                                    </div>
+                                )}
                             />
 
                             {/* Fee Type */}
@@ -152,7 +162,7 @@ export default function Create({ clients, departments }) {
                                 render={({ field }) => (
                                     <div className="grid gap-2">
                                         <Label>Fee Type</Label>
-                                        <Select value={field.value} onValueChange={field.onChange}>
+                                        <Select value={field.value ?? ''} onValueChange={field.onChange}>
                                             <SelectTrigger className="w-full">
                                                 <SelectValue />
                                             </SelectTrigger>
@@ -168,19 +178,24 @@ export default function Create({ clients, departments }) {
                             {/* Fee Value */}
                             <div className="grid gap-2">
                                 <Label>Fee Value</Label>
-                                <Input type="number" {...register('fee_value')} />
+                                <Input
+                                    type="number"
+                                    {...register('fee_value', {
+                                        setValueAs: (v) => v?.toString(),
+                                    })}
+                                />
                                 {errors.fee_value && <span className="text-sm text-red-500">{errors.fee_value.message}</span>}
                             </div>
 
                             {/* Department */}
                             <Controller
-                                name="departments"
+                                name="department_id"
                                 control={control}
                                 render={({ field }) => (
                                     <div className="grid gap-2">
                                         <Label>Department</Label>
 
-                                        <Select value={field.value?.toString()} onValueChange={(val) => field.onChange(Number(val))}>
+                                        <Select value={field.value ?? ''} onValueChange={field.onChange}>
                                             <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Select Department" />
                                             </SelectTrigger>
@@ -197,18 +212,12 @@ export default function Create({ clients, departments }) {
                                 )}
                             />
                         </div>
+
                         <div className="grid grid-cols-2 gap-4">
-                            {/* Salary Range */}
                             <div className="grid gap-2">
                                 <Label>Salary Range</Label>
-                                <Input
-                                    type="number"
-                                    {...register('salary_range', {
-                                        setValueAs: (v) => v?.toString(),
-                                    })}
-                                />
-                                <span></span>
-                                {errors.fee_value && <span className="text-sm text-red-500">{errors.salary_range.message}</span>}
+                                <Input {...register('salary_range')} />
+                                {errors.salary_range && <span className="text-sm text-red-500">{errors.salary_range.message}</span>}
                             </div>
 
                             {/* Status */}
@@ -218,7 +227,7 @@ export default function Create({ clients, departments }) {
                                 render={({ field }) => (
                                     <div className="grid gap-2">
                                         <Label>Status</Label>
-                                        <Select value={field.value} onValueChange={field.onChange}>
+                                        <Select value={field.value ?? ''} onValueChange={field.onChange}>
                                             <SelectTrigger className="w-full">
                                                 <SelectValue />
                                             </SelectTrigger>
@@ -231,19 +240,17 @@ export default function Create({ clients, departments }) {
                                 )}
                             />
                         </div>
+
                         <div className="grid grid-cols-3 gap-4">
-                            {/* Title */}
                             <div className="grid gap-2">
                                 <Label>Title</Label>
                                 <Input {...register('title')} />
                                 {errors.title && <span className="text-sm text-red-500">{errors.title.message}</span>}
                             </div>
 
-                            {/* Location */}
                             <div className="grid gap-2">
                                 <Label>Location</Label>
                                 <Input {...register('location')} />
-                                {errors.location && <span className="text-sm text-red-500">{errors.location.message}</span>}
                             </div>
 
                             {/* Priority */}
@@ -253,7 +260,7 @@ export default function Create({ clients, departments }) {
                                 render={({ field }) => (
                                     <div className="grid gap-2">
                                         <Label>Priority</Label>
-                                        <Select value={field.value} onValueChange={field.onChange}>
+                                        <Select value={field.value ?? ''} onValueChange={field.onChange}>
                                             <SelectTrigger className="w-full">
                                                 <SelectValue placeholder="Select Priority" />
                                             </SelectTrigger>
@@ -275,15 +282,14 @@ export default function Create({ clients, departments }) {
                             render={({ field }) => (
                                 <div className="grid gap-2">
                                     <Label>Description</Label>
-                                    <RichTextEditor ref={editorRef} value={field.value} onChange={field.onChange} />
+                                    <RichTextEditor ref={editorRef} value={field.value ?? ''} onChange={field.onChange} />
                                     {errors.description && <span className="text-sm text-red-500">{errors.description.message}</span>}
                                 </div>
                             )}
                         />
 
-                        {/* Submit */}
                         <div className="flex justify-end">
-                            <Button type="submit" disabled={isSubmitting} className="cursor-pointer">
+                            <Button type="submit" disabled={isSubmitting}>
                                 {isSubmitting ? (
                                     <>
                                         <RotateCw className="mr-2 h-4 w-4 animate-spin" />

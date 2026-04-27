@@ -44,6 +44,7 @@ class EngagementController extends BaseController
      */
     public function store(EngagementRequest $request)
     {
+        return $request;
         $this->service->create($request);
         return redirect()
             ->route('jobs.index')

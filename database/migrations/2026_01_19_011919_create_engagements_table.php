@@ -20,7 +20,7 @@ return new class extends Migration
             $table->string('title');
             $table->text('description');
             $table->string('salary_range')->nullable();
-            $table->string('department')->nullable();
+            $table->foreignId('department_id')->nullable();
             $table->string('location')->nullable();
             $table->string('priority')->nullable();
             $table->string('fee_type')->default(GlobalConstant::JOB_FEE_TYPE_PERCENTAGE);

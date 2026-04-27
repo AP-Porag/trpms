@@ -14,7 +14,7 @@ class Engagement extends BaseModel
     protected $fillable = [
         'client_id',
         'title',
-        'description',
+        'description_id',
         'fee_type',
         'fee_value',
         'salary_range',

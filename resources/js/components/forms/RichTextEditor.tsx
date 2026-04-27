@@ -15,6 +15,7 @@ import TableToolbar from './TableToolbar';
 /**
  * ✅ EXTENDED TABLE WITH ALIGN SUPPORT
  * This allows: editor.updateAttributes("table", { align: "center" })
+ *
  */
 const AlignedTable = Table.extend({
     addAttributes() {
@@ -22,9 +23,8 @@ const AlignedTable = Table.extend({
             ...this.parent?.(),
             align: {
                 default: 'left',
-                parseHTML: element =>
-                    element.getAttribute('data-align'),
-                renderHTML: attributes => ({
+                parseHTML: (element) => element.getAttribute('data-align'),
+                renderHTML: (attributes) => ({
                     'data-align': attributes.align,
                 }),
             },
@@ -58,8 +58,7 @@ const RichTextEditor = forwardRef(({ value, onChange }, ref) => {
 
         editorProps: {
             attributes: {
-                class:
-                    'ProseMirror prose prose-sm max-w-none min-h-[260px] px-3 py-2 focus:outline-none',
+                class: 'ProseMirror prose prose-sm max-w-none min-h-[260px] px-3 py-2 focus:outline-none',
             },
         },
 

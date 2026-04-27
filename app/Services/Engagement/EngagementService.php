@@ -48,7 +48,7 @@ class EngagementService extends BaseService
         return Engagement::create([
             'client_id' => $data->client_id,
             'title' => $data->title,
-            'description' => $data->description,
+            'description_id' => $data->description,
             'fee_type' => $data->fee_type,
             'fee_value' => $data->fee_value,
             'salary_range' => $data->salary_range,
