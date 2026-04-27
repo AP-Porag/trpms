@@ -88,10 +88,18 @@ class RevenueReportService
             ->orderByDesc('revenue')
             ->get();
 
-        $byDepartment = (clone $query)
-            ->join('engagements', 'engagements.id', '=', 'invoices.engagement_id')
+        $byDepartment = DB::table('placements')
+            ->join('invoices', 'invoices.id', '=', 'placements.invoice_id')
+            ->join('engagements', 'engagements.id', '=', 'placements.job_id')
             ->join('departments', 'departments.id', '=', 'engagements.department_id')
-            ->selectRaw('departments.name as department, SUM(invoices.amount) as revenue')
+
+            ->where('invoices.status', 'paid')
+            ->whereYear('invoices.paid_date', $filters['year'])
+
+            ->selectRaw('
+        departments.name as department,
+        SUM(placements.placement_fee) as revenue
+    ')
             ->groupBy('departments.name')
             ->orderByDesc('revenue')
             ->get();
