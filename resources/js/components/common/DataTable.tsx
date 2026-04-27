@@ -153,7 +153,9 @@ export default function DataTable({
                                               </div>
 
                                               {/* Table */}
-                                              <table className="min-w-full table-auto">
+                                              <div className="w-full overflow-x-auto">
+                                                <div className="min-w-max">
+                                                <table className="w-full">
                                                   <thead className="border-b text-left">
                                                       <tr>
                                                           {columns.map((col) => (
@@ -293,6 +295,9 @@ export default function DataTable({
                                                       )}
                                                   </tbody>
                                               </table>
+                                              </div>
+                                              </div>
+                                              
 
                                               {/* Pagination Controls */}
                                               {meta && (

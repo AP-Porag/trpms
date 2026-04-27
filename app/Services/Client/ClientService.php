@@ -195,6 +195,7 @@ class ClientService extends BaseService
         return [
             'targetAccount' => $targetAccount->load([
                 'notes',
+                'contacts',
                 'agreements:id,client_id,file_path,original_name,agreement_type,signed_date',
             ]),
         ];

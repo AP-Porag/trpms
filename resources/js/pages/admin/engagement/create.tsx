@@ -89,7 +89,8 @@ export default function Create({ clients, departments }) {
                         <h2 className="text-lg font-semibold">Job Information</h2>
 
                         {/* Client + Fee */}
-                        <div className="grid grid-cols-4 gap-4">
+                        {/* <div className="grid grid-cols-3 gap-4"> */}
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                             {/* Client Combobox */}
                             <Controller
                                 name="client_id"
@@ -175,32 +176,10 @@ export default function Create({ clients, departments }) {
                                 {errors.fee_value && <span className="text-sm text-red-500">{errors.fee_value.message}</span>}
                             </div>
 
-                            {/* Department */}
-                            <Controller
-                                name="department_id"
-                                control={control}
-                                render={({ field }) => (
-                                    <div className="grid gap-2">
-                                        <Label>Department</Label>
-
-                                        <Select value={field.value?.toString()} onValueChange={(val) => field.onChange(Number(val))}>
-                                            <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Select Department" />
-                                            </SelectTrigger>
-
-                                            <SelectContent>
-                                                {departments?.map((dept) => (
-                                                    <SelectItem key={dept.id} value={dept.id.toString()}>
-                                                        {dept.name}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    </div>
-                                )}
-                            />
+                           
                         </div>
-                        <div className="grid grid-cols-2 gap-4">
+                        {/* <div className="grid grid-cols-2 gap-4"> */}
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Salary Range */}
                             <div className="grid gap-2">
                                 <Label>Salary Range</Label>
@@ -234,7 +213,8 @@ export default function Create({ clients, departments }) {
                                 )}
                             />
                         </div>
-                        <div className="grid grid-cols-3 gap-4">
+                        {/* <div className="grid grid-cols-3 gap-4"> */}
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                             {/* Location */}
                             <div className="grid gap-2">
                                 <Label>Location</Label>
@@ -257,6 +237,30 @@ export default function Create({ clients, departments }) {
                                                 <SelectItem value={String(PRIORITY.HIGH)}>High</SelectItem>
                                                 <SelectItem value={String(PRIORITY.MEDIUM)}>Medium</SelectItem>
                                                 <SelectItem value={String(PRIORITY.LOW)}>Low</SelectItem>
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+                                )}
+                            />
+                             {/* Department */}
+                            <Controller
+                                name="department_id"
+                                control={control}
+                                render={({ field }) => (
+                                    <div className="grid gap-2">
+                                        <Label>Department</Label>
+
+                                        <Select value={field.value?.toString()} onValueChange={(val) => field.onChange(Number(val))}>
+                                            <SelectTrigger className="w-full">
+                                                <SelectValue placeholder="Select Department" />
+                                            </SelectTrigger>
+
+                                            <SelectContent>
+                                                {departments?.map((dept) => (
+                                                    <SelectItem key={dept.id} value={dept.id.toString()}>
+                                                        {dept.name}
+                                                    </SelectItem>
+                                                ))}
                                             </SelectContent>
                                         </Select>
                                     </div>

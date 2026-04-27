@@ -21,6 +21,10 @@ class Lead extends Model
     {
         return $this->morphMany(Note::class, 'noteable')->latest();
     }
+     public function contacts()
+    {
+        return $this->morphMany(Contact::class, 'contactable')->latest();
+    }
     public function departments()
     {
         return $this->belongsToMany(Department::class, 'lead_department');

@@ -61,11 +61,11 @@ export default function Show({ targetAccount }: any) {
 
                 {/* ================= NOTES ================= */}
                 
-            <NoteComponent noteableType="target_account" noteableId={targetAccount.id} notes={targetAccount.notes}/>
+            <NoteComponent noteableType="client" noteableId={targetAccount.id} notes={targetAccount.notes}/>
 
              {/* ================= Contact ================= */}
                             
-             <ContactComponent contactableType="target_account" contactableId={targetAccount.id} contacts={targetAccount.contacts} />
+             <ContactComponent contactableType="client" contactableId={targetAccount.id} contacts={targetAccount.contacts} />
             </div>
         </AppLayout>
     );
