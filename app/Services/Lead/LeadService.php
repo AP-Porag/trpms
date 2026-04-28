@@ -161,6 +161,7 @@ class LeadService extends BaseService
             'lead' => $lead->load([
                 'departments',
                 'notes',
+                'contacts'
             ]),
         ];
     }

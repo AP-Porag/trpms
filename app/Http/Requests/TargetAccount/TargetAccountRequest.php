@@ -31,7 +31,7 @@ class TargetAccountRequest extends BaseRequest
 
             'current_openings'  => ['nullable', 'string'],
 
-            'revenue_potential' => ['nullable', 'string'],
+            'revenue_potential' => ['required', 'numeric'],
         ];
     }
 

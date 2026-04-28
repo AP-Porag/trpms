@@ -5,9 +5,9 @@ import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Head, router } from '@inertiajs/react';
-import { FileText, RotateCw, Upload, Trash2 } from 'lucide-react';
+import { FileText, RotateCw, Trash2, Upload } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { useEffect, useState } from 'react';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
@@ -64,9 +64,7 @@ export default function Create() {
         });
     };
 
-
-
- const removeFile = (index: number) => {
+    const removeFile = (index: number) => {
         const updated = resumes.filter((_, i) => i !== index);
         setFiles(updated);
         setValue('file', updated);
@@ -83,7 +81,7 @@ export default function Create() {
                         <div className="mb-6 rounded-xl bg-white p-6 shadow">
                             <h2 className="mb-4 text-lg font-semibold">Candidate Information</h2>
 
-                            <div className="grid gap-4 md:grid-cols-2">
+                            {/* <div className="grid gap-4 md:grid-cols-2">
                                 {[
                                     ['first_name', 'First Name'],
                                     ['last_name', 'Last Name'],
@@ -98,6 +96,39 @@ export default function Create() {
                                         {errors[f] && <span className="text-sm text-red-500">{errors[f].message}</span>}
                                     </div>
                                 ))}
+                            </div> */}
+
+                            <div className="grid gap-4 md:grid-cols-2">
+                                {[
+                                    ['first_name', 'First Name'],
+                                    ['last_name', 'Last Name'],
+                                    ['email', 'Email'],
+                                    ['phone', 'Phone'],
+                                    ['expected_salary', 'Expected Salary'],
+                                    ['address', 'Address'],
+                                ].map(([f, l]) => (
+                                    <div key={f} className="grid gap-2">
+                                        <Label>{l}</Label>
+
+                                        {f === 'expected_salary' ? (
+                                            <div className="relative">
+                                                <span className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2">$</span>
+
+                                                <Input {...register(f)} className={cn(errors[f] && 'border-red-500', 'pr-24 pl-7')} />
+
+                                                <span className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2">k/per year</span>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <Input {...register(f)} className={cn(errors[f] && 'border-red-500')} />
+
+                                                {errors[f] && <span className="text-sm text-red-500">{errors[f].message}</span>}
+                                            </>
+                                        )}
+
+                                        {f === 'expected_salary' && errors[f] && <span className="text-sm text-red-500">{errors[f].message}</span>}
+                                    </div>
+                                ))}
                             </div>
 
                             {/*<div className="mt-4">*/}
@@ -110,7 +141,7 @@ export default function Create() {
                         <div className="mb-6 rounded-xl bg-white p-6 shadow">
                             <h2 className="mb-4 text-lg font-semibold">Resume</h2>
 
-                            <label className="flex p-6 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed text-center">
+                            <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center">
                                 <Upload className="mb-2 h-6 w-6" />
                                 <span className="text-sm">Upload</span>
                                 <input type="file" hidden multiple onChange={(e) => setValue('file', Array.from(e.target.files))} />
@@ -131,15 +162,15 @@ export default function Create() {
                                         //     <span className="truncate">{file.name}</span>
                                         // </div>
                                         <div key={index} className="flex items-center justify-between rounded border p-2">
-                                        <div className="flex items-center gap-2">
-                                            <FileText className="h-5 w-5" />
-                                            <span className="truncate text-sm">{file.name}</span>
-                                        </div>
+                                            <div className="flex items-center gap-2">
+                                                <FileText className="h-5 w-5" />
+                                                <span className="truncate text-sm">{file.name}</span>
+                                            </div>
 
-                                        <button type="button" onClick={() => removeFile(index)}>
-                                            <Trash2 className="h-4 w-4 text-red-600" />
-                                        </button>
-                                    </div>
+                                            <button type="button" onClick={() => removeFile(index)}>
+                                                <Trash2 className="h-4 w-4 text-red-600" />
+                                            </button>
+                                        </div>
                                     ))}
                                 </div>
                             )}

@@ -17,6 +17,7 @@ const candidateSchema = z.object({
     email: z.string().email(),
     phone: z.string().min(5),
     address: z.string(),
+    expected_salary: z.string().min(1, 'Expected salary is required').regex(/^\d+$/, 'Salary must be a number'),
     file: z.any().optional(),
 });
 
@@ -67,11 +68,39 @@ export default function Edit({ candidate }) {
                                     ['last_name', 'Last Name'],
                                     ['email', 'Email'],
                                     ['phone', 'Phone'],
+                                    ['expected_salary', 'Expected Salary'],
+                                    ['address', 'Address'],
                                 ].map(([f, l]) => (
                                     <div key={f} className="grid gap-2">
                                         <Label>{l}</Label>
-                                        <Input {...register(f)} className={cn(errors[f] && 'border-red-500')} />
-                                        {errors[f] && <span className="text-sm text-red-500">{errors[f].message}</span>}
+
+                                        {f === 'expected_salary' ? (
+                                            <div className="relative">
+                                                <span className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2">$</span>
+
+                                                <Input
+                                                    {...register(f as any)}
+                                                    className={cn(errors?.[f as keyof typeof errors] && 'border-red-500', 'pr-24 pl-7')}
+                                                />
+
+                                                <span className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2">k/per year</span>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <Input
+                                                    {...register(f as any)}
+                                                    className={cn(errors?.[f as keyof typeof errors] && 'border-red-500')}
+                                                />
+
+                                                {errors?.[f as keyof typeof errors] && (
+                                                    <span className="text-sm text-red-500">{(errors as any)[f]?.message}</span>
+                                                )}
+                                            </>
+                                        )}
+
+                                        {f === 'expected_salary' && errors?.[f as keyof typeof errors] && (
+                                            <span className="text-sm text-red-500">{(errors as any)[f]?.message}</span>
+                                        )}
                                     </div>
                                 ))}
                             </div>
