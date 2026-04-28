@@ -5,7 +5,8 @@ import AppLayout from '@/layouts/app-layout';
 import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Head, router } from '@inertiajs/react';
-import { FileText, RotateCw, Upload } from 'lucide-react';
+import { FileText, RotateCw, Trash2, Upload } from 'lucide-react';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
@@ -22,6 +23,7 @@ const candidateSchema = z.object({
 });
 
 export default function Edit({ candidate }) {
+    const [files, setFiles] = useState<File[]>([]);
     const {
         register,
         handleSubmit,
@@ -32,22 +34,44 @@ export default function Edit({ candidate }) {
         resolver: zodResolver(candidateSchema),
         defaultValues: candidate,
     });
+    /* ================= FILE HANDLING (UNCHANGED) ================= */
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (!e.target.files) return;
 
-    const newFile = watch('file');
+        const selected = [...files, ...Array.from(e.target.files)];
+        setFiles(selected);
+        setValue('agreements', selected);
+    };
 
-    const submit = async (data) => {
-        return new Promise((resolve) => {
-            router.post(
-                route('candidates.update', candidate.id),
-                {
-                    ...data,
-                    _method: 'PUT',
-                },
-                {
-                    forceFormData: true,
-                    onFinish: () => resolve(),
-                },
-            );
+    const removeFile = (index: number) => {
+        const updated = files.filter((_, i) => i !== index);
+        setFiles(updated);
+        setValue('agreements', updated);
+    };
+
+    // const newFile = watch('file');
+
+    const submit = (data) => {
+        const formData = new FormData();
+
+        formData.append('_method', 'PUT');
+        formData.append('first_name', data.first_name);
+        formData.append('last_name', data.last_name);
+        formData.append('email', data.email);
+        formData.append('phone', data.phone);
+        formData.append('address', data.address);
+        formData.append('expected_salary', data.expected_salary);
+
+        // if (data.file instanceof File) {
+        //     formData.append('file', data.file);
+        // }
+        // 🔹 NEW FILES upload
+        files.forEach((file: File) => {
+            formData.append('resumes[]', file);
+        });
+
+        router.post(route('candidates.update', candidate.id), formData, {
+            forceFormData: true,
         });
     };
 
@@ -124,18 +148,26 @@ export default function Edit({ candidate }) {
                                 </div>
                             )}
 
-                            <label className="flex h-28 w-28 cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed text-center">
-                                <Upload className="mb-1 h-5 w-5" />
-                                <span className="text-xs">Replace</span>
-                                <input type="file" hidden onChange={(e) => setValue('file', e.target.files[0])} />
+                            <label className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center">
+                                <Upload className="mb-2 h-6 w-6" />
+                                <span className="text-sm">Upload agreements</span>
+                                <input type="file" multiple hidden onChange={handleFileChange} />
                             </label>
 
-                            {newFile && (
-                                <div className="mt-3 flex items-center gap-2 text-sm">
-                                    <FileText className="h-4 w-4" />
-                                    <span>{newFile.name}</span>
-                                </div>
-                            )}
+                            <div className="mt-4 space-y-2">
+                                {files.map((file, i) => (
+                                    <div key={i} className="flex items-center justify-between rounded border p-2">
+                                        <div className="flex items-center gap-2">
+                                            <FileText className="h-5 w-5" />
+                                            <span className="truncate text-sm">{file.name}</span>
+                                        </div>
+
+                                        <button type="button" onClick={() => removeFile(i)}>
+                                            <Trash2 className="h-4 w-4 text-red-600" />
+                                        </button>
+                                    </div>
+                                ))}
+                            </div>
                         </div>
 
                         <div className="flex justify-end">
