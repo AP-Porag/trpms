@@ -45,7 +45,6 @@ const clientSchema = z.object({
 });
 
 export default function Edit({ client, industries, agreement, departments }: any) {
-    console.log(client);
     const [files, setFiles] = useState<File[]>([]);
     const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
 

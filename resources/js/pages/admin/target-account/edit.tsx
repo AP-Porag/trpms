@@ -65,7 +65,7 @@ export default function Edit({ client, industries = [], departments = [] }: any)
             revenue_potential: '',
             rating: client?.rating ? String(client.rating) : '',
             industry_id: client?.industry_id ? String(client.industry_id) : '',
-            status: '',
+            status: client?.status?.toString() || STATUS.ACTIVE.toString(),
             departments: [],
             is_use_agency: false,
             current_openings: '',
@@ -88,7 +88,7 @@ export default function Edit({ client, industries = [], departments = [] }: any)
             // 🔥 IMPORTANT FIX: ALWAYS STRING (NO NULL)
             rating: client.rating ? String(client.rating) : '',
             industry_id: client.industry?.id ? String(client.industry.id) : '',
-            status: client.status ? String(client.status) : STATUS.ACTIVE.toString(),
+            status: client?.status?.toString() || STATUS.ACTIVE.toString(),
 
             departments: deptIds,
         });
@@ -159,35 +159,11 @@ export default function Edit({ client, industries = [], departments = [] }: any)
                                 <div className="grid gap-2">
                                     <Label>Industry</Label>
 
-                                    {/* <Controller
-                                        name="industry_id"
-                                        control={control}
-                                        render={({ field }) => (
-                                            <Select
-                                                value={field.value || ''} // 🔥 FIX
-                                                onValueChange={(val) => field.onChange(val || '')}
-                                            >
-                                                <SelectTrigger className="w-full">
-                                                    <SelectValue placeholder="Select Industry" />
-                                                </SelectTrigger>
-                                                <SelectContent>
-                                                    {industries.map((i: any) => (
-                                                        <SelectItem key={i.id} value={String(i.id)}>
-                                                            {i.name}
-                                                        </SelectItem>
-                                                    ))}
-                                                </SelectContent>
-                                            </Select>
-                                        )}
-                                    /> */}
                                     <Controller
                                         name="industry_id"
                                         control={control}
                                         render={({ field }) => (
-                                            <Select
-                                                value={field.value || ''} // must be string
-                                                onValueChange={(val) => field.onChange(val)}
-                                            >
+                                            <Select value={field.value || ''} onValueChange={(val) => field.onChange(val)}>
                                                 <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Select Industry" />
                                                 </SelectTrigger>
@@ -208,14 +184,12 @@ export default function Edit({ client, industries = [], departments = [] }: any)
                                 <div className="grid gap-2">
                                     <Label>Status</Label>
 
+                                    {/* Status */}
                                     <Controller
                                         name="status"
                                         control={control}
                                         render={({ field }) => (
-                                            <Select
-                                                value={field.value || STATUS.ACTIVE.toString()} // 🔥 FIX
-                                                onValueChange={field.onChange}
-                                            >
+                                            <Select value={field.value != null ? String(field.value) : ''} onValueChange={field.onChange}>
                                                 <SelectTrigger className="w-full">
                                                     <SelectValue />
                                                 </SelectTrigger>
