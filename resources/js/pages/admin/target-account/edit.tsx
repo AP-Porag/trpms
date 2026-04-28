@@ -246,7 +246,7 @@ export default function Edit({ client, industries = [], departments = [] }: any)
                                         Processing...
                                     </>
                                 ) : (
-                                    'Update Client'
+                                    'Update Tartget Account'
                                 )}
                             </Button>
                         </div>
