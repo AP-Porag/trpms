@@ -25,17 +25,22 @@ const breadcrumbs = [{ title: 'Edit Client', href: '/clients/edit' }];
 const clientSchema = z.object({
     name: z.string().min(3),
     company_name: z.string().min(3),
-    rating: z.string().optional(),
+
+    rating: z.string().nullable().optional(),
     industry_id: z.string().nullable().optional(),
+
     status: z.enum([STATUS.ACTIVE.toString(), STATUS.INACTIVE.toString()]),
+
     departments: z.array(z.string()).optional(),
+
     is_use_agency: z.boolean().optional(),
+
     current_openings: z.string().optional(),
     revenue_potential: z.string().optional(),
 });
 
 export default function Edit({ client, industries = [], departments = [] }: any) {
-    /* ================= STATE ================= */
+    console.log(client);
     const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
 
     const departmentOptions: MultiSelectOption[] =
@@ -48,6 +53,7 @@ export default function Edit({ client, industries = [], departments = [] }: any)
         register,
         control,
         handleSubmit,
+        reset,
         setValue,
         setError,
         formState: { errors, isSubmitting },
@@ -57,41 +63,49 @@ export default function Edit({ client, industries = [], departments = [] }: any)
             name: '',
             company_name: '',
             revenue_potential: '',
-            rating: '',
-            industry_id: '',
-            status: STATUS.ACTIVE.toString(),
+            rating: client?.rating ? String(client.rating) : '',
+            industry_id: client?.industry_id ? String(client.industry_id) : '',
+            status: '',
             departments: [],
             is_use_agency: false,
             current_openings: '',
         },
     });
 
-    /* ================= PREFILL DATA ================= */
+    /* ================= PREFILL ================= */
     useEffect(() => {
         if (!client) return;
 
-        setValue('name', client.name || '');
-        setValue('company_name', client.company_name || '');
-        setValue('rating', client.rating || '');
-        setValue('industry_id', client.industry_id ? String(client.industry_id) : '');
-        setValue('status', client.status || STATUS.ACTIVE.toString());
-        setValue('current_openings', client.current_openings || '');
-        setValue('revenue_potential', client.revenue_potential || '');
-        setValue('is_use_agency', !!client.is_use_agency);
-
         const deptIds = client.departments?.map((d: any) => String(d.id)) || [];
 
-        setSelectedDepartments(deptIds);
-        setValue('departments', deptIds);
-    }, [client, setValue]);
+        reset({
+            name: client.name || '',
+            company_name: client.company_name || '',
+            revenue_potential: client.revenue_potential || '',
+            current_openings: client.current_openings || '',
+            is_use_agency: !!client.is_use_agency,
 
-    useEffect(() => {
-        register('departments');
-    }, [register]);
+            // 🔥 IMPORTANT FIX: ALWAYS STRING (NO NULL)
+            rating: client.rating ? String(client.rating) : '',
+            industry_id: client.industry?.id ? String(client.industry.id) : '',
+            status: client.status ? String(client.status) : STATUS.ACTIVE.toString(),
+
+            departments: deptIds,
+        });
+
+        setSelectedDepartments(deptIds);
+    }, [client, reset]);
 
     /* ================= SUBMIT ================= */
     const updateClient = (data: any) => {
-        router.put(route('target-accounts.update', client.id), data, {
+        const payload = {
+            ...data,
+            industry_id: data.industry_id || null,
+            rating: data.rating || null,
+            departments: data.departments || [],
+        };
+
+        router.put(route('target-accounts.update', client.id), payload, {
             onError: (errs) => {
                 Object.keys(errs).forEach((k) => setError(k as any, { message: errs[k] }));
                 toast.error('Please fix the errors in the form.');
@@ -106,7 +120,6 @@ export default function Edit({ client, industries = [], departments = [] }: any)
             <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="rounded-xl border p-5">
                     <form onSubmit={handleSubmit(updateClient)}>
-                        {/* ================= TARGET ACCOUNT INFO ================= */}
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
                             <h2 className="mb-4 text-lg font-semibold">Target Account Information</h2>
 
@@ -119,12 +132,7 @@ export default function Edit({ client, industries = [], departments = [] }: any)
                                 ].map(([f, l]) => (
                                     <div key={f} className="grid gap-2">
                                         <Label>{l}</Label>
-
                                         <Input {...register(f as any)} className={cn(errors[f as keyof typeof errors] && 'border-red-500')} />
-
-                                        {errors[f as keyof typeof errors] && (
-                                            <span className="text-sm text-red-500">{(errors[f as keyof typeof errors] as any)?.message}</span>
-                                        )}
                                     </div>
                                 ))}
                             </div>
@@ -139,40 +147,51 @@ export default function Edit({ client, industries = [], departments = [] }: any)
                                     onChange={(val) => {
                                         const normalized = val.map(String);
                                         setSelectedDepartments(normalized);
-                                        setValue('departments', normalized);
+                                        setValue('departments', normalized, {
+                                            shouldValidate: true,
+                                        });
                                     }}
-                                    placeholder="Select Departments"
                                 />
-
-                                {selectedDepartments.length > 0 && (
-                                    <div className="mt-2 flex flex-wrap gap-2">
-                                        {selectedDepartments.map((id) => {
-                                            const dept = departmentOptions.find((d) => d.value === id);
-
-                                            return (
-                                                <span key={id} className="rounded-md border bg-blue-100 px-3 py-1 text-xs text-blue-700">
-                                                    {dept?.label}
-                                                </span>
-                                            );
-                                        })}
-                                    </div>
-                                )}
                             </div>
 
-                            {/* ================= GRID ================= */}
                             <div className="mt-4 grid grid-cols-3 gap-4">
                                 {/* INDUSTRY */}
                                 <div className="grid gap-2">
                                     <Label>Industry</Label>
 
+                                    {/* <Controller
+                                        name="industry_id"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select
+                                                value={field.value || ''} // 🔥 FIX
+                                                onValueChange={(val) => field.onChange(val || '')}
+                                            >
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select Industry" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {industries.map((i: any) => (
+                                                        <SelectItem key={i.id} value={String(i.id)}>
+                                                            {i.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    /> */}
                                     <Controller
                                         name="industry_id"
                                         control={control}
                                         render={({ field }) => (
-                                            <Select value={field.value || ''} onValueChange={field.onChange}>
+                                            <Select
+                                                value={field.value || ''} // must be string
+                                                onValueChange={(val) => field.onChange(val)}
+                                            >
                                                 <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Select Industry" />
                                                 </SelectTrigger>
+
                                                 <SelectContent>
                                                     {industries.map((i: any) => (
                                                         <SelectItem key={i.id} value={String(i.id)}>
@@ -193,7 +212,10 @@ export default function Edit({ client, industries = [], departments = [] }: any)
                                         name="status"
                                         control={control}
                                         render={({ field }) => (
-                                            <Select value={field.value} onValueChange={field.onChange}>
+                                            <Select
+                                                value={field.value || STATUS.ACTIVE.toString()} // 🔥 FIX
+                                                onValueChange={field.onChange}
+                                            >
                                                 <SelectTrigger className="w-full">
                                                     <SelectValue />
                                                 </SelectTrigger>
@@ -206,7 +228,7 @@ export default function Edit({ client, industries = [], departments = [] }: any)
                                     />
                                 </div>
 
-                                {/* RATINGS */}
+                                {/* RATING */}
                                 <div className="grid gap-2">
                                     <Label>Ratings</Label>
 
@@ -214,7 +236,10 @@ export default function Edit({ client, industries = [], departments = [] }: any)
                                         name="rating"
                                         control={control}
                                         render={({ field }) => (
-                                            <Select value={field.value || ''} onValueChange={field.onChange}>
+                                            <Select
+                                                value={field.value || ''} // 🔥 FIX
+                                                onValueChange={(val) => field.onChange(val || '')}
+                                            >
                                                 <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Select Rating" />
                                                 </SelectTrigger>
@@ -228,19 +253,17 @@ export default function Edit({ client, industries = [], departments = [] }: any)
                                     />
                                 </div>
 
-                                {/* CHECKBOX */}
                                 <div className="mt-4 flex items-center space-x-2">
                                     <Controller
                                         name="is_use_agency"
                                         control={control}
-                                        render={({ field }) => <Checkbox checked={field.value} onCheckedChange={field.onChange} />}
+                                        render={({ field }) => <Checkbox checked={!!field.value} onCheckedChange={(val) => field.onChange(!!val)} />}
                                     />
                                     <Label>Use Agency</Label>
                                 </div>
                             </div>
                         </div>
 
-                        {/* ================= SUBMIT ================= */}
                         <div className="flex justify-end">
                             <Button type="submit" disabled={isSubmitting}>
                                 {isSubmitting ? (

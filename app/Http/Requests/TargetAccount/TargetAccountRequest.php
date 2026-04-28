@@ -14,6 +14,8 @@ class TargetAccountRequest extends BaseRequest
     public function rules(): array
     {
         return [
+            'name'      => ['required', 'string', 'min:3'],
+
             'company_name'      => ['required', 'string', 'min:3'],
 
             'rating'            => ['nullable', 'string'],
