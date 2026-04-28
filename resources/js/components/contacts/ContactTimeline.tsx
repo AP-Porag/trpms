@@ -4,6 +4,7 @@ import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
 export default function ContactTimeline({ contacts = [] }) {
+    console.log(contacts);
     // ================= DELETE =================
     function deleteContact(id: number) {
         router.delete(route('contacts.destroy', id), {
@@ -17,6 +18,24 @@ export default function ContactTimeline({ contacts = [] }) {
                 toast.error('Failed to delete contact');
             },
         });
+    }
+
+    function toggleHiringManager(contact: any) {
+        router.post(
+            route('clients.setHiringManager', contact.client_id),
+            {
+                contact_id: contact.is_hiring_manager ? null : contact.id,
+            },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    toast.success('Hiring manager updated');
+                },
+                onError: () => {
+                    toast.error('Failed to update hiring manager');
+                },
+            },
+        );
     }
 
     // ================= EMPTY STATE =================
@@ -47,6 +66,18 @@ export default function ContactTimeline({ contacts = [] }) {
                             >
                                 <Trash2 size={16} />
                             </button>
+                            {/* Hiring Manager Checkbox (only for client contacts) */}
+                            {contact.contactable_type === 'client' && (
+                                <div className="mt-3 flex items-center gap-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={contact.is_hiring_manager ?? false}
+                                        onChange={() => toggleHiringManager(contact)}
+                                        className="h-4 w-4"
+                                    />
+                                    <span className="text-sm text-gray-700">Hiring Manager</span>
+                                </div>
+                            )}
                         </div>
 
                         {/* contact value */}

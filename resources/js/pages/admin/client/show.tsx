@@ -11,7 +11,6 @@ import { Tooltip } from 'react-tooltip';
 const breadcrumbs = [{ title: 'Clients', href: '/clients' }, { title: 'View Client' }];
 
 export default function Show({ client }: any) {
-    console.log(client);
     const [openAgreement, setOpenAgreement] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
     const formatUSD = (amount: number) =>

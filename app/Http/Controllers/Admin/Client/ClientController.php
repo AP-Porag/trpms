@@ -93,4 +93,15 @@ class ClientController extends BaseController
     {
         $this->service->delete($client->id);
     }
+
+    public function setHiringManager(Request $request, Client $client, ClientService $clientService)
+    {
+        $validated = $request->validate([
+            'contact_id' => ['nullable', 'exists:contacts,id'],
+        ]);
+
+        $clientService->setHiringManager($client, $validated['contact_id'] ?? null);
+
+        return back();
+    }
 }
