@@ -95,7 +95,7 @@ export default function Index({ jobs, meta, filters: initialFilters }) {
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Jobs" />
-            <div className="p-4 overflow-x-auto">
+            <div className="p-4">
                 <div className="my-4 flex items-center justify-between">
                     <h1 className="text-2xl font-bold">Jobs</h1>
                     <Button onClick={() => router.visit(route('jobs.create'))} className="cursor-pointer bg-black text-white hover:bg-gray-800">
