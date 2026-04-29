@@ -275,7 +275,14 @@ export default function Edit({ client, industries = [], departments = [] }: any)
                             </div>
                         </div>
 
-                        <div className="flex justify-end">
+                        <div className="flex justify-end gap-3">
+                            <Button
+                                type="button"
+                                onClick={() => router.visit(route('clients.edit', client.id))}
+                                className="cursor-pointer bg-blue-600 text-white hover:bg-blue-700"
+                            >
+                                Convert to Client
+                            </Button>
                             <Button type="submit" disabled={isSubmitting}>
                                 {isSubmitting ? (
                                     <>

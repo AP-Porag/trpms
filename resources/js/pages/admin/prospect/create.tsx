@@ -79,32 +79,33 @@ export default function Create() {
                                 ))}
                             </div>
 
+                            <div className="grid gap-4 md:grid-cols-2">
+                                <div className="mt-4 grid gap-2">
+                                    <Label>Status</Label>
+
+                                    <Controller
+                                        name="status"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select value={field.value} onValueChange={field.onChange}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+
+                                                <SelectContent>
+                                                    <SelectItem value={STATUS.ACTIVE.toString()}>Active</SelectItem>
+
+                                                    <SelectItem value={STATUS.INACTIVE.toString()}>Inactive</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </div>
+                            </div>
                             <div className="mt-4 grid gap-2">
                                 <Label>Address</Label>
 
                                 <Input {...register('address')} />
-                            </div>
-
-                            <div className="mt-4 grid gap-2">
-                                <Label>Status</Label>
-
-                                <Controller
-                                    name="status"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Select value={field.value} onValueChange={field.onChange}>
-                                            <SelectTrigger>
-                                                <SelectValue />
-                                            </SelectTrigger>
-
-                                            <SelectContent>
-                                                <SelectItem value={STATUS.ACTIVE.toString()}>Active</SelectItem>
-
-                                                <SelectItem value={STATUS.INACTIVE.toString()}>Inactive</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    )}
-                                />
                             </div>
                             <div className="mt-4 grid gap-2">
                                 <Label>Note</Label>

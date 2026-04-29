@@ -96,12 +96,17 @@ class ClientService extends BaseService
 
     public function update(Client $client, $data): Client
     {
-
-        if ($client->category === 'prospect' && $data->file('agreements')) {
+        if ($client->category === 'prospect' || $client->category === 'target_account') {
             $client->update([
                 'category' => 'client'
             ]);
         }
+
+        // if ($client->category === 'prospect' || $client->category === 'target_account' && $data->file('agreements')) {
+        //     $client->update([
+        //         'category' => 'client'
+        //     ]);
+        // }
 
         $client->update([
             'name'         => $data->name,
