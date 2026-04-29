@@ -21,7 +21,7 @@ class Lead extends Model
     {
         return $this->morphMany(Note::class, 'noteable')->latest();
     }
-     public function contacts()
+    public function contacts(): MorphMany
     {
         return $this->morphMany(Contact::class, 'contactable')->latest();
     }

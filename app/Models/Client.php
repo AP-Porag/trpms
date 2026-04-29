@@ -32,6 +32,7 @@ class Client extends BaseModel
         'is_use_agency',
         'current_openings',
         'revenue_potential',
+        'hiring_manager_contact_id',
         'signed_date',
         'status',
         'created_by',
@@ -59,6 +60,12 @@ class Client extends BaseModel
     public function contacts()
     {
         return $this->morphMany(Contact::class, 'contactable')->latest();
+    }
+
+    // Hiring Manager
+    public function hiringManagerContact()
+    {
+        return $this->belongsTo(Contact::class, 'hiring_manager_contact_id');
     }
 
     // Agreements

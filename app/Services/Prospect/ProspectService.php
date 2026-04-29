@@ -89,4 +89,16 @@ class ProspectService extends ClientService
 
         return parent::delete($client->id);
     }
+
+    //ProspectDetails
+    public function prospectDetail(Client $prospect): array
+    {
+        return [
+            'prospect' => $prospect->load([
+                'notes',
+                'contacts',
+                'agreements:id,client_id,file_path,original_name,agreement_type,signed_date',
+            ]),
+        ];
+    }
 }

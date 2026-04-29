@@ -181,7 +181,7 @@ export default function Create({ clients, departments }) {
                         {/* <div className="grid grid-cols-2 gap-4"> */}
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* Salary Range */}
-                            <div className="grid gap-2">
+                            {/* <div className="grid gap-2">
                                 <Label>Salary Range</Label>
                                 <Input
                                     type="text"
@@ -191,6 +191,28 @@ export default function Create({ clients, departments }) {
                                 />
                                 <span></span>
                                 {errors.fee_value && <span className="text-sm text-red-500">{errors.salary_range.message}</span>}
+                            </div> */}
+
+                            <div className="grid gap-2">
+                                <Label>Salary Range</Label>
+
+                                <div className="relative">
+                                    {/* Left $ prefix */}
+                                    <span className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2">$</span>
+
+                                    <Input
+                                        type="text"
+                                        {...register('salary_range', {
+                                            setValueAs: (v) => v?.toString(),
+                                        })}
+                                        className="pr-24 pl-7"
+                                    />
+
+                                    {/* Right suffix */}
+                                    <span className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2">k/per year</span>
+                                </div>
+
+                                {errors.salary_range && <span className="text-sm text-red-500">{errors.salary_range.message}</span>}
                             </div>
 
                             {/* Status */}

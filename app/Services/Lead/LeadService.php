@@ -163,6 +163,7 @@ class LeadService extends BaseService
                 'departments',
                 'contacts',
                 'notes',
+                'contacts'
             ]),
         ];
     }

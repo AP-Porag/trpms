@@ -31,7 +31,7 @@ const clientSchema = z.object({
     departments: z.array(z.string()).optional(),
     is_use_agency: z.boolean().optional(),
     current_openings: z.string().optional(),
-    revenue_potential: z.string().optional(),
+    revenue_potential: z.string().min(3, { message: 'Revenue potential must be number!' }),
 });
 
 export default function Create({ industries = [], departments = [] }: any) {
@@ -92,7 +92,7 @@ export default function Create({ industries = [], departments = [] }: any) {
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
                             <h2 className="mb-4 text-lg font-semibold">Target Account Information</h2>
 
-                            <div className="grid gap-4 md:grid-cols-3">
+                            {/* <div className="grid gap-4 md:grid-cols-3">
                                 {[
                                     ['name', 'Name'],
                                     ['company_name', 'Company Name'],
@@ -105,6 +105,43 @@ export default function Create({ industries = [], departments = [] }: any) {
                                         <Input {...register(f as any)} className={cn(errors[f as keyof typeof errors] && 'border-red-500')} />
 
                                         {errors[f as keyof typeof errors] && (
+                                            <span className="text-sm text-red-500">{(errors[f as keyof typeof errors] as any)?.message}</span>
+                                        )}
+                                    </div>
+                                ))}
+                            </div> */}
+                            <div className="grid gap-4 md:grid-cols-3">
+                                {[
+                                    ['name', 'Name'],
+                                    ['company_name', 'Company Name'],
+                                    ['current_openings', 'Current Openings'],
+                                    ['revenue_potential', 'Revenue Potential'],
+                                ].map(([f, l]) => (
+                                    <div key={f} className="grid gap-2">
+                                        <Label>{l}</Label>
+
+                                        {f === 'revenue_potential' ? (
+                                            <div className="relative">
+                                                <span className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2">$</span>
+
+                                                <Input
+                                                    {...register(f as any)}
+                                                    className={cn(errors[f as keyof typeof errors] && 'border-red-500', 'pr-24 pl-7')}
+                                                />
+
+                                                <span className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2">k/year</span>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <Input {...register(f as any)} className={cn(errors[f as keyof typeof errors] && 'border-red-500')} />
+
+                                                {errors[f as keyof typeof errors] && (
+                                                    <span className="text-sm text-red-500">{(errors[f as keyof typeof errors] as any)?.message}</span>
+                                                )}
+                                            </>
+                                        )}
+
+                                        {f === 'revenue_potential' && errors[f as keyof typeof errors] && (
                                             <span className="text-sm text-red-500">{(errors[f as keyof typeof errors] as any)?.message}</span>
                                         )}
                                     </div>

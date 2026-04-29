@@ -40,16 +40,21 @@ export default function Index({ clients, meta, filters: initialFilters }) {
 
     const columns = [
         { key: 'name', label: 'Name' },
-        { key: 'company_name', label: 'Company' },
+        { key: 'company_name', label: 'Company', render: (row) => <span className="block w-30 truncate">{row.company_name}</span> },
         {
             key: 'email',
             label: 'Email',
-            render: (row) => <span className="block w-48 truncate">{row.email}</span>,
+            render: (row) => <span className="block w-30 truncate">{row.email}</span>,
         },
         {
             key: 'phone',
             label: 'Phone',
-            render: (row) => <span className="block w-48 truncate">{row.phone}</span>,
+            render: (row) => <span className="block w-40">{row.phone}</span>,
+        },
+        {
+            key: 'hiring_manager_contact_id',
+            label: 'Hiring Manager',
+            render: (row) => <span className="block w-30 truncate">{row.hiring_manager_contact?.name}</span>,
         },
         // {
         //     key: 'client_type',

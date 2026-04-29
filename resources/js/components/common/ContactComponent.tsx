@@ -2,7 +2,7 @@ import AddContactModal from '@/components/contacts/AddContactModal';
 import ContactTimeline from '@/components/contacts/ContactTimeline';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 
-export default function ContactComponent({ contactableType, contactableId, contacts }) {
+export default function ContactComponent({ contactableType, contactableId, contacts, client }) {
     return (
         <div className="">
             <div className="mb-3 flex justify-between">
@@ -18,7 +18,7 @@ export default function ContactComponent({ contactableType, contactableId, conta
                 <hr className="-mt-2 border-1 border-gray-200" />
 
                 <CardContent>
-                    <ContactTimeline contacts={contacts} />
+                    <ContactTimeline contacts={contacts} client={client} />
                 </CardContent>
             </Card>
         </div>

@@ -6,6 +6,11 @@ import { DATE_PRESETS, formatDateUS } from '@/utils/helpers';
 import { Head } from '@inertiajs/react';
 
 const breadcrumbs = [{ title: 'Target', href: '/targets' }, { title: 'View Target' }];
+const formatUSD = (amount: number) =>
+    new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    }).format(amount);
 
 export default function Show({ targetAccount }: any) {
     console.log(targetAccount);
@@ -29,6 +34,11 @@ export default function Show({ targetAccount }: any) {
                         <div>
                             <p className="text-sm font-semibold">Company</p>
                             <p className="text-sm text-gray-600">{targetAccount?.company_name}</p>
+                        </div>
+
+                        <div>
+                            <p className="text-sm font-semibold">Potential Revenew</p>
+                            <p className="text-sm text-gray-600">{formatUSD(targetAccount?.revenue_potential ?? '—')}</p>
                         </div>
 
                         <div>
@@ -69,7 +79,12 @@ export default function Show({ targetAccount }: any) {
 
                 {/* ================= Contact ================= */}
 
-                <ContactComponent contactableType="client" contactableId={targetAccount.id} contacts={targetAccount.contacts} />
+                <ContactComponent
+                    client={targetAccount.id}
+                    contactableType="client"
+                    contactableId={targetAccount.id}
+                    contacts={targetAccount.contacts}
+                />
             </div>
         </AppLayout>
     );

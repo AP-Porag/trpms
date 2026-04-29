@@ -20,7 +20,9 @@ class ClientService extends BaseService
         $search = $request->input('search', '');
         $status = $request->input('status', 'all');
         $perPage = $request->input('perPage', 5);
-        $query = Client::clients(); // uses model scope
+        $query = Client::clients()
+            ->with(['hiringManagerContact']);
+
 
         if ($search) {
             $query->where(function ($q) use ($search) {
@@ -94,12 +96,17 @@ class ClientService extends BaseService
 
     public function update(Client $client, $data): Client
     {
-
-        if ($client->category === 'prospect' && $data->file('agreements')) {
+        if ($client->category === 'prospect' || $client->category === 'target_account') {
             $client->update([
                 'category' => 'client'
             ]);
         }
+
+        // if ($client->category === 'prospect' || $client->category === 'target_account' && $data->file('agreements')) {
+        //     $client->update([
+        //         'category' => 'client'
+        //     ]);
+        // }
 
         $client->update([
             'name'         => $data->name,
@@ -180,17 +187,7 @@ class ClientService extends BaseService
             ]),
         ];
     }
-    //ProspectDetails
-    public function prospectDetail(Client $prospect): array
-    {
-        return [
-            'prospect' => $prospect->load([
-                'notes',
-                'contacts',
-                'agreements:id,client_id,file_path,original_name,agreement_type,signed_date',
-            ]),
-        ];
-    }
+
 
     //Target Account
     public function tergetAccountDetail(Client $targetAccount): array
@@ -203,5 +200,14 @@ class ClientService extends BaseService
                 'agreements:id,client_id,file_path,original_name,agreement_type,signed_date',
             ]),
         ];
+    }
+    //hiring manager
+    public function setHiringManager(int $clientId, int $contactId): void
+    {
+        $client = $this->find($clientId);
+
+        $client->update([
+            'hiring_manager_contact_id' => $contactId,
+        ]);
     }
 }

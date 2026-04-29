@@ -26,7 +26,7 @@ class Candidate extends BaseModel
     }
 
     // Notes (polymorphic)
-    public function notes():MorphMany
+    public function notes(): MorphMany
     {
         return $this->morphMany(Note::class, 'noteable')->latest();
     }

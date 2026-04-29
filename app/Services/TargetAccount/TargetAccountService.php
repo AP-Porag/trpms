@@ -70,9 +70,36 @@ class TargetAccountService extends ClientService
     }
 
 
+    // public function update(Client $client, $data): Client
+    // {
+    //     return parent::update($client, $data);
+    // }
+
     public function update(Client $client, $data): Client
     {
-        return parent::update($client, $data);
+        $client->update([
+            'name'               => $data->name,
+            'company_name'       => $data->company_name,
+            'industry_id'        => $data->industry_id,
+            'status'             => $data->status,
+            'category'           => 'target_account',
+            'rating'             => $data->rating,
+            'revenue_potential'  => $data->revenue_potential,
+            'is_use_agency'      => $data->is_use_agency,
+            'current_openings'   => $data->current_openings,
+        ]);
+
+        // 🔥 Pivot table update (IMPORTANT)
+        if (!empty($data->departments)) {
+            $client->departments()->sync(
+                array_map('intval', $data->departments)
+            );
+        } else {
+            // If empty → detach all
+            $client->departments()->sync([]);
+        }
+
+        return $client;
     }
 
 

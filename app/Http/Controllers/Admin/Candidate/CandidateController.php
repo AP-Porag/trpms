@@ -61,6 +61,7 @@ class CandidateController extends BaseController
      */
     public function edit(Candidate $candidate)
     {
+        $candidate->load('resumes');
         return inertia('admin/candidate/edit', [
             'candidate' => $candidate,
         ]);
@@ -71,6 +72,7 @@ class CandidateController extends BaseController
      */
     public function update(CandidateRequest $request, Candidate $candidate)
     {
+
         $this->service->update($candidate, $request);
 
         return redirect()

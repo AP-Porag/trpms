@@ -249,10 +249,36 @@ export default function Create({ industries = [], departments = [] }: any) {
                                 </div>
 
                                 {/* FEE */}
-                                <div className="grid gap-2">
+                                {/* <div className="grid gap-2">
                                     <Label>{clientType === CLIENT_TYPE.CONTINGENCY ? 'Placement Fee (%)' : 'Monthly Retainer ($)'}</Label>
 
                                     <Input type="number" {...register('fee_value')} className={cn(errors.fee_value && 'border-red-500')} />
+
+                                    {errors.fee_value && <span className="text-sm text-red-500">{errors.fee_value.message}</span>}
+                                </div> */}
+
+                                <div className="mt-2 grid gap-2">
+                                    <Label>{clientType === CLIENT_TYPE.CONTINGENCY ? 'Placement Fee (%)' : 'Monthly Retainer ($)'}</Label>
+
+                                    <div className="relative">
+                                        {clientType !== CLIENT_TYPE.CONTINGENCY && (
+                                            <span className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2">$</span>
+                                        )}
+
+                                        {clientType === CLIENT_TYPE.CONTINGENCY && (
+                                            <span className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2">%</span>
+                                        )}
+
+                                        <Input
+                                            type="number"
+                                            {...register('fee_value')}
+                                            className={cn(
+                                                errors.fee_value && 'border-red-500',
+                                                clientType !== CLIENT_TYPE.CONTINGENCY ? 'pl-7' : '',
+                                                clientType === CLIENT_TYPE.CONTINGENCY ? 'pr-7' : '',
+                                            )}
+                                        />
+                                    </div>
 
                                     {errors.fee_value && <span className="text-sm text-red-500">{errors.fee_value.message}</span>}
                                 </div>

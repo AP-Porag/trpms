@@ -7,6 +7,7 @@ use App\Models\Resume;
 use App\Services\BaseService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\UploadedFile;
 
 class CandidateService extends BaseService
 {
@@ -145,81 +146,106 @@ class CandidateService extends BaseService
         return $candidate;
     }
 
+    // public function update(Candidate $candidate, $data): Candidate
+    // {
+    //     $candidate->update([
+    //         'first_name'      => $data->first_name,
+    //         'last_name'       => $data->last_name,
+    //         'email'           => $data->email,
+    //         'phone'           => $data->phone,
+    //         'address'         => $data->address,
+    //         'expected_salary' => $data->expected_salary,
+    //     ]);
+
+
+    //     if ($data->hasFile('file')) {
+
+    //         // delete old files
+    //         foreach ($candidate->resumes as $resume) {
+    //             if (Storage::disk('public')->exists($resume->file_path)) {
+    //                 Storage::disk('public')->delete($resume->file_path);
+    //             }
+    //             $resume->delete();
+    //         }
+
+    //         // store single file
+    //         $file = $data->file('file');
+
+    //         $path = $file->store('resumes', 'public');
+
+    //         Resume::create([
+    //             'candidate_id'  => $candidate->id,
+    //             'file_path'     => $path,
+    //             'original_name' => $file->getClientOriginalName(),
+    //         ]);
+    //     }
+
+    //     return $candidate;
+    // }
+
+
     public function update(Candidate $candidate, $data): Candidate
     {
-        $candidate->update([
+        $updateData = [
             'first_name'      => $data->first_name,
             'last_name'       => $data->last_name,
             'email'           => $data->email,
             'phone'           => $data->phone,
             'address'         => $data->address,
             'expected_salary' => $data->expected_salary,
-        ]);
+        ];
 
-        if ($data->hasFile('file')) {
+        /*
+        |--------------------------------------------------------------------------
+        | Handle existing agreements
+        |--------------------------------------------------------------------------
+        */
 
-            // delete old files
-            foreach ($candidate->resumes as $resume) {
-                if (Storage::disk('public')->exists($resume->file_path)) {
+        $keepIds = $data->input('existing_agreements', []);
+
+        foreach ($candidate->resumes as $resume) {
+
+            if (!in_array($resume->id, $keepIds)) {
+
+                if (
+                    $resume->file_path &&
+                    Storage::disk('public')->exists($resume->file_path)
+                ) {
                     Storage::disk('public')->delete($resume->file_path);
                 }
+
                 $resume->delete();
-            }
-
-            // save new files
-            foreach ($data->file('file') as $file) {
-                $path = $file->store('resumes', 'public');
-
-                Resume::create([
-                    'candidate_id'  => $candidate->id,
-                    'file_path'     => $path,
-                    'original_name' => $file->getClientOriginalName(),
-                ]);
             }
         }
 
+        /*
+        |----------------------------------------------------
+        | 4. Store new agreements (FIXED STORAGE ISSUE)
+        |----------------------------------------------------
+        */
+        if ($data->hasFile('resumes')) {
+
+            foreach ($data->file('resumes') as $file) {
+
+                if ($file instanceof UploadedFile) {
+
+                    $path = $file->store('agreements', 'public'); // IMPORTANT FIX
+
+                    Resume::create([
+                        'candidate_id'     => $candidate->id,
+                        'file_path'     => $path,
+                        'original_name' => $file->getClientOriginalName(),
+                    ]);
+                }
+            }
+        }
+
+
+
+        $candidate->update($updateData);
+
         return $candidate;
     }
-
-
-    //    public function update(Candidate $candidate, $data): Candidate
-    //    {
-    //        $updateData = [
-    //            'first_name'      => $data->first_name,
-    //            'last_name'       => $data->last_name,
-    //            'email'           => $data->email,
-    //            'phone'           => $data->phone,
-    //            'address'         => $data->address,
-    //            'expected_salary' => $data->expected_salary,
-    //        ];
-    //
-    //        if ($data->hasFile('file')) {
-    //
-    //            // delete old resumes
-    //            if ($candidate->resume_path) {
-    //                foreach (json_decode($candidate->resume_path, true) ?? [] as $path) {
-    //                    if (Storage::disk('public')->exists($path)) {
-    //                        Storage::disk('public')->delete($path);
-    //                    }
-    //                }
-    //            }
-    //
-    //            $resumePaths = [];
-    //            $originalNames = [];
-    //
-    //            foreach ($data->file('file') as $file) {
-    //                $resumePaths[] = $file->store('resumes', 'public');
-    //                $originalNames[] = $file->getClientOriginalName();
-    //            }
-    //
-    //            $updateData['resume_path'] = json_encode($resumePaths);
-    //            $updateData['original_name'] = json_encode($originalNames);
-    //        }
-    //
-    //        $candidate->update($updateData);
-    //
-    //        return $candidate;
-    //    }
 
 
 

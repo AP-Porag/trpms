@@ -115,6 +115,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     //making some change
 
+    //Hiring Manager
+    Route::post('/clients/set/hiring-manager/{id}', [ClientController::class, 'setHiringManager'])
+        ->name('clients.setHiringManager');
+
     Route::resource('prospects', ProspectController::class);
     Route::resource('target-accounts', TargetAccountController::class);
     Route::post(

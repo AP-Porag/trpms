@@ -11,9 +11,13 @@ import { Tooltip } from 'react-tooltip';
 const breadcrumbs = [{ title: 'Clients', href: '/clients' }, { title: 'View Client' }];
 
 export default function Show({ client }: any) {
-    console.log(client);
     const [openAgreement, setOpenAgreement] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const formatUSD = (amount: number) =>
+        new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        }).format(amount);
 
     const openPdf = (index: number) => {
         setSelectedIndex(index);
@@ -64,7 +68,7 @@ export default function Show({ client }: any) {
 
                         <div>
                             <p className="text-sm font-semibold">Fee Value</p>
-                            <p className="text-sm text-gray-600">${client?.fee_value ?? '—'}</p>
+                            <p className="text-sm text-gray-600">{formatUSD(client?.fee_value ?? '—')}</p>
                         </div>
 
                         <div>
@@ -133,7 +137,7 @@ export default function Show({ client }: any) {
 
                 {/* ================= Contact ================= */}
 
-                <ContactComponent contactableType="client" contactableId={client.id} contacts={client.contacts} />
+                <ContactComponent contactableType="client" contactableId={client.id} contacts={client.contacts} client={client} />
             </div>
 
             {/* ================= PDF MODAL (MULTIPLE SUPPORT) ================= */}

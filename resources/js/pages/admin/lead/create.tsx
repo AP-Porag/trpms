@@ -199,10 +199,10 @@ export default function Create({ industries = [], departments = [], source = [] 
                                 <Input {...register('current_openings')} />
                             </div>
 
-                            <div className="mt-4 grid gap-2">
+                            {/* <div className="mt-4 grid gap-2">
                                 <Label>Note</Label>
                                 <Input {...register('note')} />
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="flex justify-end">

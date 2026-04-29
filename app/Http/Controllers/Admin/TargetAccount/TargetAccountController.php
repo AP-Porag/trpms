@@ -75,7 +75,11 @@ class TargetAccountController extends BaseController
     public function edit(Client $targetAccount)
     {
         return inertia('admin/target-account/edit', [
-            'client' => $targetAccount->load('departments:id,name'),
+
+            'client' => $targetAccount->load([
+                'departments:id,name',
+                'industry:id,name'
+            ]),
             'industries' => Industry::select('id', 'name')->get(),
             'departments' => Department::select('id', 'name')->get(),
         ]);
@@ -85,7 +89,7 @@ class TargetAccountController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(ClientRequest $request, Client $targetAccount)
+    public function update(TargetAccountRequest $request, Client $targetAccount)
     {
         $this->service->update($targetAccount, $request);
 
