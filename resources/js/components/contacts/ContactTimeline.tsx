@@ -86,7 +86,7 @@ export default function ContactTimeline({ contacts = [], client }) {
                             </button>
                         </div>
                         <div className="mb-2">
-                            {contact.contactable_type === 'client' && (
+                            {client.category === 'client' && (
                                 <div className="mt-3 flex items-center gap-2">
                                     <input
                                         type="checkbox"

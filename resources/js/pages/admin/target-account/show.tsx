@@ -79,7 +79,12 @@ export default function Show({ targetAccount }: any) {
 
                 {/* ================= Contact ================= */}
 
-                <ContactComponent contactableType="client" contactableId={targetAccount.id} contacts={targetAccount.contacts} />
+                <ContactComponent
+                    client={targetAccount.id}
+                    contactableType="client"
+                    contactableId={targetAccount.id}
+                    contacts={targetAccount.contacts}
+                />
             </div>
         </AppLayout>
     );

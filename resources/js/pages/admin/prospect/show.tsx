@@ -60,11 +60,11 @@ export default function Show({ prospect }: any) {
 
                 {/* ================= NOTES ================= */}
 
-                <NoteComponent noteableType="prospect" noteableId={prospect.id} notes={prospect.notes} />
+                <NoteComponent noteableType="client" noteableId={prospect.id} notes={prospect.notes} />
 
                 {/* ================= Contact ================= */}
 
-                <ContactComponent contactableType="prospect" contactableId={prospect.id} contacts={prospect.contacts} />
+                <ContactComponent client={prospect.id} contactableType="client" contactableId={prospect.id} contacts={prospect.contacts} />
             </div>
         </AppLayout>
     );
