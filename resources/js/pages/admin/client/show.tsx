@@ -137,7 +137,7 @@ export default function Show({ client }: any) {
 
                 {/* ================= Contact ================= */}
 
-                <ContactComponent contactableType="client" contactableId={client.id} contacts={client.contacts} />
+                <ContactComponent contactableType="client" contactableId={client.id} contacts={client.contacts} client={client} />
             </div>
 
             {/* ================= PDF MODAL (MULTIPLE SUPPORT) ================= */}

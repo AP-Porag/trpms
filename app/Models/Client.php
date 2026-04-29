@@ -32,6 +32,7 @@ class Client extends BaseModel
         'is_use_agency',
         'current_openings',
         'revenue_potential',
+        'hiring_manager_contact_id',
         'signed_date',
         'status',
         'created_by',

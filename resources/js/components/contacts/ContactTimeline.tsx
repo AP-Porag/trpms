@@ -3,8 +3,8 @@ import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function ContactTimeline({ contacts = [] }) {
-    console.log(contacts);
+export default function ContactTimeline({ contacts = [], client }) {
+    console.log(client);
     // ================= DELETE =================
     function deleteContact(id: number) {
         router.delete(route('contacts.destroy', id), {
@@ -20,11 +20,29 @@ export default function ContactTimeline({ contacts = [] }) {
         });
     }
 
+    // function toggleHiringManager(contact: any, clientId: number) {
+    //     router.post(
+    //         route('clients.setHiringManager', clientId),
+    //         {
+    //             contact_id: contact.id,
+    //         },
+    //         {
+    //             preserveScroll: true,
+    //             onSuccess: () => {
+    //                 toast.success('Hiring manager updated');
+    //             },
+    //             onError: () => {
+    //                 toast.error('Failed to update hiring manager');
+    //             },
+    //         },
+    //     );
+    // }
+
     function toggleHiringManager(contact: any) {
         router.post(
-            route('clients.setHiringManager', contact.client_id),
+            route('clients.setHiringManager', client.id),
             {
-                contact_id: contact.is_hiring_manager ? null : contact.id,
+                contact_id: contact.id,
             },
             {
                 preserveScroll: true,
@@ -66,16 +84,17 @@ export default function ContactTimeline({ contacts = [] }) {
                             >
                                 <Trash2 size={16} />
                             </button>
-                            {/* Hiring Manager Checkbox (only for client contacts) */}
+                        </div>
+                        <div className="mb-2">
                             {contact.contactable_type === 'client' && (
                                 <div className="mt-3 flex items-center gap-2">
                                     <input
                                         type="checkbox"
-                                        checked={contact.is_hiring_manager ?? false}
-                                        onChange={() => toggleHiringManager(contact)}
+                                        checked={client.hiring_manager_contact_id === contact.id}
+                                        onChange={() => toggleHiringManager(contact, client.id)}
                                         className="h-4 w-4"
                                     />
-                                    <span className="text-sm text-gray-700">Hiring Manager</span>
+                                    <span className="text-sm text-gray-700">Set Hiring Manager</span>
                                 </div>
                             )}
                         </div>

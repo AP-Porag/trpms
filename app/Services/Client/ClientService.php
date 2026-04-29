@@ -205,12 +205,12 @@ class ClientService extends BaseService
         ];
     }
     //hiring manager
-    public function setHiringManager(Client $client, ?int $contactId): Client
+    public function setHiringManager(int $clientId, int $contactId): void
     {
+        $client = $this->find($clientId);
+
         $client->update([
             'hiring_manager_contact_id' => $contactId,
         ]);
-
-        return $client->fresh();
     }
 }
