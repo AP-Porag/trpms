@@ -54,7 +54,12 @@ export default function Index({ clients, meta, filters: initialFilters }) {
         {
             key: 'hiring_manager_contact_id',
             label: 'Hiring Manager',
-            render: (row) => <span className="block w-30 truncate">{row.hiring_manager_contact?.name}</span>,
+            render: (row) => (
+                <div className="flex w-30 flex-col">
+                    <span className="truncate">{row.hiring_manager_contact?.name}</span>
+                    <span className="text-muted-foreground truncate text-xs">{row.hiring_manager_contact?.contact}</span>
+                </div>
+            ),
         },
         // {
         //     key: 'client_type',

@@ -94,4 +94,17 @@ class ProspectController extends BaseController
     {
         $this->service->delete($prospect->id);
     }
+
+
+    public function prospectToClient($id)
+    {
+        $prospect = Client::findOrFail($id);
+        $prospect->update([
+            'category' => 'client'
+        ]);
+
+        return redirect()
+            ->route('prospects.index')
+            ->with('success', 'Prospect updated successfully.');
+    }
 }

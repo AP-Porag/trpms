@@ -152,7 +152,7 @@ export default function Edit({ prospect }) {
                         <div className="flex justify-end gap-2">
                             <Button
                                 type="button"
-                                onClick={() => router.visit(route('clients.edit', prospect.id))}
+                                onClick={() => router.post(route('prospect.client', prospect.id))}
                                 className="cursor-pointer bg-blue-600 text-white hover:bg-blue-700"
                             >
                                 Convert to Client

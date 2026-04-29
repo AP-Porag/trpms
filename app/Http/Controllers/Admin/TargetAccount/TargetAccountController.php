@@ -117,4 +117,16 @@ class TargetAccountController extends BaseController
             ->route('target-accounts.index')
             ->with('success', 'Target account promoted to prospect successfully.');
     }
+
+    public function targetAccountToClient($id)
+    {
+        $targetAccount = Client::findOrFail($id);
+        $targetAccount->update([
+            'category' => 'client'
+        ]);
+
+        return redirect()
+            ->route('target-accounts.index')
+            ->with('success', 'Target account updated successfully.');
+    }
 }
