@@ -126,14 +126,13 @@ export default function Edit({ prospect }) {
                                         name="status"
                                         control={control}
                                         render={({ field }) => (
-                                            <Select value={field.value} onValueChange={field.onChange}>
+                                            <Select value={String(field.value)} onValueChange={field.onChange}>
                                                 <SelectTrigger className="w-full">
-                                                    <SelectValue />
+                                                    <SelectValue placeholder="Select Status" />
                                                 </SelectTrigger>
 
                                                 <SelectContent>
                                                     <SelectItem value={STATUS.ACTIVE.toString()}>Active</SelectItem>
-
                                                     <SelectItem value={STATUS.INACTIVE.toString()}>Inactive</SelectItem>
                                                 </SelectContent>
                                             </Select>

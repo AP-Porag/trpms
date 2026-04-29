@@ -13,6 +13,8 @@ class Agreement extends BaseModel
         'client_id',
         'file_path',
         'original_name',
+        'signed_date',
+        'agreement_type'
     ];
 
     public function client()

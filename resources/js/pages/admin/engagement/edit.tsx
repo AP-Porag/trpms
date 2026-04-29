@@ -121,7 +121,7 @@ export default function Edit({ job, clients, departments }) {
                                                     <CommandInput placeholder="Search client..." />
                                                     <CommandEmpty>No client found.</CommandEmpty>
 
-                                                    <CommandGroup>
+                                                    <CommandGroup className="h-[200px] overflow-y-auto">
                                                         {clients.map((client) => (
                                                             <CommandItem
                                                                 key={client.id}

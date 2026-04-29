@@ -77,11 +77,11 @@ class NotificationService
                     'entity_id' => $job->id,
                     'title' => GlobalConstant::NOTIFICATION_TITLE_JOB_CREATED,
                     'description' => $this->replaceVariables(
-                        GlobalConstant::NOTIFICATION_DESC_JOB_CREATED,
+                        'New job created: ' . $job->title,
                         ['job' => $job->title]
                     ),
                     'icon_letter' => GlobalConstant::NOTIFICATION_ICON_JOB,
-                    'route_name' => 'engagements.show',
+                    'route_name' => 'jobs.show',
                     'route_param' => $job->id,
                     'created_at' => $job->created_at,
                 ]);
@@ -128,7 +128,7 @@ class NotificationService
                         'entity_id' => $jc->id,
                         'title' => GlobalConstant::NOTIFICATION_TITLE_OFFER,
                         'description' => $this->replaceVariables(
-                            GlobalConstant::NOTIFICATION_DESC_OFFER,
+                            'Offer made to' . $jc->candidate?->first_name . 'for' . $jc->job?->title,
                             $data
                         ),
                         'icon_letter' => GlobalConstant::NOTIFICATION_ICON_INTERVIEW,
@@ -145,7 +145,8 @@ class NotificationService
                         'entity_id' => $jc->id,
                         'title' => GlobalConstant::NOTIFICATION_TITLE_PLACED,
                         'description' => $this->replaceVariables(
-                            GlobalConstant::NOTIFICATION_DESC_PLACED,
+                            $jc->candidate->first_name . ' ' .
+                                'placed successfully in' . ' ' . $jc->candidate->title,
                             $data
                         ),
                         'icon_letter' => GlobalConstant::NOTIFICATION_ICON_PLACEMENT,
@@ -162,7 +163,7 @@ class NotificationService
                         'entity_id' => $jc->id,
                         'title' => GlobalConstant::NOTIFICATION_TITLE_REJECTED,
                         'description' => $this->replaceVariables(
-                            GlobalConstant::NOTIFICATION_DESC_REJECTED,
+                            $jc->candidate->first_name . ' ' . 'rejected for' . ' ' . $jc->job?->title,
                             $data
                         ),
                         'icon_letter' => GlobalConstant::NOTIFICATION_ICON_ALERT,
@@ -199,7 +200,7 @@ class NotificationService
                     'entity_id' => $jc->id,
                     'title' => GlobalConstant::NOTIFICATION_TITLE_INTERVIEW_REMINDER,
                     'description' => $this->replaceVariables(
-                        GlobalConstant::NOTIFICATION_DESC_INTERVIEW_REMINDER,
+                        'Interview for' . $jc->candidate->first_name . ' ' . $jc->job->title  . 'starts in 1 hour.',
                         [
                             'candidate' => $jc->candidate?->first_name,
                             'job' => $jc->job?->title,
@@ -230,7 +231,7 @@ class NotificationService
                         'entity_type' => GlobalConstant::EVENT_ENTITY_PLACEMENT,
                         'entity_id' => $p->id,
                         'title' => GlobalConstant::NOTIFICATION_TITLE_PLACEMENT_START,
-                        'description' => GlobalConstant::NOTIFICATION_DESC_PLACEMENT_START,
+                        'description' => $p->candidate->first_name . ' starting ' . $p->job->title,
                         'icon_letter' => GlobalConstant::NOTIFICATION_ICON_PLACEMENT,
                         'route_name' => 'placements.show',
                         'route_param' => $p->id,
@@ -244,7 +245,7 @@ class NotificationService
                         'entity_type' => GlobalConstant::EVENT_ENTITY_PLACEMENT,
                         'entity_id' => $p->id,
                         'title' => GlobalConstant::NOTIFICATION_TITLE_GUARANTEE_END,
-                        'description' => GlobalConstant::NOTIFICATION_DESC_GUARANTEE_END,
+                        'description' => 'Guarantee period ending for' . ' ' . $p->candidate?->first_name,
                         'icon_letter' => GlobalConstant::NOTIFICATION_ICON_PLACEMENT,
                         'route_name' => 'placements.show',
                         'route_param' => $p->id,
@@ -272,7 +273,7 @@ class NotificationService
                         'entity_type' => GlobalConstant::EVENT_ENTITY_INVOICE,
                         'entity_id' => $inv->id,
                         'title' => GlobalConstant::NOTIFICATION_TITLE_INVOICE_SENT,
-                        'description' => GlobalConstant::NOTIFICATION_DESC_INVOICE_SENT,
+                        'description' => 'Invoice' . '#' . $inv->invoice_number . ' ' . 'sent to' . $inv->client->name,
                         'icon_letter' => GlobalConstant::NOTIFICATION_ICON_INVOICE,
                         'route_name' => 'invoices.show',
                         'route_param' => $inv->id,
@@ -286,7 +287,7 @@ class NotificationService
                         'entity_type' => GlobalConstant::EVENT_ENTITY_INVOICE,
                         'entity_id' => $inv->id,
                         'title' => GlobalConstant::NOTIFICATION_TITLE_INVOICE_PAID,
-                        'description' => GlobalConstant::NOTIFICATION_DESC_INVOICE_PAID,
+                        'description' => 'Invoice #' . $inv->invoice_number . 'has been paid.',
                         'icon_letter' => GlobalConstant::NOTIFICATION_ICON_INVOICE,
                         'route_name' => 'invoices.show',
                         'route_param' => $inv->id,
@@ -301,7 +302,7 @@ class NotificationService
                         'entity_type' => GlobalConstant::EVENT_ENTITY_INVOICE,
                         'entity_id' => $inv->id,
                         'title' => GlobalConstant::NOTIFICATION_TITLE_INVOICE_OVERDUE,
-                        'description' => GlobalConstant::NOTIFICATION_DESC_INVOICE_OVERDUE,
+                        'description' => 'Invoice #' . $inv->invoice_number . 'is overdue.',
                         'icon_letter' => GlobalConstant::NOTIFICATION_ICON_ALERT,
                         'route_name' => 'invoices.show',
                         'route_param' => $inv->id,
@@ -329,10 +330,10 @@ class NotificationService
                         'entity_type' => GlobalConstant::EVENT_ENTITY_AGREEMENT,
                         'entity_id' => $a->id,
                         'title' => GlobalConstant::NOTIFICATION_TITLE_AGREEMENT_SIGNED,
-                        'description' => GlobalConstant::NOTIFICATION_DESC_AGREEMENT_SIGNED,
+                        'description' => 'Agreement signed with' . ' ' . $a->client->name,
                         'icon_letter' => GlobalConstant::NOTIFICATION_ICON_AGREEMENT,
-                        'route_name' => 'agreements.show',
-                        'route_param' => $a->id,
+                        'route_name' => 'clients.show',
+                        'route_param' => $a->client_id,
                         'created_at' => $a->signed_date,
                     ]);
                 }
@@ -358,9 +359,9 @@ class NotificationService
                         'entity_type' => 'revenue_goal',
                         'entity_id' => $goal->id,
                         'title' => GlobalConstant::NOTIFICATION_TITLE_REVENUE_GOAL_FAILED,
-                        'description' => GlobalConstant::NOTIFICATION_DESC_REVENUE_GOAL_FAILED,
+                        'description' => 'Revenue goal missed for' . '' . $goal->year,
                         'icon_letter' => GlobalConstant::NOTIFICATION_ICON_REVENUE,
-                        'route_name' => 'revenue.goals.index',
+                        'route_name' => 'revenue-goals.index',
                         'route_param' => null,
                         'created_at' => now(),
                     ]);

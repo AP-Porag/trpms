@@ -84,6 +84,8 @@ class ClientService extends BaseService
                         'client_id'      => $client->id,
                         'file_path' => $file->store('agreements', 'public'),
                         'original_name'  => $file->getClientOriginalName(),
+                        'agreement_type' => $data->agreement_type,
+                        'signed_date'    => $data->signed_date
                     ]);
                 }
             }
@@ -96,17 +98,18 @@ class ClientService extends BaseService
 
     public function update(Client $client, $data): Client
     {
-        if ($client->category === 'prospect' || $client->category === 'target_account') {
-            $client->update([
-                'category' => 'client'
-            ]);
-        }
-
-        // if ($client->category === 'prospect' || $client->category === 'target_account' && $data->file('agreements')) {
+        // if ($client->category === 'prospect') {
         //     $client->update([
         //         'category' => 'client'
         //     ]);
         // }
+
+
+        if ($client->category === 'target_account' && $data->file('agreements')) {
+            $client->update([
+                'category' => 'client'
+            ]);
+        }
 
         $client->update([
             'name'         => $data->name,
@@ -167,6 +170,8 @@ class ClientService extends BaseService
                         'client_id'     => $client->id,
                         'file_path'     => $path,
                         'original_name' => $file->getClientOriginalName(),
+                        'agreement_type' => $data->agreement_type,
+                        'signed_date'    => $data->signed_date
                     ]);
                 }
             }

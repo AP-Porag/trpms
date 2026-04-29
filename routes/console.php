@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Artisan;
 
 Schedule::job(new EventSyncJob)->everyMinute();
 Schedule::job(new NotificationSyncJob)->everyMinute();
-Schedule::job(new SyncEngagementStageJob)->hourly();
+Schedule::job(new SyncEngagementStageJob)->everyMinute();
 
 
 //command to run the job

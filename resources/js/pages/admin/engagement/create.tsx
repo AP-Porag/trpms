@@ -123,7 +123,7 @@ export default function Create({ clients, departments }) {
                                                         <CommandInput placeholder="Search client..." />
                                                         <CommandEmpty>No client found.</CommandEmpty>
 
-                                                        <CommandGroup>
+                                                        <CommandGroup className="h-[200px] overflow-y-auto">
                                                             {clients.map((client) => (
                                                                 <CommandItem
                                                                     key={client.id}
@@ -175,8 +175,6 @@ export default function Create({ clients, departments }) {
                                 <Input type="number" {...register('fee_value')} />
                                 {errors.fee_value && <span className="text-sm text-red-500">{errors.fee_value.message}</span>}
                             </div>
-
-                           
                         </div>
                         {/* <div className="grid grid-cols-2 gap-4"> */}
                         <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -264,7 +262,7 @@ export default function Create({ clients, departments }) {
                                     </div>
                                 )}
                             />
-                             {/* Department */}
+                            {/* Department */}
                             <Controller
                                 name="department_id"
                                 control={control}
