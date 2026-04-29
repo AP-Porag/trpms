@@ -62,6 +62,12 @@ class Client extends BaseModel
         return $this->morphMany(Contact::class, 'contactable')->latest();
     }
 
+    // Hiring Manager
+    public function hiringManagerContact()
+    {
+        return $this->belongsTo(Contact::class, 'hiring_manager_contact_id');
+    }
+
     // Agreements
     public function agreements(): hasMany
     {

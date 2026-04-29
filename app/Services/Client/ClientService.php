@@ -20,7 +20,9 @@ class ClientService extends BaseService
         $search = $request->input('search', '');
         $status = $request->input('status', 'all');
         $perPage = $request->input('perPage', 5);
-        $query = Client::clients(); // uses model scope
+        $query = Client::clients()
+            ->with(['hiringManagerContact']);
+
 
         if ($search) {
             $query->where(function ($q) use ($search) {
