@@ -136,7 +136,7 @@ export default function Edit({ client, industries = [], departments = [] }: any)
                                     </div>
                                 ))}
                             </div> */}
-                            <div className="grid gap-4 md:grid-cols-3">
+                            <div className="grid gap-4 md:grid-cols-2">
                                 {[
                                     ['name', 'Name'],
                                     ['company_name', 'Company Name'],
@@ -191,7 +191,7 @@ export default function Edit({ client, industries = [], departments = [] }: any)
                                 />
                             </div>
 
-                            <div className="mt-4 grid grid-cols-3 gap-4">
+                            <div className="mt-4 grid sm:grid-cols-2 gap-4">
                                 {/* INDUSTRY */}
                                 <div className="grid gap-2">
                                     <Label>Industry</Label>
@@ -263,7 +263,7 @@ export default function Edit({ client, industries = [], departments = [] }: any)
                                         )}
                                     />
                                 </div>
-
+                                <br className="hidden sm:block"/>
                                 <div className="mt-4 flex items-center space-x-2">
                                     <Controller
                                         name="is_use_agency"

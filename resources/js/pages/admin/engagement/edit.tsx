@@ -95,7 +95,7 @@ export default function Edit({ job, clients, departments }) {
                         <h2 className="text-lg font-semibold">Edit Job Information</h2>
 
                         {/* GRID BLOCK */}
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* CLIENT */}
                             <Controller
                                 name="client_id"
@@ -193,7 +193,7 @@ export default function Edit({ job, clients, departments }) {
                         </div>
 
                         {/* ROW 2 */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid sm:grid-cols-2 gap-4">
                             <div className="grid gap-2">
                                 <Label>Salary Range</Label>
 
@@ -227,7 +227,7 @@ export default function Edit({ job, clients, departments }) {
                         </div>
 
                         {/* ROW 3 */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid sm:grid-cols-2 gap-4">
                             <div className="grid gap-2">
                                 <Label>Location</Label>
                                 <Input {...register('location')} />

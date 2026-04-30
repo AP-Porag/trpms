@@ -241,7 +241,7 @@ export default function Edit({ client, industries, agreement, departments }: any
                             </div>
 
                             {/* ================= DROPDOWNS (UNCHANGED) ================= */}
-                            <div className="mt-2 grid grid-cols-4 gap-4">
+                            <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                 <div className="mt-2 grid gap-2">
                                     <Label>CLient Type</Label>
                                     <Controller
@@ -365,12 +365,12 @@ export default function Edit({ client, industries, agreement, departments }: any
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
                             <h2 className="mb-4 text-lg font-semibold">Client Agreements</h2>
 
-                            <div className="grid gap-4 md:grid-cols-2">
+                            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                                 <div className="grid gap-2">
                                     <Label>Agreement Type</Label>
                                     <Input {...register('agreement_type')} />
                                 </div>
-
+                                <div className="-mt-1">
                                 <Controller
                                     name="signed_date"
                                     control={control}
@@ -383,6 +383,7 @@ export default function Edit({ client, industries, agreement, departments }: any
                                         />
                                     )}
                                 />
+                                </div>
                             </div>
 
                             <label className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center">

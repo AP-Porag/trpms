@@ -158,6 +158,7 @@ export default function Index({ goal, breakdowns }) {
                             Define how your yearly revenue will be distributed across client tiers.
                             <br />A = High-value clients, B = Mid-level, C = Low-value.
                         </div>
+                        <div className="overflow-x-auto">
                         <table className="w-full bg-white text-sm">
                             <thead className="border-b bg-gray-50">
                                 <tr>
@@ -212,6 +213,7 @@ export default function Index({ goal, breakdowns }) {
                                 </tr>
                             </tfoot>
                         </table>
+                        </div>
                     </div>
                 )}
 

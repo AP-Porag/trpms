@@ -202,7 +202,7 @@ export default function Create({ industries = [], departments = [] }: any) {
                             </div>
 
                             {/* ================= GRID ================= */}
-                            <div className="mt-4 grid grid-cols-4 gap-4">
+                            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {/* CLIENT TYPE */}
                                 <div className="grid gap-2">
                                     <Label>Client Type</Label>
@@ -257,7 +257,7 @@ export default function Create({ industries = [], departments = [] }: any) {
                                     {errors.fee_value && <span className="text-sm text-red-500">{errors.fee_value.message}</span>}
                                 </div> */}
 
-                                <div className="mt-2 grid gap-2">
+                                <div className="grid gap-2">
                                     <Label>{clientType === CLIENT_TYPE.CONTINGENCY ? 'Placement Fee (%)' : 'Monthly Retainer ($)'}</Label>
 
                                     <div className="relative">
@@ -332,12 +332,13 @@ export default function Create({ industries = [], departments = [] }: any) {
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
                             <h2 className="mb-4 text-lg font-semibold">Client Agreements</h2>
 
-                            <div className="grid gap-4 md:grid-cols-2">
+                            <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="grid gap-2">
                                     <Label>Agreement Type</Label>
                                     <Input {...register('agreement_type')} />
                                 </div>
 
+                                <div className="-mt-1">
                                 <Controller
                                     name="signed_date"
                                     control={control}
@@ -350,6 +351,7 @@ export default function Create({ industries = [], departments = [] }: any) {
                                         />
                                     )}
                                 />
+                                </div>
                             </div>
 
                             <label className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center">

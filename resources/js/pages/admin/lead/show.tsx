@@ -61,7 +61,7 @@ export default function Show({ lead }: any) {
 
                 {/* ================= Contact ================= */}
 
-                <ContactComponent contactableType="lead" contactableId={lead.id} contacts={lead.contacts} />
+                <ContactComponent client={lead.id} contactableType="lead" contactableId={lead.id} contacts={lead.contacts} />
             </div>
         </AppLayout>
     );
