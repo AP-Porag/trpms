@@ -78,7 +78,7 @@ export default function Create({ industries = [], departments = [], source = [] 
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
                             <h2 className="mb-4 text-lg font-semibold">Lead Information</h2>
 
-                            <div className="grid gap-4 md:grid-cols-3">
+                            <div className="grid gap-4 md:grid-cols-2">
                                 {[
                                     ['name', 'Name'],
                                     ['company_name', 'Company Name'],
@@ -199,10 +199,10 @@ export default function Create({ industries = [], departments = [], source = [] 
                                 <Input {...register('current_openings')} />
                             </div>
 
-                            <div className="mt-4 grid gap-2">
+                            {/* <div className="mt-4 grid gap-2">
                                 <Label>Note</Label>
                                 <Input {...register('note')} />
-                            </div>
+                            </div> */}
                         </div>
 
                         <div className="flex justify-end">

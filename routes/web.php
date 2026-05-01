@@ -62,6 +62,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::resource('jobs', EngagementController::class);
     Route::resource('leads', LeadController::class);
 
+
+    //prospect to client
+    Route::post('/update/prospect/to/client/{id}', [ProspectController::class, 'prospectToClient'])->name('prospect.client');
+
+    //target account to client
+    Route::post('/update/target/account/to/client/{id}', [TargetAccountController::class, 'targetAccountToClient'])->name('target.account.client');
+
     //    Route::post('clients/{client}/notes', [ClientNoteController::class, 'store'])
     //        ->name('clients.notes.store');
     //
@@ -114,6 +121,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     )->name('activity.logs.for-subject');
 
     //making some change
+
+    //Hiring Manager
+    Route::post('/clients/set/hiring-manager/{id}', [ClientController::class, 'setHiringManager'])
+        ->name('clients.setHiringManager');
 
     Route::resource('prospects', ProspectController::class);
     Route::resource('target-accounts', TargetAccountController::class);

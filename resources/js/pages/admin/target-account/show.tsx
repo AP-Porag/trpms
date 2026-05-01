@@ -1,12 +1,16 @@
-
+import ContactComponent from '@/components/common/ContactComponent';
+import NoteComponent from '@/components/common/NoteComponent';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
-import { Head } from '@inertiajs/react';
-import NoteComponent from '@/components/common/NoteComponent';
 import { DATE_PRESETS, formatDateUS } from '@/utils/helpers';
-import ContactComponent from '@/components/common/ContactComponent';
+import { Head } from '@inertiajs/react';
 
 const breadcrumbs = [{ title: 'Target', href: '/targets' }, { title: 'View Target' }];
+const formatUSD = (amount: number) =>
+    new Intl.NumberFormat('en-US', {
+        style: 'currency',
+        currency: 'USD',
+    }).format(amount);
 
 export default function Show({ targetAccount }: any) {
     console.log(targetAccount);
@@ -14,7 +18,7 @@ export default function Show({ targetAccount }: any) {
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Prospect Details" />
 
-            <div className="grid grid-cols-1 gap-10 lg:gap-4 p-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-10 p-4 lg:grid-cols-2 lg:gap-4">
                 {/* ================= CLIENT INFORMATION ================= */}
                 <Card className="rounded-xl">
                     <CardHeader>
@@ -33,23 +37,33 @@ export default function Show({ targetAccount }: any) {
                         </div>
 
                         <div>
-                            <p className="text-sm font-semibold">Email</p>
-                            <p className="text-sm text-gray-600">{targetAccount?.email}</p>
+                            <p className="text-sm font-semibold">Potential Revenew</p>
+                            <p className="text-sm text-gray-600">{formatUSD(targetAccount?.revenue_potential ?? '—')}</p>
                         </div>
 
                         <div>
-                            <p className="text-sm font-semibold">Phone</p>
-                            <p className="text-sm text-gray-600">{targetAccount?.phone}</p>
+                            <p className="text-sm font-semibold">Rating</p>
+                            <p className="text-sm text-gray-600">{targetAccount?.rating?.toUpperCase() ?? '—'}</p>
                         </div>
 
                         <div>
-                            <p className="text-sm font-semibold">Address</p>
-                            <p className="text-sm text-gray-600">{targetAccount?.address}</p>
+                            <p className="text-sm font-semibold">Use Agencies</p>
+                            <p className="text-sm text-gray-600">{targetAccount?.is_use_agency == 1 ? 'Yes' : 'No'}</p>
                         </div>
 
                         <div>
                             <p className="text-sm font-semibold">Status</p>
                             <p className="text-sm text-gray-600">{targetAccount?.status == 1 ? 'Active' : 'Inactive'}</p>
+                        </div>
+                        <div>
+                            <p className="text-sm font-semibold">Departments</p>
+                            <div className="mt-1 flex flex-wrap gap-2">
+                                {targetAccount?.departments?.map((dept) => (
+                                    <span key={dept.id} className="inline-flex items-center rounded-sm bg-gray-200 px-2 py-1 text-xs font-medium">
+                                        {dept.name}
+                                    </span>
+                                ))}
+                            </div>
                         </div>
 
                         <div>
@@ -60,12 +74,17 @@ export default function Show({ targetAccount }: any) {
                 </Card>
 
                 {/* ================= NOTES ================= */}
-                
-            <NoteComponent noteableType="target_account" noteableId={targetAccount.id} notes={targetAccount.notes}/>
 
-             {/* ================= Contact ================= */}
-                            
-             <ContactComponent contactableType="target_account" contactableId={targetAccount.id} contacts={targetAccount.contacts} />
+                <NoteComponent noteableType="client" noteableId={targetAccount.id} notes={targetAccount.notes} />
+
+                {/* ================= Contact ================= */}
+
+                <ContactComponent
+                    client={targetAccount.id}
+                    contactableType="client"
+                    contactableId={targetAccount.id}
+                    contacts={targetAccount.contacts}
+                />
             </div>
         </AppLayout>
     );

@@ -29,6 +29,10 @@ class Client extends BaseModel
         'departments',
         'average_salary',
         'agreement_type',
+        'is_use_agency',
+        'current_openings',
+        'revenue_potential',
+        'hiring_manager_contact_id',
         'signed_date',
         'status',
         'created_by',
@@ -56,6 +60,12 @@ class Client extends BaseModel
     public function contacts()
     {
         return $this->morphMany(Contact::class, 'contactable')->latest();
+    }
+
+    // Hiring Manager
+    public function hiringManagerContact()
+    {
+        return $this->belongsTo(Contact::class, 'hiring_manager_contact_id');
     }
 
     // Agreements
@@ -131,6 +141,7 @@ class Client extends BaseModel
 
     public function departments()
     {
-        return $this->belongsToMany(Department::class);
+        return $this->belongsToMany(Department::class, 'client_department')
+            ->withTimestamps(); // ✅ only this
     }
 }

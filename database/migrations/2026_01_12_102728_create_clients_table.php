@@ -63,10 +63,12 @@ return new class extends Migration
             |--------------------------------------------------------------------------
             | Client Rating
             |--------------------------------------------------------------------------
-            | A / B / C (from Excel)
             */
 
-            $table->enum('rating', ['A', 'B', 'C'])->nullable();
+            $table->string('rating')->nullable();
+            $table->string('current_openings')->nullable();
+            $table->string('revenue_potential')->nullable();
+            $table->boolean('is_use_agency')->default(false);
             $table->foreignId('industry_id')->nullable();
             $table->json('departments')->nullable();
 
@@ -98,6 +100,18 @@ return new class extends Migration
 
             $table->integer('status')
                 ->default(GlobalConstant::STATUS_ACTIVE);
+
+
+            /*
+            |--------------------------------------------------------------------------
+            | Hiring Manager
+            |--------------------------------------------------------------------------
+            */
+            $table->foreignId('hiring_manager_contact_id')
+                ->nullable()
+                ->on('contacts')
+                ->nullOnDelete();
+
 
 
             /*

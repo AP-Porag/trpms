@@ -71,7 +71,7 @@ class EventService
                 $this->createOrUpdateEvent(
                     GlobalConstant::EVENT_TYPE_INTERVIEW,
                     GlobalConstant::EVENT_ENTITY_JOB_CANDIDATE,
-                    $jc->id,
+                    $jc->job->id,
                     GlobalConstant::EVENT_TITLE_INTERVIEW,
                     $this->replaceVariables(
                         GlobalConstant::EVENT_DESC_INTERVIEW,
@@ -244,7 +244,7 @@ class EventService
                 $this->createOrUpdateEvent(
                     GlobalConstant::EVENT_TYPE_AGREEMENT_SIGNED,
                     GlobalConstant::EVENT_ENTITY_AGREEMENT,
-                    $agreement->id,
+                    $agreement->client_id,
                     GlobalConstant::EVENT_TITLE_AGREEMENT_SIGNED,
                     $this->replaceVariables(
                         GlobalConstant::EVENT_DESC_AGREEMENT_SIGNED,
@@ -269,7 +269,7 @@ class EventService
         int $entityId,
         string $title,
         string $description,
-               $date,
+        $date,
         string $color
     ): void {
         try {
@@ -292,12 +292,11 @@ class EventService
                 'type' => $type,
                 'entity_id' => $entityId
             ]);
-        }catch (\Exception $e){
+        } catch (\Exception $e) {
 
             \Log::error("Event failed", [
                 'error' => $e->getMessage()
             ]);
-
         }
     }
 

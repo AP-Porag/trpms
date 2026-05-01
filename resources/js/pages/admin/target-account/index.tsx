@@ -46,18 +46,6 @@ export default function Index({ prospects, meta, filters: initialFilters }) {
         { key: 'company_name', label: 'Company' },
 
         {
-            key: 'email',
-            label: 'Email',
-            render: (row) => <span className="block w-48 truncate">{row.email}</span>,
-        },
-
-        {
-            key: 'phone',
-            label: 'Phone',
-            render: (row) => <span className="block w-40 truncate">{row.phone}</span>,
-        },
-
-        {
             key: 'created_at',
             label: 'Created',
             render: (row) => new Date(row.created_at).toLocaleDateString(),

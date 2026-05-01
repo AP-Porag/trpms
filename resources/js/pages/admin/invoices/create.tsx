@@ -205,7 +205,7 @@ export default function Create({ clients }) {
 
                 {clientSummary && (
 
-                    <div className="grid md:grid-cols-4 gap-4">
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
 
                         <div className="bg-blue-50 rounded-xl shadow p-4">
 
@@ -251,15 +251,17 @@ export default function Create({ clients }) {
 
                 {clientId && (
 
-                    <div className="grid md:grid-cols-3 gap-6">
+                    <div className="grid gap-6">
 
                         {/* PLACEMENTS */}
 
-                        <div className="md:col-span-2 bg-white rounded-xl shadow p-4">
+                        <div className="sm:col-span-3 bg-white rounded-xl shadow p-4 overflow-x-hidden">
 
                             <h2 className="text-lg font-semibold mb-4">
                                 Placements
                             </h2>
+
+                            <div className="overflow-x-auto">
 
                             <table className="min-w-full table-auto">
 
@@ -352,6 +354,7 @@ export default function Create({ clients }) {
                                 </tbody>
 
                             </table>
+                            </div>
 
                         </div>
 

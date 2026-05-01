@@ -3,7 +3,8 @@ import { router } from '@inertiajs/react';
 import { Trash2 } from 'lucide-react';
 import { toast } from 'sonner';
 
-export default function ContactTimeline({ contacts = [] }) {
+export default function ContactTimeline({ contacts = [], client }) {
+    console.log(client);
     // ================= DELETE =================
     function deleteContact(id: number) {
         router.delete(route('contacts.destroy', id), {
@@ -17,6 +18,42 @@ export default function ContactTimeline({ contacts = [] }) {
                 toast.error('Failed to delete contact');
             },
         });
+    }
+
+    // function toggleHiringManager(contact: any, clientId: number) {
+    //     router.post(
+    //         route('clients.setHiringManager', clientId),
+    //         {
+    //             contact_id: contact.id,
+    //         },
+    //         {
+    //             preserveScroll: true,
+    //             onSuccess: () => {
+    //                 toast.success('Hiring manager updated');
+    //             },
+    //             onError: () => {
+    //                 toast.error('Failed to update hiring manager');
+    //             },
+    //         },
+    //     );
+    // }
+
+    function toggleHiringManager(contact: any) {
+        router.post(
+            route('clients.setHiringManager', client.id),
+            {
+                contact_id: contact.id,
+            },
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    toast.success('Hiring manager updated');
+                },
+                onError: () => {
+                    toast.error('Failed to update hiring manager');
+                },
+            },
+        );
     }
 
     // ================= EMPTY STATE =================
@@ -47,6 +84,19 @@ export default function ContactTimeline({ contacts = [] }) {
                             >
                                 <Trash2 size={16} />
                             </button>
+                        </div>
+                        <div className="mb-2">
+                            {client.category === 'client' && (
+                                <div className="mt-3 flex items-center gap-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={client.hiring_manager_contact_id === contact.id}
+                                        onChange={() => toggleHiringManager(contact, client.id)}
+                                        className="h-4 w-4"
+                                    />
+                                    <span className="text-sm text-gray-700">Set Hiring Manager</span>
+                                </div>
+                            )}
                         </div>
 
                         {/* contact value */}

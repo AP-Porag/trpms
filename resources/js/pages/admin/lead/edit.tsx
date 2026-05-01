@@ -26,10 +26,11 @@ const leadSchema = z.object({
     mpc: z.string().optional(),
     departments: z.array(z.string()).optional(),
     current_openings: z.string().optional(),
-    status: z.enum([String(STATUS.ACTIVE), String(STATUS.INACTIVE)]),
+    status: z.enum([STATUS.ACTIVE.toString(), STATUS.INACTIVE.toString()]),
 });
 
 export default function Edit({ lead, industries = [], departments = [], source = [] }: any) {
+    console.log(lead);
     const {
         register,
         control,
@@ -41,9 +42,9 @@ export default function Edit({ lead, industries = [], departments = [], source =
     } = useForm({
         resolver: zodResolver(leadSchema),
         defaultValues: {
-            industry_id: '',
-            source_id: '',
-            status: String(STATUS.ACTIVE),
+            industry_id: lead.industry_id ? String(lead.industry_id) : null,
+            source_id: lead.source_id ? String(lead.source_id) : null,
+            status: lead?.status?.toString() || STATUS.ACTIVE.toString(),
         },
     });
 
@@ -69,7 +70,7 @@ export default function Edit({ lead, industries = [], departments = [], source =
             industry_id: lead.industry_id ? String(lead.industry_id) : null,
             source_id: lead.source_id ? String(lead.source_id) : null,
             current_openings: lead.current_openings || '',
-            status: lead.status ? String(lead.status) : String(STATUS.ACTIVE),
+            status: lead.status !== null && lead.status !== undefined ? String(lead.status) : STATUS.ACTIVE.toString(),
             departments: deptIds,
         });
 
@@ -104,7 +105,7 @@ export default function Edit({ lead, industries = [], departments = [], source =
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
                             <h2 className="mb-4 text-lg font-semibold">Lead Information</h2>
 
-                            <div className="grid gap-4 md:grid-cols-3">
+                            <div className="grid gap-4 md:grid-cols-2">
                                 {/* NAME / COMPANY / MPC */}
                                 {[
                                     ['name', 'Name'],
@@ -127,7 +128,7 @@ export default function Edit({ lead, industries = [], departments = [], source =
                                         control={control}
                                         render={({ field }) => (
                                             <Select value={field.value ?? undefined} onValueChange={(val) => field.onChange(val)}>
-                                                <SelectTrigger>
+                                                <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Select Industry" />
                                                 </SelectTrigger>
 
@@ -152,7 +153,7 @@ export default function Edit({ lead, industries = [], departments = [], source =
                                         control={control}
                                         render={({ field }) => (
                                             <Select value={field.value ?? undefined} onValueChange={(val) => field.onChange(val)}>
-                                                <SelectTrigger>
+                                                <SelectTrigger className="w-full">
                                                     <SelectValue placeholder="Select Source" />
                                                 </SelectTrigger>
 
@@ -176,14 +177,13 @@ export default function Edit({ lead, industries = [], departments = [], source =
                                         name="status"
                                         control={control}
                                         render={({ field }) => (
-                                            <Select value={field.value ?? undefined} onValueChange={(val) => field.onChange(val)}>
-                                                <SelectTrigger>
+                                            <Select value={field.value || undefined} onValueChange={field.onChange}>
+                                                <SelectTrigger className="w-full">
                                                     <SelectValue />
                                                 </SelectTrigger>
-
                                                 <SelectContent>
-                                                    <SelectItem value={String(STATUS.ACTIVE)}>Active</SelectItem>
-                                                    <SelectItem value={String(STATUS.INACTIVE)}>Inactive</SelectItem>
+                                                    <SelectItem value={STATUS.ACTIVE.toString()}>Active</SelectItem>
+                                                    <SelectItem value={STATUS.INACTIVE.toString()}>Inactive</SelectItem>
                                                 </SelectContent>
                                             </Select>
                                         )}

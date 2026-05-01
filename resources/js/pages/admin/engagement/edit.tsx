@@ -95,7 +95,7 @@ export default function Edit({ job, clients, departments }) {
                         <h2 className="text-lg font-semibold">Edit Job Information</h2>
 
                         {/* GRID BLOCK */}
-                        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                             {/* CLIENT */}
                             <Controller
                                 name="client_id"
@@ -121,7 +121,7 @@ export default function Edit({ job, clients, departments }) {
                                                     <CommandInput placeholder="Search client..." />
                                                     <CommandEmpty>No client found.</CommandEmpty>
 
-                                                    <CommandGroup>
+                                                    <CommandGroup className="h-[200px] overflow-y-auto">
                                                         {clients.map((client) => (
                                                             <CommandItem
                                                                 key={client.id}
@@ -193,10 +193,17 @@ export default function Edit({ job, clients, departments }) {
                         </div>
 
                         {/* ROW 2 */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid sm:grid-cols-2 gap-4">
                             <div className="grid gap-2">
                                 <Label>Salary Range</Label>
-                                <Input {...register('salary_range')} />
+
+                                <div className="relative">
+                                    <span className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2">$</span>
+
+                                    <Input {...register('salary_range')} className="pr-24 pl-7" />
+
+                                    <span className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2">k/per year</span>
+                                </div>
                             </div>
 
                             <Controller
@@ -220,7 +227,7 @@ export default function Edit({ job, clients, departments }) {
                         </div>
 
                         {/* ROW 3 */}
-                        <div className="grid grid-cols-2 gap-4">
+                        <div className="grid sm:grid-cols-2 gap-4">
                             <div className="grid gap-2">
                                 <Label>Location</Label>
                                 <Input {...register('location')} />

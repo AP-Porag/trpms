@@ -1,20 +1,13 @@
-import { useEffect, useState } from "react";
-import AppLayout from "@/layouts/app-layout";
-import { Head, router, usePage } from "@inertiajs/react";
+import AppLayout from '@/layouts/app-layout';
+import { Head, router, usePage } from '@inertiajs/react';
+import { useEffect, useState } from 'react';
 
-import FullCalendar from "@fullcalendar/react";
-import dayGridPlugin from "@fullcalendar/daygrid";
-import timeGridPlugin from "@fullcalendar/timegrid";
-import interactionPlugin from "@fullcalendar/interaction";
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import FullCalendar from '@fullcalendar/react';
+import timeGridPlugin from '@fullcalendar/timegrid';
 
-import { Button } from "@/components/ui/button";
-import {
-    Select,
-    SelectContent,
-    SelectItem,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 type EventItem = {
     id: number;
@@ -35,28 +28,26 @@ type PageProps = {
     };
 };
 
-const breadcrumbs = [{ title: "Business Timeline", href: "/events" }];
+const breadcrumbs = [{ title: 'Business Timeline', href: '/events' }];
 
 export default function Index() {
     const { events, filters } = usePage<PageProps>().props;
 
     function mapBackendView(v: string) {
-        if (v === "month") return "dayGridMonth";
-        if (v === "week") return "timeGridWeek";
-        if (v === "day") return "timeGridDay";
-        return "agenda";
+        if (v === 'month') return 'dayGridMonth';
+        if (v === 'week') return 'timeGridWeek';
+        if (v === 'day') return 'timeGridDay';
+        return 'agenda';
     }
 
-    const [view, setView] = useState<string>(
-        mapBackendView(filters.view || "month")
-    );
+    const [view, setView] = useState<string>(mapBackendView(filters.view || 'month'));
     const [date, setDate] = useState<string>(filters.date);
 
     // ================= AUTO REFRESH =================
     useEffect(() => {
         const interval = setInterval(() => {
             router.reload({
-                only: ["events"],
+                only: ['events'],
                 preserveState: true,
                 preserveScroll: true,
             });
@@ -66,22 +57,23 @@ export default function Index() {
     }, []);
 
     const mapView = (v: string) => {
-        if (v === "dayGridMonth") return "month";
-        if (v === "timeGridWeek") return "week";
-        if (v === "timeGridDay") return "day";
-        return "agenda";
+        if (v === 'dayGridMonth') return 'month';
+        if (v === 'timeGridWeek') return 'week';
+        if (v === 'timeGridDay') return 'day';
+        return 'agenda';
     };
 
     const handleEventClick = (info: any) => {
         const { entity_type, entity_id } = info.event.extendedProps;
 
-        let url = "#";
+        let url = '#';
 
-        if (entity_type === "job") url = `/jobs/${entity_id}`;
-        if (entity_type === "job_candidate") url = `/job-candidates/${entity_id}`;
-        if (entity_type === "placement") url = `/placements/${entity_id}`;
-        if (entity_type === "invoice") url = `/invoices/${entity_id}`;
-        if (entity_type === "agreement") url = `/agreements/${entity_id}`;
+        if (entity_type === 'job') url = `/jobs/${entity_id}`; //Ok
+        // if (entity_type === 'job_candidate') url = `/job-candidates/${entity_id}`;
+        if (entity_type === 'job_candidate') url = `jobs/${entity_id}?tab=candidates`; //Ok
+        if (entity_type === 'placement') url = `/placements/${entity_id}`; //Ok
+        if (entity_type === 'invoice') url = `/invoices/${entity_id}`; //Ok
+        if (entity_type === 'agreement') url = `/clients/${entity_id}`; //Ok
 
         window.location.href = url;
     };
@@ -92,14 +84,14 @@ export default function Index() {
 
         return (
             <div
-                title={info.event.extendedProps.description || ""}
-                className="text-[11px] px-1.5 py-[2px] rounded-md cursor-pointer"
+                title={info.event.extendedProps.description || ''}
+                className="cursor-pointer rounded-md px-1.5 py-[2px] text-[11px]"
                 style={{
                     backgroundColor: info.event.backgroundColor,
-                    color: "#fff",
-                    marginBottom: "3px",
-                    textDecoration: status === "completed" ? "line-through" : "none",
-                    opacity: status === "completed" ? 0.7 : 1,
+                    color: '#fff',
+                    marginBottom: '3px',
+                    textDecoration: status === 'completed' ? 'line-through' : 'none',
+                    opacity: status === 'completed' ? 0.7 : 1,
                 }}
             >
                 {info.event.title}
@@ -187,39 +179,29 @@ function AgendaView({ events }: { events: EventItem[] }) {
         <div className="space-y-6">
             {Object.keys(grouped).map((date) => (
                 <div key={date}>
-                    <h3 className="text-xs font-semibold text-muted-foreground mb-2">
-                        {date}
-                    </h3>
+                    <h3 className="text-muted-foreground mb-2 text-xs font-semibold">{date}</h3>
 
                     <div className="space-y-2">
                         {grouped[date].map((event) => (
                             <div
                                 key={event.id}
-                                className="p-3 rounded-lg border cursor-pointer"
-                                style={{ backgroundColor: event.color + "20" }}
-                                onClick={() =>
-                                    (window.location.href = `/${event.entity_type}/${event.entity_id}`)
-                                }
+                                className="cursor-pointer rounded-lg border p-3"
+                                style={{ backgroundColor: event.color + '20' }}
+                                onClick={() => (window.location.href = `/${event.entity_type}/${event.entity_id}`)}
                             >
                                 <div className="flex justify-between">
-                                    <span className="text-sm font-medium">
-                                        {event.title}
-                                    </span>
+                                    <span className="text-sm font-medium">{event.title}</span>
 
                                     <span
-                                        className={`text-xs px-2 py-1 rounded ${
-                                            event.status === "completed"
-                                                ? "bg-green-100 text-green-700"
-                                                : "bg-blue-100 text-blue-700"
+                                        className={`rounded px-2 py-1 text-xs ${
+                                            event.status === 'completed' ? 'bg-green-100 text-green-700' : 'bg-blue-100 text-blue-700'
                                         }`}
                                     >
                                         {event.status}
                                     </span>
                                 </div>
 
-                                <p className="text-xs text-muted-foreground">
-                                    {event.description}
-                                </p>
+                                <p className="text-muted-foreground text-xs">{event.description}</p>
                             </div>
                         ))}
                     </div>
@@ -233,7 +215,7 @@ function AgendaView({ events }: { events: EventItem[] }) {
 
 function groupByDate(events: EventItem[]) {
     return events.reduce<Record<string, EventItem[]>>((acc, event) => {
-        const date = event.start.split("T")[0];
+        const date = event.start.split('T')[0];
         if (!acc[date]) acc[date] = [];
         acc[date].push(event);
         return acc;

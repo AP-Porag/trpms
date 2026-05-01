@@ -1,7 +1,7 @@
-import { useEffect, useState } from "react";
-import { router, usePage } from "@inertiajs/react";
-import { Bell, Mail, MailOpen } from "lucide-react";
 import { Separator } from '@/components/ui/separator';
+import { router, usePage } from '@inertiajs/react';
+import { Bell, Mail, MailOpen } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export default function NotificationDropdown() {
     const { notifications: initialNotifications, notification_unseen_count } = usePage().props as any;
@@ -29,14 +29,18 @@ export default function NotificationDropdown() {
     }, [initialNotifications, notification_unseen_count]);
 
     const toggleStatus = (id: number) => {
-        router.post(route('notifications.toggle', id), {}, {
-            preserveScroll: true,
-            onSuccess: () => {
-                router.reload({
-                    only: ['notifications', 'notification_unseen_count']
-                });
-            }
-        });
+        router.post(
+            route('notifications.toggle', id),
+            {},
+            {
+                preserveScroll: true,
+                onSuccess: () => {
+                    router.reload({
+                        only: ['notifications', 'notification_unseen_count'],
+                    });
+                },
+            },
+        );
     };
 
     return (
@@ -64,9 +68,13 @@ export default function NotificationDropdown() {
                                         n.status === 0 ? 'bg-blue-50' : ''
                                     }`}
                                     onClick={() => {
-                                        if (n.route_name) {
+                                        if (n.route_name !== 'job-candidates.show') {
                                             router.visit(route(n.route_name, n.route_param));
                                         }
+                                        if (n.route_name == 'job-candidates.show') {
+                                            router.visit(route(`/jobs/${n.route_param}?tab=candidates`));
+                                        }
+                                        toggleStatus(n.id);
                                     }}
                                 >
                                     {/* ICON LETTER */}

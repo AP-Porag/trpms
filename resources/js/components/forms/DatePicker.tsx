@@ -47,7 +47,7 @@ export default function DatePicker({ label = 'Signed Date', value, onChange, err
 
     return (
         <div className="flex w-full flex-col gap-3">
-            <Label className="px-1">{label}</Label>
+            <Label className="">{label}</Label>
 
             {/* 🔑 EXACT SHADCN STRUCTURE */}
             <div className="relative flex gap-2">

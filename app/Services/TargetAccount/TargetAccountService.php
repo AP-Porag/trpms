@@ -49,29 +49,57 @@ class TargetAccountService extends ClientService
     public function create($data): Client
     {
 
-        $prospect = Client::create([
-            ...$data->validated(),
-            'category' => GlobalConstant::CLIENT_CATEGORY_TARGET_ACCOUNT,
+        $client = Client::create([
+            'name'         => $data->name,
+            'company_name' => $data->company_name,
+            'industry_id'  => $data->industry_id,
+            'status'       => $data->status,
+            'category'       => 'target_account',
+            'rating'       => $data->rating,
+            'revenue_potential' => $data->revenue_potential,
+            'is_use_agency'       => $data->is_use_agency,
+            'current_openings' => $data->current_openings,
         ]);
-
-        $note = $data->validated()['note'] ?? null;
-
-
-        if (!empty($note)) {
-            Note::create([
-                'note' => $note,
-                'noteable_id' => $prospect->id,
-                'noteable_type' => 'client',
-                'created_by' => auth()->id(), // IMPORTANT if column exists
-            ]);
+        // 🔥 Pivot table insert (IMPORTANT)
+        if (!empty($data->departments)) {
+            $client->departments()->sync(
+                array_map('intval', $data->departments)
+            );
         }
-        return $prospect;
+        return $client;
     }
 
 
+    // public function update(Client $client, $data): Client
+    // {
+    //     return parent::update($client, $data);
+    // }
+
     public function update(Client $client, $data): Client
     {
-        return parent::update($client, $data);
+        $client->update([
+            'name'               => $data->name,
+            'company_name'       => $data->company_name,
+            'industry_id'        => $data->industry_id,
+            'status'             => $data->status,
+            'category'           => 'target_account',
+            'rating'             => $data->rating,
+            'revenue_potential'  => $data->revenue_potential,
+            'is_use_agency'      => $data->is_use_agency,
+            'current_openings'   => $data->current_openings,
+        ]);
+
+        // 🔥 Pivot table update (IMPORTANT)
+        if (!empty($data->departments)) {
+            $client->departments()->sync(
+                array_map('intval', $data->departments)
+            );
+        } else {
+            // If empty → detach all
+            $client->departments()->sync([]);
+        }
+
+        return $client;
     }
 
 

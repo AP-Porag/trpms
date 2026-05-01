@@ -26,6 +26,7 @@ const prospectSchema = z.object({
 });
 
 export default function Edit({ prospect }) {
+    console.log(prospect);
     const {
         register,
         control,
@@ -35,6 +36,9 @@ export default function Edit({ prospect }) {
         formState: { errors, isSubmitting },
     } = useForm({
         resolver: zodResolver(prospectSchema),
+        defaultValues: {
+            status: '',
+        },
     });
 
     /*
@@ -51,7 +55,7 @@ export default function Edit({ prospect }) {
                 email: prospect.email || '',
                 phone: prospect.phone || '',
                 address: prospect.address || '',
-                status: prospect.status?.toString() || STATUS.ACTIVE.toString(),
+                status: String(prospect.status),
             });
         }
     }, [prospect, reset]);
@@ -112,13 +116,7 @@ export default function Edit({ prospect }) {
                                 ))}
                             </div>
 
-                            <div className="mt-4 grid gap-2">
-                                <Label>Address</Label>
-
-                                <Input {...register('address')} />
-                            </div>
-
-                            <div className="mt-4 grid gap-4 md:grid-cols-3">
+                            <div className="mt-4 grid gap-4 md:grid-cols-2">
                                 {/* Status */}
 
                                 <div className="grid gap-2">
@@ -128,14 +126,13 @@ export default function Edit({ prospect }) {
                                         name="status"
                                         control={control}
                                         render={({ field }) => (
-                                            <Select value={field.value} onValueChange={field.onChange}>
+                                            <Select value={String(field.value)} onValueChange={field.onChange}>
                                                 <SelectTrigger className="w-full">
-                                                    <SelectValue />
+                                                    <SelectValue placeholder="Select Status" />
                                                 </SelectTrigger>
 
                                                 <SelectContent>
                                                     <SelectItem value={STATUS.ACTIVE.toString()}>Active</SelectItem>
-
                                                     <SelectItem value={STATUS.INACTIVE.toString()}>Inactive</SelectItem>
                                                 </SelectContent>
                                             </Select>
@@ -143,26 +140,25 @@ export default function Edit({ prospect }) {
                                     />
                                 </div>
                             </div>
+                            <div className="mt-4 grid gap-2">
+                                <Label>Address</Label>
+
+                                <Input {...register('address')} />
+                            </div>
                         </div>
 
                         {/* Submit */}
 
                         <div className="flex justify-end gap-2">
-
                             <Button
                                 type="button"
-                                onClick={() => router.visit(route('clients.edit', prospect.id))}
+                                onClick={() => router.post(route('prospect.client', prospect.id))}
                                 className="cursor-pointer bg-blue-600 text-white hover:bg-blue-700"
                             >
                                 Convert to Client
                             </Button>
 
-                            <Button
-                                type="submit"
-                                disabled={isSubmitting}
-                                className="cursor-pointer"
-                            >
-
+                            <Button type="submit" disabled={isSubmitting} className="cursor-pointer">
                                 {isSubmitting ? (
                                     <>
                                         <RotateCw className="mr-2 h-4 w-4 animate-spin" />
@@ -171,11 +167,8 @@ export default function Edit({ prospect }) {
                                 ) : (
                                     'Update Prospect'
                                 )}
-
                             </Button>
-
                         </div>
-
                     </form>
                 </div>
             </div>

@@ -90,7 +90,7 @@ export default function DataTable({
                                       };
 
                                       return (
-                                          <div className="space-y-4 rounded-xl bg-white p-4 text-black shadow dark:text-white">
+                                          <div className="space-y-4 rounded-xl bg-white p-4 text-black shadow dark:text-white ">
                                               {/* Filters */}
                                               <div className="mb-4 flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                                                   {globalActions.search_filter && (
@@ -153,7 +153,10 @@ export default function DataTable({
                                               </div>
 
                                               {/* Table */}
-                                              <table className="min-w-full table-auto">
+                                              <div className="overflow-x-auto">
+                                                {/* <div className="inline-block min-w-full">
+                                                 <div className="overflow-hidden"> */}
+                                                <table className="min-w-full">
                                                   <thead className="border-b text-left">
                                                       <tr>
                                                           {columns.map((col) => (
@@ -293,6 +296,10 @@ export default function DataTable({
                                                       )}
                                                   </tbody>
                                               </table>
+                                              </div>
+                                              {/* </div>
+                                              </div> */}
+                                              
 
                                               {/* Pagination Controls */}
                                               {meta && (

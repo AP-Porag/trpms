@@ -1,3 +1,4 @@
+import ContactComponent from '@/components/common/ContactComponent';
 import NoteComponent from '@/components/common/NoteComponent';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import AppLayout from '@/layouts/app-layout';
@@ -6,13 +7,17 @@ import { Head } from '@inertiajs/react';
 import { FileText } from 'lucide-react';
 import { useState } from 'react';
 import { Tooltip } from 'react-tooltip';
-import ContactComponent from '@/components/common/ContactComponent';
 
 const breadcrumbs = [{ title: 'Clients', href: '/clients' }, { title: 'View Client' }];
 
 export default function Show({ client }: any) {
     const [openAgreement, setOpenAgreement] = useState(false);
     const [selectedIndex, setSelectedIndex] = useState(0);
+    const formatUSD = (amount: number) =>
+        new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+        }).format(amount);
 
     const openPdf = (index: number) => {
         setSelectedIndex(index);
@@ -63,7 +68,23 @@ export default function Show({ client }: any) {
 
                         <div>
                             <p className="text-sm font-semibold">Fee Value</p>
-                            <p className="text-sm text-gray-600">${client?.fee_value ?? '—'}</p>
+                            <p className="text-sm text-gray-600">{formatUSD(client?.fee_value ?? '—')}</p>
+                        </div>
+
+                        <div>
+                            <p className="text-sm font-semibold">Departments</p>
+                            <div className="mt-1 flex flex-wrap gap-2">
+                                {client?.departments?.map((dept) => (
+                                    <span key={dept.id} className="inline-flex items-center rounded-sm bg-gray-200 px-2 py-1 text-xs font-medium">
+                                        {dept.name}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div>
+                            <p className="text-sm font-semibold">Rating</p>
+                            <p className="text-sm text-gray-600">{client?.rating?.toUpperCase() ?? '—'}</p>
                         </div>
 
                         <div>
@@ -112,13 +133,11 @@ export default function Show({ client }: any) {
                 </Card>
 
                 {/* ================= NOTES ================= */}
-                 <NoteComponent noteableType="client" noteableId={client.id} notes={client.notes} />
-                
+                <NoteComponent noteableType="client" noteableId={client.id} notes={client.notes} />
 
-                 {/* ================= Contact ================= */}
-                                
-                <ContactComponent contactableType="client" contactableId={client.id} contacts={client.contacts} />
-                
+                {/* ================= Contact ================= */}
+
+                <ContactComponent contactableType="client" contactableId={client.id} contacts={client.contacts} client={client} />
             </div>
 
             {/* ================= PDF MODAL (MULTIPLE SUPPORT) ================= */}

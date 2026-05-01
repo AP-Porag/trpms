@@ -48,7 +48,7 @@ export default function Index({ jobs, meta, filters: initialFilters }) {
         {
             key: 'fee_value',
             label: 'Fee Value',
-            render: (row) => <span className="block w-10 truncate">{row.fee_value}</span>,
+            render: (row) => <span className="block w-20 truncate">${row.fee_value}</span>,
         },
         {
             key: 'days_in_process',
@@ -102,7 +102,9 @@ export default function Index({ jobs, meta, filters: initialFilters }) {
                         <Plus className="mr-2" /> Create Job
                     </Button>
                 </div>
+
                 <DataTable
+                    
                     data={jobs}
                     columns={columns}
                     meta={{

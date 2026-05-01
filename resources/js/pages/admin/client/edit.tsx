@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 import AppLayout from '@/layouts/app-layout';
+import { cn } from '@/lib/utils';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Head, router } from '@inertiajs/react';
 import { FileText, RotateCw, Trash2, Upload } from 'lucide-react';
@@ -15,7 +16,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { CLIENT_TYPE, JOB_FEE_TYPE, STATUS } from '@/utils/constants';
+import { CLIENT_TYPE, JOB_FEE_TYPE, RATING, STATUS } from '@/utils/constants';
 
 const breadcrumbs = [{ title: 'Edit Client', href: '/clients/edit' }];
 
@@ -35,6 +36,7 @@ const clientSchema = z.object({
     status: z.enum([STATUS.ACTIVE.toString(), STATUS.INACTIVE.toString()]),
 
     agreement_type: z.string().optional(),
+    rating: z.string().optional(),
     signed_date: z.string().optional(),
 
     agreements: z.any().optional(),
@@ -44,7 +46,6 @@ const clientSchema = z.object({
 });
 
 export default function Edit({ client, industries, agreement, departments }: any) {
-    console.log(client);
     const [files, setFiles] = useState<File[]>([]);
     const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
 
@@ -76,6 +77,7 @@ export default function Edit({ client, industries, agreement, departments }: any
             fee_value: client?.fee_value || '',
 
             status: client?.status?.toString() || STATUS.ACTIVE.toString(),
+            rating: client?.rating ? String(client.rating) : '',
 
             agreement_type: client?.agreement_type || '',
             signed_date: client?.signed_date || '',
@@ -239,59 +241,123 @@ export default function Edit({ client, industries, agreement, departments }: any
                             </div>
 
                             {/* ================= DROPDOWNS (UNCHANGED) ================= */}
-                            <div className="mt-4 grid grid-cols-4 gap-4">
-                                <Controller
-                                    name="client_type"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Select value={field.value} onValueChange={field.onChange}>
-                                            <SelectTrigger className="w-full">
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value={CLIENT_TYPE.RETAINER}>Retainer</SelectItem>
-                                                <SelectItem value={CLIENT_TYPE.CONTINGENCY}>Contingency</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    )}
-                                />
+                            <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                                <div className="mt-2 grid gap-2">
+                                    <Label>CLient Type</Label>
+                                    <Controller
+                                        name="client_type"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select value={field.value} onValueChange={field.onChange}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value={CLIENT_TYPE.RETAINER}>Retainer</SelectItem>
+                                                    <SelectItem value={CLIENT_TYPE.CONTINGENCY}>Contingency</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </div>
+                                <div className="mt-2 grid gap-2">
+                                    <Label>Industry</Label>
+                                    <Controller
+                                        name="industry_id"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select value={field.value || ''} onValueChange={field.onChange}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select Industry" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    {industries.map((i: any) => (
+                                                        <SelectItem key={i.id} value={String(i.id)}>
+                                                            {i.name}
+                                                        </SelectItem>
+                                                    ))}
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </div>
 
-                                <Controller
-                                    name="industry_id"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Select value={field.value || ''} onValueChange={field.onChange}>
-                                            <SelectTrigger className="w-full">
-                                                <SelectValue placeholder="Select Industry" />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                {industries.map((i: any) => (
-                                                    <SelectItem key={i.id} value={String(i.id)}>
-                                                        {i.name}
-                                                    </SelectItem>
-                                                ))}
-                                            </SelectContent>
-                                        </Select>
-                                    )}
-                                />
+                                {/* FEE */}
 
-                                <Input {...register('fee_value')} />
+                                {/* <div className="mt-2 grid gap-2">
+                                    <Label>{clientType === CLIENT_TYPE.CONTINGENCY ? 'Placement Fee (%)' : 'Monthly Retainer ($)'}</Label>
 
-                                <Controller
-                                    name="status"
-                                    control={control}
-                                    render={({ field }) => (
-                                        <Select value={field.value} onValueChange={field.onChange}>
-                                            <SelectTrigger className="w-full">
-                                                <SelectValue />
-                                            </SelectTrigger>
-                                            <SelectContent>
-                                                <SelectItem value={STATUS.ACTIVE.toString()}>Active</SelectItem>
-                                                <SelectItem value={STATUS.INACTIVE.toString()}>Inactive</SelectItem>
-                                            </SelectContent>
-                                        </Select>
-                                    )}
-                                />
+                                    <Input type="number" {...register('fee_value')} className={cn(errors.fee_value && 'border-red-500')} />
+
+                                    {errors.fee_value && <span className="text-sm text-red-500">{errors.fee_value.message}</span>}
+                                </div> */}
+
+                                <div className="mt-2 grid gap-2">
+                                    <Label>{clientType === CLIENT_TYPE.CONTINGENCY ? 'Placement Fee (%)' : 'Monthly Retainer ($)'}</Label>
+
+                                    <div className="relative">
+                                        {clientType !== CLIENT_TYPE.CONTINGENCY && (
+                                            <span className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2">$</span>
+                                        )}
+
+                                        {clientType === CLIENT_TYPE.CONTINGENCY && (
+                                            <span className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2">%</span>
+                                        )}
+
+                                        <Input
+                                            type="number"
+                                            {...register('fee_value')}
+                                            className={cn(
+                                                errors.fee_value && 'border-red-500',
+                                                clientType !== CLIENT_TYPE.CONTINGENCY ? 'pl-7' : '',
+                                                clientType === CLIENT_TYPE.CONTINGENCY ? 'pr-7' : '',
+                                            )}
+                                        />
+                                    </div>
+
+                                    {errors.fee_value && <span className="text-sm text-red-500">{errors.fee_value.message}</span>}
+                                </div>
+
+                                {/* Status */}
+                                <div className="mt-2 grid gap-2">
+                                    <Label>Status</Label>
+                                    <Controller
+                                        name="status"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select value={field.value} onValueChange={field.onChange}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value={STATUS.ACTIVE.toString()}>Active</SelectItem>
+                                                    <SelectItem value={STATUS.INACTIVE.toString()}>Inactive</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </div>
+
+                                {/* Rating */}
+                                <div className="mt-2 grid gap-2">
+                                    <Label>Rating</Label>
+                                    <Controller
+                                        name="rating"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select value={field.value || ''} onValueChange={field.onChange}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value={RATING.RATING_A.toString()}>A</SelectItem>
+                                                    <SelectItem value={RATING.RATING_B.toString()}>B</SelectItem>
+                                                    <SelectItem value={RATING.RATING_C.toString()}>C</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -299,12 +365,12 @@ export default function Edit({ client, industries, agreement, departments }: any
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
                             <h2 className="mb-4 text-lg font-semibold">Client Agreements</h2>
 
-                            <div className="grid gap-4 md:grid-cols-2">
+                            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2">
                                 <div className="grid gap-2">
                                     <Label>Agreement Type</Label>
                                     <Input {...register('agreement_type')} />
                                 </div>
-
+                                <div className="-mt-1">
                                 <Controller
                                     name="signed_date"
                                     control={control}
@@ -317,6 +383,7 @@ export default function Edit({ client, industries, agreement, departments }: any
                                         />
                                     )}
                                 />
+                                </div>
                             </div>
 
                             <label className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center">

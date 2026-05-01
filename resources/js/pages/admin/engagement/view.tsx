@@ -12,7 +12,6 @@ import { JOB_FEE_TYPE, STATUS } from '@/utils/constants';
 import { DATE_PRESETS, formatDateUS } from '@/utils/helpers';
 import AddCandidateToJobModal from './partials/addCandidateToJobModal';
 import JobCandidateKanban from './partials/jobCandidateKanban';
-import AddNoteModal from '@/components/notes/AddNoteModal';
 // import NotesTimeline from '@/components/notes/NotesTimeline';
 import NoteComponent from '@/components/common/NoteComponent';
 
@@ -86,71 +85,66 @@ export default function View({ job, pipeline }) {
 
                         {/* ================= OVERVIEW ================= */}
                         <TabsContent value="overview" className="mt-4">
-                            <div className="grid grid-cols-1 gap-8 lg:gap-4 lg:grid-cols-2">
+                            <div className="grid grid-cols-1 gap-8 lg:grid-cols-2 lg:gap-4">
                                 {/* Job Info */}
                                 <Card className="grid grid-cols-2">
                                     <div>
-                                    <CardHeader className="pb-6">
-                                        <CardTitle>Job Information</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="space-y-4">
-                                        <div className="">
-                                            <InfoRow label="Title" value={job.title} />
-                                        </div>
+                                        <CardHeader className="pb-6">
+                                            <CardTitle>Job Information</CardTitle>
+                                        </CardHeader>
+                                        <CardContent className="space-y-4">
+                                            <div className="">
+                                                <InfoRow label="Title" value={job.title} />
+                                            </div>
 
-                                        <InfoRow label="Fee Type" value={job.fee_type === JOB_FEE_TYPE.PERCENTAGE ? 'Percentage' : 'Fixed'} />
+                                            <InfoRow label="Fee Type" value={job.fee_type === JOB_FEE_TYPE.PERCENTAGE ? 'Percentage' : 'Fixed'} />
+                                            <InfoRow label="Salary Range" value={`$ ${job.salary_range}`} />
 
-                                        <InfoRow label="Fee Value" value={job.fee_value} />
+                                            <InfoRow label="Fee Value" value={`$ ${job.fee_value}`} />
 
-                                        <InfoRow label="Status" value={job.status == STATUS.ACTIVE ? 'Active' : 'Inactive'} />
+                                            <InfoRow label="Status" value={job.status == STATUS.ACTIVE ? 'Active' : 'Inactive'} />
 
-                                        <div>
-                                            <p className="text-sm font-medium">Description</p>
-                                            <div
-                                                className="prose prose-sm mt-2 max-w-none"
-                                                dangerouslySetInnerHTML={{
-                                                    __html: job.description,
-                                                }}
-                                            />
-                                        </div>
-                                        <div>
-                                            <InfoRow label="Job Created" value={formatDateUS(job.created_at, DATE_PRESETS.SHORT)} />
-                                        </div>
-                                    </CardContent>
+                                            <div>
+                                                <p className="text-sm font-medium">Description</p>
+                                                <div
+                                                    className="prose prose-sm mt-2 max-w-none"
+                                                    dangerouslySetInnerHTML={{
+                                                        __html: job.description,
+                                                    }}
+                                                />
+                                            </div>
+                                            <div>
+                                                <InfoRow label="Job Created" value={formatDateUS(job.created_at, DATE_PRESETS.SHORT)} />
+                                            </div>
+                                        </CardContent>
                                     </div>
 
-
-                                     {/* Client Info */}
+                                    {/* Client Info */}
                                     <div>
-                                    <CardHeader className="pb-6">
-                                        <CardTitle>Client Information</CardTitle>
-                                    </CardHeader>
-                                    <CardContent className="space-y-3">
-                                        <InfoRow label="Client Name" value={job.client?.name} />
-                                        <InfoRow label="Company" value={job.client?.company_name} />
-                                        <InfoRow label="Email" value={job.client?.email} />
-                                        <InfoRow label="Phone" value={job.client?.phone} />
-                                        <InfoRow label="Address" value={job.client?.address} />
-                                        <InfoRow label="Type" value={job.client?.client_type} />
-                                        <InfoRow label="Fee Percentage" value={job.client?.fee_percentage} />
-                                        <InfoRow label="Status" value={job.client?.status == STATUS.ACTIVE ? 'Active' : 'Inactive'} />
-                                        <InfoRow label="Client Created" value={formatDateUS(job.client?.created_at, DATE_PRESETS.SHORT)} />
-                                    </CardContent>
+                                        <CardHeader className="pb-6">
+                                            <CardTitle>Client Information</CardTitle>
+                                        </CardHeader>
+                                        <CardContent className="space-y-3">
+                                            <InfoRow label="Client Name" value={job.client?.name} />
+                                            <InfoRow label="Company" value={job.client?.company_name} />
+                                            <InfoRow label="Email" value={job.client?.email} />
+                                            <InfoRow label="Phone" value={job.client?.phone} />
+                                            <InfoRow label="Address" value={job.client?.address} />
+                                            <InfoRow label="Type" value={job.client?.client_type} />
+                                            <InfoRow label="Fee Percentage" value={job.client?.fee_percentage} />
+                                            <InfoRow label="Status" value={job.client?.status == STATUS.ACTIVE ? 'Active' : 'Inactive'} />
+                                            <InfoRow label="Client Created" value={formatDateUS(job.client?.created_at, DATE_PRESETS.SHORT)} />
+                                        </CardContent>
                                     </div>
                                 </Card>
 
-                                
                                 {/* <Card>
-                                    
+
                                 </Card> */}
 
-
                                 {/* NOTES */}
-                             <NoteComponent noteableType="engagement" noteableId={job.id} notes={job.notes} />
-
-
+                                <NoteComponent noteableType="engagement" noteableId={job.id} notes={job.notes} />
                             </div>
-                            
                         </TabsContent>
 
                         {/* ================= CANDIDATES ================= */}

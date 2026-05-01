@@ -17,7 +17,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { CLIENT_TYPE, JOB_FEE_TYPE, STATUS } from '@/utils/constants';
+import { CLIENT_TYPE, JOB_FEE_TYPE, RATING, STATUS } from '@/utils/constants';
 
 const breadcrumbs = [{ title: 'Create Client', href: '/clients/create' }];
 
@@ -28,6 +28,7 @@ const clientSchema = z.object({
     email: z.string().email(),
     phone: z.string().min(10, { message: 'Phone number must be at least 10 digits' }),
     address: z.string().optional(),
+    rating: z.string().optional(),
 
     industry_id: z.string().nullable().optional(),
 
@@ -71,6 +72,7 @@ export default function Create({ industries = [], departments = [] }: any) {
             email: '',
             phone: '',
             address: '',
+            rating: '',
 
             industry_id: '',
 
@@ -200,7 +202,7 @@ export default function Create({ industries = [], departments = [] }: any) {
                             </div>
 
                             {/* ================= GRID ================= */}
-                            <div className="mt-4 grid grid-cols-4 gap-4">
+                            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                                 {/* CLIENT TYPE */}
                                 <div className="grid gap-2">
                                     <Label>Client Type</Label>
@@ -247,10 +249,36 @@ export default function Create({ industries = [], departments = [] }: any) {
                                 </div>
 
                                 {/* FEE */}
-                                <div className="grid gap-2">
+                                {/* <div className="grid gap-2">
                                     <Label>{clientType === CLIENT_TYPE.CONTINGENCY ? 'Placement Fee (%)' : 'Monthly Retainer ($)'}</Label>
 
                                     <Input type="number" {...register('fee_value')} className={cn(errors.fee_value && 'border-red-500')} />
+
+                                    {errors.fee_value && <span className="text-sm text-red-500">{errors.fee_value.message}</span>}
+                                </div> */}
+
+                                <div className="grid gap-2">
+                                    <Label>{clientType === CLIENT_TYPE.CONTINGENCY ? 'Placement Fee (%)' : 'Monthly Retainer ($)'}</Label>
+
+                                    <div className="relative">
+                                        {clientType !== CLIENT_TYPE.CONTINGENCY && (
+                                            <span className="text-muted-foreground absolute top-1/2 left-3 -translate-y-1/2">$</span>
+                                        )}
+
+                                        {clientType === CLIENT_TYPE.CONTINGENCY && (
+                                            <span className="text-muted-foreground absolute top-1/2 right-3 -translate-y-1/2">%</span>
+                                        )}
+
+                                        <Input
+                                            type="number"
+                                            {...register('fee_value')}
+                                            className={cn(
+                                                errors.fee_value && 'border-red-500',
+                                                clientType !== CLIENT_TYPE.CONTINGENCY ? 'pl-7' : '',
+                                                clientType === CLIENT_TYPE.CONTINGENCY ? 'pr-7' : '',
+                                            )}
+                                        />
+                                    </div>
 
                                     {errors.fee_value && <span className="text-sm text-red-500">{errors.fee_value.message}</span>}
                                 </div>
@@ -275,6 +303,28 @@ export default function Create({ industries = [], departments = [] }: any) {
                                         )}
                                     />
                                 </div>
+
+                                {/* Ratings */}
+                                <div className="grid gap-2">
+                                    <Label>Ratings</Label>
+
+                                    <Controller
+                                        name="rating"
+                                        control={control}
+                                        render={({ field }) => (
+                                            <Select value={field.value} onValueChange={field.onChange}>
+                                                <SelectTrigger className="w-full">
+                                                    <SelectValue placeholder="Select Rating" />
+                                                </SelectTrigger>
+                                                <SelectContent>
+                                                    <SelectItem value={RATING.RATING_A.toString()}>A</SelectItem>
+                                                    <SelectItem value={RATING.RATING_B.toString()}>B</SelectItem>
+                                                    <SelectItem value={RATING.RATING_C.toString()}>C</SelectItem>
+                                                </SelectContent>
+                                            </Select>
+                                        )}
+                                    />
+                                </div>
                             </div>
                         </div>
 
@@ -282,12 +332,13 @@ export default function Create({ industries = [], departments = [] }: any) {
                         <div className="mb-6 rounded-xl bg-white p-6 shadow dark:bg-gray-800">
                             <h2 className="mb-4 text-lg font-semibold">Client Agreements</h2>
 
-                            <div className="grid gap-4 md:grid-cols-2">
+                            <div className="grid gap-4 sm:grid-cols-2">
                                 <div className="grid gap-2">
                                     <Label>Agreement Type</Label>
                                     <Input {...register('agreement_type')} />
                                 </div>
 
+                                <div className="-mt-1">
                                 <Controller
                                     name="signed_date"
                                     control={control}
@@ -300,6 +351,7 @@ export default function Create({ industries = [], departments = [] }: any) {
                                         />
                                     )}
                                 />
+                                </div>
                             </div>
 
                             <label className="mt-4 flex cursor-pointer flex-col items-center justify-center rounded-lg border-2 border-dashed p-6 text-center">

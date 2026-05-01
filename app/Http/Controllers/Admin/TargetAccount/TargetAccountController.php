@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin\TargetAccount;
 
 use App\Http\Controllers\BaseController;
 use App\Http\Requests\Client\ClientRequest;
+use App\Http\Requests\TargetAccount\TargetAccountRequest;
 use App\Models\Client;
+use App\Models\Department;
+use App\Models\Industry;
 use App\Services\TargetAccount\TargetAccountService;
 use App\Utils\GlobalConstant;
 use Illuminate\Http\Request;
@@ -32,14 +35,17 @@ class TargetAccountController extends BaseController
      */
     public function create()
     {
-        return Inertia('admin/target-account/create');
+        return Inertia::render('admin/target-account/create', [
+            'industries' => Industry::select('id', 'name')->get(),
+            'departments' => Department::select('id', 'name')->get(),
+        ]);
     }
 
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(ClientRequest $request)
+    public function store(TargetAccountRequest $request)
     {
         $this->service->create($request);
 
@@ -69,7 +75,13 @@ class TargetAccountController extends BaseController
     public function edit(Client $targetAccount)
     {
         return inertia('admin/target-account/edit', [
-            'prospect' => $targetAccount,
+
+            'client' => $targetAccount->load([
+                'departments:id,name',
+                'industry:id,name'
+            ]),
+            'industries' => Industry::select('id', 'name')->get(),
+            'departments' => Department::select('id', 'name')->get(),
         ]);
     }
 
@@ -77,7 +89,7 @@ class TargetAccountController extends BaseController
     /**
      * Update the specified resource in storage.
      */
-    public function update(ClientRequest $request, Client $targetAccount)
+    public function update(TargetAccountRequest $request, Client $targetAccount)
     {
         $this->service->update($targetAccount, $request);
 
@@ -104,5 +116,17 @@ class TargetAccountController extends BaseController
         return redirect()
             ->route('target-accounts.index')
             ->with('success', 'Target account promoted to prospect successfully.');
+    }
+
+    public function targetAccountToClient($id)
+    {
+        $targetAccount = Client::findOrFail($id);
+        $targetAccount->update([
+            'category' => 'client'
+        ]);
+
+        return redirect()
+            ->route('target-accounts.index')
+            ->with('success', 'Target account updated successfully.');
     }
 }

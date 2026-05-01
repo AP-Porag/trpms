@@ -46,7 +46,7 @@ export default function Index({ prospects, meta, filters: initialFilters }) {
     const columns = [
         { key: 'name', label: 'Contact Name' },
 
-        { key: 'company_name', label: 'Company' },
+        { key: 'company_name', label: 'Company', render: (row) => <span className="block w-20 truncate">{row.company_name}</span> },
 
         {
             key: 'email',
