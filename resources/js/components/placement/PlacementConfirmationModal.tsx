@@ -15,14 +15,30 @@ export default function PlacementConfirmationModal({ open, onClose, jc }) {
     const client = job?.client ?? {};
     const candidate = jc?.candidate ?? {};
 
-    const feePercent = job?.fee_type === 'percentage' ? Number(job?.fee_value ?? 0) : 0;
+    const feeType = job?.fee_type;
+    const feeValue = Number(job?.fee_value ?? 0);
+    // const feePercent = job?.fee_type === 'percentage' ? Number(job?.fee_value ?? 0) : 0;
     const [guaranteeEndDate, setGuaranteeEndDate] = useState('');
     const [placementDate, setPlacementDate] = useState('');
 
+    // const placementFee = useMemo(() => {
+    //     if (!salary || !feePercent) return 0;
+    //     return (salary * feePercent) / 100;
+    // }, [salary, feePercent]);
+
     const placementFee = useMemo(() => {
-        if (!salary || !feePercent) return 0;
-        return (salary * feePercent) / 100;
-    }, [salary, feePercent]);
+        if (!salary) return 0;
+
+        if (feeType === 'percentage') {
+            return (salary * feeValue) / 100;
+        }
+
+        if (feeType === 'fixed') {
+            return feeValue;
+        }
+
+        return 0;
+    }, [salary, feeType, feeValue]);
 
     useEffect(() => {
         function escHandler(e) {
@@ -61,7 +77,9 @@ export default function PlacementConfirmationModal({ open, onClose, jc }) {
             {
                 job_candidate_id: jc.id,
                 salary,
-                fee_percentage: feePercent,
+                fee_percentage: job?.fee_type === 'percentage'
+                    ? Number(job?.fee_value ?? 0)
+                    : null,
                 placement_fee: placementFee,
                 offer_accepted_at: offerDate,
                 start_date: startDate,
@@ -140,14 +158,36 @@ export default function PlacementConfirmationModal({ open, onClose, jc }) {
 
                         {/* Fee Preview */}
                         <div className="rounded bg-gray-50 p-3">
+                            {/*<div>*/}
+                            {/*    Placement Fee %:*/}
+                            {/*    <span className="ml-2 font-medium">{feePercent}%</span>*/}
+                            {/*</div>*/}
+
+                            {/*<div>*/}
+                            {/*    Placement Fee:*/}
+                            {/*    <span className="ml-2 font-semibold text-green-600">${Number(placementFee).toLocaleString()}</span>*/}
+                            {/*</div>*/}
                             <div>
-                                Placement Fee %:
-                                <span className="ml-2 font-medium">{feePercent}%</span>
+                                {feeType === 'percentage' ? (
+                                    <>
+                                        Placement Fee %:
+                                        <span className="ml-2 font-medium">{feeValue}%</span>
+                                    </>
+                                ) : (
+                                    <>
+                                        Placement Fee (Fixed):
+                                        <span className="ml-2 font-medium">
+                                            ${feeValue.toLocaleString()}
+                                        </span>
+                                    </>
+                                )}
                             </div>
 
                             <div>
                                 Placement Fee:
-                                <span className="ml-2 font-semibold text-green-600">${Number(placementFee).toLocaleString()}</span>
+                                <span className="ml-2 font-semibold text-green-600">
+                                    ${Number(placementFee).toLocaleString()}
+                                </span>
                             </div>
                         </div>
 

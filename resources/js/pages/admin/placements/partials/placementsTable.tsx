@@ -54,8 +54,15 @@ export default function PlacementsTable({ placements, meta, filters }) {
         },
         {
             key: 'fee_percentage',
-            label: 'Fee %',
-            render: (row) => (row.fee_percentage ? `${row.fee_percentage}%` : '—'),
+            label: 'Fee',
+            // render: (row) => (row.fee_percentage ? `${row.fee_percentage}%` : 'Fixed'),
+            render: (row) => {
+                if (row.fee_type === 'percentage') {
+                    return `${row.fee_percentage}%`;
+                }
+
+                return `Fixed ($${Number(row.placement_fee).toLocaleString()})`;
+            }
         },
         {
             key: 'placement_fee',

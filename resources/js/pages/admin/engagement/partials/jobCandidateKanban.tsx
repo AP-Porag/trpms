@@ -302,7 +302,7 @@ function CandidateCard({ jc, openPlacementModal }) {
                     <div className="text-center">
                         <Badge className="text-xs translate-y-3">{JOB_CANDIDATE_STAGES[jc.stage].label}</Badge>
                     </div>
-                    
+
                 </div>
             </CardHeader>
         </Card>
@@ -332,7 +332,18 @@ function PlacementMenuAction({ jc, closeMenu, openPlacementModal }) {
 function StageActionMenu({ jc, openPlacementModal }) {
     const [open, setOpen] = useState(false);
 
-    const availableStages = useMemo(() => Object.keys(JOB_CANDIDATE_STAGES).filter((s) => s !== jc.stage), [jc.stage]);
+    // const availableStages = useMemo(() => Object.keys(JOB_CANDIDATE_STAGES).filter((s) => s !== jc.stage), [jc.stage]);
+    const availableStages = useMemo(() => {
+        const currentIndex = JOB_CANDIDATE_STAGE_ORDER.indexOf(jc.stage);
+
+        // If placed → no forward movement
+        if (['placed', 'rejected'].includes(jc.stage)) {
+            return [];
+        }
+
+        // Only allow forward stages
+        return JOB_CANDIDATE_STAGE_ORDER.slice(currentIndex + 1);
+    }, [jc.stage]);
     return (
         <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
             <DropdownMenuTrigger asChild>
@@ -361,9 +372,16 @@ function StageActionMenu({ jc, openPlacementModal }) {
                     return <ConfirmStageChange key={stage} jc={jc} stage={stage} closeMenu={() => setOpen(false)} />;
                 })}
 
-                <DropdownMenuSeparator />
+                {/*<DropdownMenuSeparator />*/}
 
-                <RemoveCandidateAction jc={jc} closeMenu={() => setOpen(false)} />
+                {/*<RemoveCandidateAction jc={jc} closeMenu={() => setOpen(false)} />*/}
+
+                {jc.stage === 'placed' && (
+                    <>
+                        <DropdownMenuSeparator />
+                        <RemoveCandidateAction jc={jc} closeMenu={() => setOpen(false)} />
+                    </>
+                )}
             </DropdownMenuContent>
         </DropdownMenu>
     );
