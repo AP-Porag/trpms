@@ -1,5 +1,5 @@
 /* Image */
-.ProseMirror img {
+.editor-wrapper .ProseMirror img {
     max-width: 100%;
     height: auto;
     display: block;
@@ -8,77 +8,77 @@
 }
 
 /* Image alignment */
-.ProseMirror img[data-align="left"] {
+.editor-wrapper .ProseMirror img[data-align="left"] {
     margin-right: auto;
 }
 
-.ProseMirror img[data-align="center"] {
+.editor-wrapper .ProseMirror img[data-align="center"] {
     margin-left: auto;
     margin-right: auto;
 }
 
-.ProseMirror img[data-align="right"] {
+.editor-wrapper .ProseMirror img[data-align="right"] {
     margin-left: auto;
 }
 
 /* Table */
-.ProseMirror table {
+.editor-wrapper .ProseMirror table {
     width: 100%;
     border-collapse: collapse;
     margin: 1rem 0;
 }
 
-.ProseMirror th,
-.ProseMirror td {
+.editor-wrapper .ProseMirror th,
+.editor-wrapper .ProseMirror td {
     border: 1px solid #e5e7eb;
     padding: 8px;
 }
 
-.ProseMirror th {
+.editor-wrapper .ProseMirror th {
     background: #f9fafb;
     font-weight: 600;
 }
 /* Image resize wrapper */
-.ProseMirror img {
+.editor-wrapper .ProseMirror img {
     max-width: 100%;
     height: auto;
 }
 
-.ProseMirror [data-align="center"] {
+.editor-wrapper .ProseMirror [data-align="center"] {
     margin-left: auto;
     margin-right: auto;
 }
 
-.ProseMirror [data-align="left"] {
+.editor-wrapper .ProseMirror [data-align="left"] {
     margin-right: auto;
 }
 
-.ProseMirror [data-align="right"] {
+.editor-wrapper .ProseMirror [data-align="right"] {
     margin-left: auto;
 }
 
 
 /* TABLE */
-.ProseMirror table {
+.editor-wrapper .ProseMirror table {
     border-collapse: collapse;
     width: 100%;
     margin: 1rem 0;
 }
 
-.ProseMirror th,
-.ProseMirror td {
+.editor-wrapper .ProseMirror th,
+.editor-wrapper .ProseMirror td {
     border: 1px solid #e5e7eb;
     padding: 8px;
     position: relative;
 }
 
-.ProseMirror th {
+.editor-wrapper .ProseMirror th {
     background-color: #f9fafb;
     font-weight: 600;
 }
 
 /* COLUMN RESIZE HANDLE */
-.ProseMirror .column-resize-handle {
+.editor-wrapper .ProseMirror .column-resize-handle {
     position: absolute;
     right: -2px;
     top: 0;
@@ -88,20 +88,51 @@
     cursor: col-resize;
 }
 
-.ProseMirror .column-resize-handle:hover {
+.editor-wrapper .ProseMirror .column-resize-handle:hover {
     background-color: rgba(59, 130, 246, 0.8);
 }
 
 /* TABLE ALIGNMENT */
-.ProseMirror table[data-align="center"] {
+.editor-wrapper .ProseMirror table[data-align="center"] {
     margin-left: auto;
     margin-right: auto;
 }
 
-.ProseMirror table[data-align="left"] {
+.editor-wrapper .ProseMirror table[data-align="left"] {
     margin-right: auto;
 }
 
-.ProseMirror table[data-align="right"] {
+.editor-wrapper .ProseMirror table[data-align="right"] {
     margin-left: auto;
+}
+
+.editor-wrapper .ProseMirror h1 {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.editor-wrapper .ProseMirror h2 {
+    font-size: 1.3rem;
+    font-weight: bold;
+}
+
+.editor-wrapper .ProseMirror h3 {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.editor-wrapper .ProseMirror ul {
+    list-style-type: disc;
+    padding-left: 1.5rem;
+}
+
+.editor-wrapper .ProseMirror ol {
+    list-style-type: decimal;
+    padding-left: 1.5rem;
+}
+
+.editor-wrapper .ProseMirror blockquote {
+    border-left: 3px solid #ccc;
+    padding-left: 1rem;
+    color: #666;
 }

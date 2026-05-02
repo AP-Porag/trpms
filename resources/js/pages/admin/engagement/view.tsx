@@ -5,7 +5,7 @@ import { useEffect, useState } from 'react';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 import { Badge } from '@/components/ui/badge';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 
 import ActivityTimeline from '@/components/activity/ActivityTimeline.jsx';
 import { JOB_FEE_TYPE, STATUS } from '@/utils/constants';
@@ -104,15 +104,12 @@ export default function View({ job, pipeline }) {
 
                                             <InfoRow label="Status" value={job.status == STATUS.ACTIVE ? 'Active' : 'Inactive'} />
 
-                                            <div>
-                                                <p className="text-sm font-medium">Description</p>
-                                                <div
-                                                    className="prose prose-sm mt-2 max-w-none"
-                                                    dangerouslySetInnerHTML={{
-                                                        __html: job.description,
-                                                    }}
-                                                />
-                                            </div>
+                                            {/*<div>*/}
+                                            {/*    <p className="text-sm font-medium">Description</p>*/}
+                                            {/*    <div className="editor-wrapper mt-2">*/}
+                                            {/*        <div className="ProseMirror" dangerouslySetInnerHTML={{ __html: job.description }} />*/}
+                                            {/*    </div>*/}
+                                            {/*</div>*/}
                                             <div>
                                                 <InfoRow label="Job Created" value={formatDateUS(job.created_at, DATE_PRESETS.SHORT)} />
                                             </div>
@@ -140,6 +137,19 @@ export default function View({ job, pipeline }) {
 
                                 {/* NOTES */}
                                 <NoteComponent noteableType="engagement" noteableId={job.id} notes={job.notes} />
+                            </div>
+                            <div className="mt-4">
+                                <Card>
+                                    <CardContent>
+                                        <CardHeader>
+                                            <CardTitle>Job Description</CardTitle>
+                                        </CardHeader>
+
+                                        <CardContent className="editor-wrapper mt-2">
+                                            <div className="ProseMirror" dangerouslySetInnerHTML={{ __html: job.description }} />
+                                        </CardContent>
+                                    </CardContent>
+                                </Card>
                             </div>
                         </TabsContent>
 

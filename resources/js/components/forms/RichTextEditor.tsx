@@ -35,7 +35,12 @@ const AlignedTable = Table.extend({
 const RichTextEditor = forwardRef(({ value, onChange }, ref) => {
     const editor = useEditor({
         extensions: [
-            StarterKit,
+            // StarterKit,
+            StarterKit.configure({
+                heading: {
+                    levels: [1, 2, 3],
+                },
+            }),
 
             // ✅ Image with resize + align
             ResizableImage,
@@ -75,7 +80,7 @@ const RichTextEditor = forwardRef(({ value, onChange }, ref) => {
     if (!editor) return null;
 
     return (
-        <div className="rounded-md border bg-white dark:bg-gray-900">
+        <div className="editor-wrapper rounded-md border bg-white dark:bg-gray-900">
             {/* ✅ ALWAYS visible main toolbar (text + image + align) */}
             <RichTextToolbar editor={editor} />
 

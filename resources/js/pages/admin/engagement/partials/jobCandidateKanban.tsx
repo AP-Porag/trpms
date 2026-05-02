@@ -333,17 +333,26 @@ function StageActionMenu({ jc, openPlacementModal }) {
     const [open, setOpen] = useState(false);
 
     // const availableStages = useMemo(() => Object.keys(JOB_CANDIDATE_STAGES).filter((s) => s !== jc.stage), [jc.stage]);
-    const availableStages = useMemo(() => {
-        const currentIndex = JOB_CANDIDATE_STAGE_ORDER.indexOf(jc.stage);
+    // const availableStages = useMemo(() => {
+    //     const currentIndex = JOB_CANDIDATE_STAGE_ORDER.indexOf(jc.stage);
+    //
+    //     // If placed → no forward movement
+    //     if (['placed', 'rejected'].includes(jc.stage)) {
+    //         return [];
+    //     }
+    //
+    //     // Only allow forward stages
+    //     return JOB_CANDIDATE_STAGE_ORDER.slice(currentIndex + 1);
+    // }, [jc.stage]);
 
-        // If placed → no forward movement
-        if (['placed', 'rejected'].includes(jc.stage)) {
-            return [];
-        }
+    const stageActionsMap = {
+        submitted: ['interviewing', 'rejected'],
+        interviewing: ['offered', 'rejected'],
+        offered: ['placed', 'rejected'],
+        placed: [], // no forward movement
+    };
 
-        // Only allow forward stages
-        return JOB_CANDIDATE_STAGE_ORDER.slice(currentIndex + 1);
-    }, [jc.stage]);
+    const availableStages = stageActionsMap[jc.stage] || [];
     return (
         <DropdownMenu open={open} onOpenChange={setOpen} modal={false}>
             <DropdownMenuTrigger asChild>
@@ -372,16 +381,16 @@ function StageActionMenu({ jc, openPlacementModal }) {
                     return <ConfirmStageChange key={stage} jc={jc} stage={stage} closeMenu={() => setOpen(false)} />;
                 })}
 
-                {/*<DropdownMenuSeparator />*/}
+                <DropdownMenuSeparator />
 
-                {/*<RemoveCandidateAction jc={jc} closeMenu={() => setOpen(false)} />*/}
+                <RemoveCandidateAction jc={jc} closeMenu={() => setOpen(false)} />
 
-                {jc.stage === 'placed' && (
-                    <>
-                        <DropdownMenuSeparator />
-                        <RemoveCandidateAction jc={jc} closeMenu={() => setOpen(false)} />
-                    </>
-                )}
+                {/*{jc.stage === 'placed' && (*/}
+                {/*    <>*/}
+                {/*        <DropdownMenuSeparator />*/}
+                {/*        <RemoveCandidateAction jc={jc} closeMenu={() => setOpen(false)} />*/}
+                {/*    </>*/}
+                {/*)}*/}
             </DropdownMenuContent>
         </DropdownMenu>
     );
@@ -392,7 +401,16 @@ function StageActionMenu({ jc, openPlacementModal }) {
 /* ========================================================= */
 
 function ConfirmStageChange({ jc, stage, closeMenu }) {
-    const label = JOB_CANDIDATE_STAGES[stage].label;
+    // const label = JOB_CANDIDATE_STAGES[stage].label;
+
+    const labelMap = {
+        interviewing: 'Schedule Interview',
+        offered: 'Send Offer',
+        placed: 'Mark as Placed',
+        rejected: 'Reject Candidate',
+    };
+
+    const label = labelMap[stage] || JOB_CANDIDATE_STAGES[stage].label;
 
     return (
         <AlertDialog>
@@ -403,7 +421,8 @@ function ConfirmStageChange({ jc, stage, closeMenu }) {
                         e.stopPropagation();
                     }}
                 >
-                    Move to {label}
+                    {/*Move to {label}*/}
+                    {label}
                 </DropdownMenuItem>
             </AlertDialogTrigger>
 
@@ -447,7 +466,8 @@ function InterviewScheduleDialog({ jc, closeMenu }) {
                         setOpenInterviewScheduleDialog(true);
                     }}
                 >
-                    Move to Interviewing
+                    {/*Move to Interviewing*/}
+                    Schedule Interview
                 </DropdownMenuItem>
             </AlertDialogTrigger>
 
@@ -506,14 +526,14 @@ function RemoveCandidateAction({ jc, closeMenu }) {
                         e.stopPropagation();
                     }}
                 >
-                    Remove from job
+                    Remove from this job
                 </DropdownMenuItem>
             </AlertDialogTrigger>
 
             <AlertDialogContent>
                 <AlertDialogHeader>
                     <AlertDialogTitle>Remove Candidate</AlertDialogTitle>
-                    <AlertDialogDescription>This will remove the candidate from this job.</AlertDialogDescription>
+                    <AlertDialogDescription>This will remove this candidate from this job.</AlertDialogDescription>
                 </AlertDialogHeader>
 
                 <AlertDialogFooter>
@@ -523,7 +543,7 @@ function RemoveCandidateAction({ jc, closeMenu }) {
                             router.delete(route('job-candidates.destroy', jc.id), {
                                 preserveScroll: true,
                                 onSuccess: () => {
-                                    toast.success('Candidate removed from job.');
+                                    toast.success('Candidate removed from this job.');
                                     closeMenu();
                                     router.reload({
                                         only: ['pipeline'],
