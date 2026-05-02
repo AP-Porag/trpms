@@ -144,7 +144,7 @@ class DashboardService
     protected function getPendingInvoices()
     {
         return Invoice::with('client')
-            ->where('status', 'pending')
+            ->where('status', '!=','paid')
             ->latest()
             ->limit(5)
             ->get();

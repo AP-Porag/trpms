@@ -138,10 +138,6 @@ export default function View({ job, pipeline }) {
                                     </div>
                                 </Card>
 
-                                {/* <Card>
-
-                                </Card> */}
-
                                 {/* NOTES */}
                                 <NoteComponent noteableType="engagement" noteableId={job.id} notes={job.notes} />
                             </div>
@@ -163,16 +159,6 @@ export default function View({ job, pipeline }) {
 
                         {/* ================= ACTIVITY ================= */}
                         <TabsContent value="activity">
-                            {/*<Card>*/}
-                            {/*    <CardHeader>*/}
-                            {/*        <CardTitle>Job Activity & History</CardTitle>*/}
-                            {/*    </CardHeader>*/}
-                            {/*    <CardContent>*/}
-                            {/*        <p className="text-muted-foreground text-sm">*/}
-                            {/*            Activity log and tabular reporting (DataTable view) will be available here.*/}
-                            {/*        </p>*/}
-                            {/*    </CardContent>*/}
-                            {/*</Card>*/}
                             <ActivityTimeline subjectType="App\Models\JobCandidate" subjectId={job.id} />
                         </TabsContent>
                     </Tabs>

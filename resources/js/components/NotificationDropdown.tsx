@@ -1,7 +1,7 @@
 import { Separator } from '@/components/ui/separator';
 import { router, usePage } from '@inertiajs/react';
 import { Bell, Mail, MailOpen } from 'lucide-react';
-import { useEffect, useState } from 'react';
+import { useEffect,useRef, useState } from 'react';
 
 export default function NotificationDropdown() {
     const { notifications: initialNotifications, notification_unseen_count } = usePage().props as any;
@@ -9,6 +9,7 @@ export default function NotificationDropdown() {
     const [notifications, setNotifications] = useState(initialNotifications || []);
     const [unseenCount, setUnseenCount] = useState(notification_unseen_count || 0);
     const [open, setOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
     // 🔁 AUTO REFRESH (every 30s)
     useEffect(() => {
@@ -28,6 +29,20 @@ export default function NotificationDropdown() {
         setUnseenCount(notification_unseen_count);
     }, [initialNotifications, notification_unseen_count]);
 
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setOpen(false);
+            }
+        };
+
+        document.addEventListener('mousedown', handleClickOutside);
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, []);
+
     const toggleStatus = (id: number) => {
         router.post(
             route('notifications.toggle', id),
@@ -44,7 +59,7 @@ export default function NotificationDropdown() {
     };
 
     return (
-        <div className="relative">
+        <div ref={dropdownRef} className="relative">
             {/* 🔔 Bell Icon */}
             <button onClick={() => setOpen(!open)} className="relative">
                 <Bell className="h-5 w-5" />
@@ -68,13 +83,18 @@ export default function NotificationDropdown() {
                                         n.status === 0 ? 'bg-blue-50' : ''
                                     }`}
                                     onClick={() => {
-                                        if (n.route_name !== 'job-candidates.show') {
-                                            router.visit(route(n.route_name, n.route_param));
+                                        if (n.status === 0) {
+                                            toggleStatus(n.id);
                                         }
-                                        if (n.route_name == 'job-candidates.show') {
-                                            router.visit(route(`/jobs/${n.route_param}?tab=candidates`));
-                                        }
-                                        toggleStatus(n.id);
+
+                                        setTimeout(() => {
+                                            if (n.route_name === 'job-candidates.show') {
+                                                router.visit(`/jobs/${n.route_param}?tab=candidates`);
+                                            } else {
+                                                router.visit(route(n.route_name, n.route_param));
+                                            }
+                                        }, 150);
+                                        setOpen(!open);
                                     }}
                                 >
                                     {/* ICON LETTER */}

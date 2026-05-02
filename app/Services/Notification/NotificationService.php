@@ -116,7 +116,7 @@ class NotificationService
                         ),
                         'icon_letter' => GlobalConstant::NOTIFICATION_ICON_INTERVIEW,
                         'route_name' => 'job-candidates.show',
-                        'route_param' => $jc->id,
+                        'route_param' => $jc->job?->id,
                         'created_at' => $jc->interview_scheduled_at,
                     ]);
                 }
@@ -133,7 +133,7 @@ class NotificationService
                         ),
                         'icon_letter' => GlobalConstant::NOTIFICATION_ICON_INTERVIEW,
                         'route_name' => 'job-candidates.show',
-                        'route_param' => $jc->id,
+                        'route_param' => $jc->job?->id,
                         'created_at' => $jc->offered_at,
                     ]);
                 }
@@ -168,7 +168,7 @@ class NotificationService
                         ),
                         'icon_letter' => GlobalConstant::NOTIFICATION_ICON_ALERT,
                         'route_name' => 'job-candidates.show',
-                        'route_param' => $jc->id,
+                        'route_param' => $jc->job?->id,
                         'created_at' => $jc->rejected_at,
                     ]);
                 }
@@ -208,7 +208,7 @@ class NotificationService
                     ),
                     'icon_letter' => GlobalConstant::NOTIFICATION_ICON_ALERT,
                     'route_name' => 'job-candidates.show',
-                    'route_param' => $jc->id,
+                    'route_param' => $jc->job?->id,
                     'created_at' => now(),
                 ]);
             });

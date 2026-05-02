@@ -141,7 +141,22 @@ export default function Index({
         {
             key: 'total_collected',
             label: 'Total Collected',
-            render: (row) => `$${row.total_collected ?? 0}`
+            // render: (row) => `$${row.total_collected ?? 0}`
+            render: (row) => {
+
+                const color =
+                    row.status === INVOICE_STATUS.PAID
+                        ? 'bg-green-100 text-green-700'
+                        : row.status === INVOICE_STATUS.ISSUED
+                            ? 'bg-blue-100 text-blue-700'
+                            : 'bg-red-100 text-red-700';
+
+                const TotalAmount =
+                    row.status === INVOICE_STATUS.PAID
+                    ? row.amount : 0
+
+                return <span className={`rounded px-2 py-1 text-xs font-semibold ${color}`}>${TotalAmount}</span>;
+            }
         },
 
         {

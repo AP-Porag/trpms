@@ -65,10 +65,41 @@ export default function Index({ jobs, meta, filters: initialFilters }) {
                 return <span className="block w-20 truncate">{diffDays} days</span>;
             },
         },
+        // {
+        //     key: 'priority',
+        //     label: 'Priority',
+        //     render: (row) => <span className="block w-20 truncate capitalize">{row.priority}</span>,
+        // },
         {
-            key: 'priotiry',
-            label: 'Priotiry',
-            render: (row) => <span className="block w-20 truncate capitalize">{row.priotiry}</span>,
+            key: 'priority',
+            label: 'Priority',
+            render: (row) => {
+                const priority = row.priority?.toLowerCase();
+
+                const styles = {
+                    low: {
+                        dot: 'bg-green-500',
+                        badge: 'bg-green-100 text-green-700 capitalize',
+                    },
+                    medium: {
+                        dot: 'bg-yellow-500',
+                        badge: 'bg-yellow-100 text-yellow-700 capitalize',
+                    },
+                    high: {
+                        dot: 'bg-red-500',
+                        badge: 'bg-red-100 text-red-700 capitalize',
+                    },
+                };
+
+                const style = styles[priority] || styles.low;
+
+                return (
+                    <span className={`inline-flex items-center gap-2 px-2 py-1 rounded-full text-xs font-medium ${style.badge}`}>
+                <span className={`w-2 h-2 rounded-full ${style.dot}`}></span>
+                        {priority}
+            </span>
+                );
+            },
         },
         {
             key: 'stage',
@@ -104,7 +135,7 @@ export default function Index({ jobs, meta, filters: initialFilters }) {
                 </div>
 
                 <DataTable
-                    
+
                     data={jobs}
                     columns={columns}
                     meta={{
