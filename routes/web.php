@@ -38,6 +38,10 @@ Route::get('/execute-command', function () {
     Artisan::call('route:clear');
     Artisan::call('optimize');
     dd('All commands executed successfully');
+
+    //deploy command
+    ///opt/alt/php84/usr/bin/php artisan migrate:fresh --seed -vvv
+
 });
 Route::get('/', function () {
     return redirect()->route('login');
