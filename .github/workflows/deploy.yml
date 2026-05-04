@@ -1,4 +1,4 @@
-name: 🚀 Deploy TRPMS (Laravel 12 + Inertia + React) to Hostinger staging
+name: 🚀 Deploy TRPMS (Laravel 12 + Inertia + React) to Hostinger
 
 on:
   push:
