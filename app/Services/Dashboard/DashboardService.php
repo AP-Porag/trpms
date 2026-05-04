@@ -91,8 +91,10 @@ class DashboardService
         return JobCandidate::selectRaw('MONTH(placed_at) as month, COUNT(*) as total')
             ->where('stage', 'placed')
             ->whereYear('placed_at', $year)
-            ->when($clientId, fn($q) =>
-            $q->whereHas('job', fn($q2) => $q2->where('client_id', $clientId))
+            ->when(
+                $clientId,
+                fn($q) =>
+                $q->whereHas('job', fn($q2) => $q2->where('client_id', $clientId))
             )
             ->groupBy('month')
             ->orderBy('month')
@@ -133,8 +135,10 @@ class DashboardService
         return JobCandidate::with(['job.client', 'candidate'])
             ->where('stage', 'placed')
             ->whereYear('placed_at', $year)
-            ->when($clientId, fn($q) =>
-            $q->whereHas('job', fn($q2) => $q2->where('client_id', $clientId))
+            ->when(
+                $clientId,
+                fn($q) =>
+                $q->whereHas('job', fn($q2) => $q2->where('client_id', $clientId))
             )
             ->latest()
             ->limit(5)
@@ -144,7 +148,7 @@ class DashboardService
     protected function getPendingInvoices()
     {
         return Invoice::with('client')
-            ->where('status', '!=','paid')
+            ->where('status', '!=', 'paid')
             ->latest()
             ->limit(5)
             ->get();
