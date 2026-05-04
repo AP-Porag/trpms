@@ -40,9 +40,9 @@ class DashboardService
     protected function getKpis($year, $clientId): array
     {
         return [
-            'active_clients' => Client::where('status', 'active')->count(),
+            'active_clients' => Client::where('status', GlobalConstant::STATUS_ACTIVE)->count(),
 
-            'active_jobs' => Engagement::where('status', 'active')
+            'active_jobs' => Engagement::where('status', GlobalConstant::STATUS_ACTIVE)
                 ->when($clientId, fn($q) => $q->where('client_id', $clientId))
                 ->count(),
 
