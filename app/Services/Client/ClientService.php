@@ -119,6 +119,7 @@ class ClientService extends BaseService
             'address'      => $data->address,
             'client_type'  => $data->client_type,
             'fee_type'     => $data->fee_type,
+            'industry_id'     => $data->industry_id,
             'fee_value'    => $data->fee_value,
             'rating'      => $data->rating,
             'status'       => $data->status,
