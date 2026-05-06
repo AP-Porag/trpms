@@ -94,7 +94,7 @@ export default function View({ invoice }) {
                             <AppLogo />
 
                             <div>
-                                <h2 className="text-xl font-bold">TRPMS</h2>
+                                <h2 className="text-xl font-bold">Blueprint Talent</h2>
 
                                 <p className="text-sm text-gray-500">Recruitment & Placement Services</p>
                             </div>
