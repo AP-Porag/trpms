@@ -1,7 +1,6 @@
-import { Clock, Wrench, Info, Plus } from "lucide-react";
-import { Head, router, usePage } from "@inertiajs/react";
 import AppLayout from '@/layouts/app-layout.js';
-import React from 'react';
+import { Head, usePage } from '@inertiajs/react';
+import { Clock, Info, Wrench } from 'lucide-react';
 const breadcrumbs = [
     {
         title: 'Under-development',
@@ -20,7 +19,7 @@ const breadcrumbs = [
 export default function UnderDevelopment() {
     const { module } = usePage().props;
 
-    const moduleName = module ?? "This module";
+    const moduleName = module ?? 'This module';
 
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
