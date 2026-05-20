@@ -7,18 +7,6 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
 
-    <meta property="og:title" content="Blueprint Talent" />
-    <meta property="og:description"
-        content="Blueprint Talent is a modern recruiting platform that helps businesses streamline hiring, manage candidates, and connect with top talent faster." />
-    <meta property="og:image" content="{{ asset('images/blueprint-icon.png') }}" />
-    <meta property="og:url" content="{{ url()->current() }}" />
-    <meta property="og:type" content="website" />
-
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Blueprint Talent" />
-    <meta name="twitter:description"
-        content="Blueprint Talent is a modern recruiting platform that helps businesses streamline hiring, manage candidates, and connect with top talent faster." />
-    <meta name="twitter:image" content="{{ asset('images/blueprint-icon.png') }}" />
 
 
     {{-- Inline script to detect system dark mode preference and apply it immediately --}}
