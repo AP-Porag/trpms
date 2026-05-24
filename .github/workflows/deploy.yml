@@ -1,4 +1,4 @@
-name: 🚀 Deploy TRPMS (Laravel 12 + Inertia + React) to Hostinger
+name: 🚀 Deploy Blueprint Talent to Hostinger
 
 on:
   push:
