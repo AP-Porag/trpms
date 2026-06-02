@@ -27,7 +27,7 @@ class LeadService extends BaseService
 
         if ($search) {
             $query->where(function ($q) use ($search) {
-                $q->where('contact_name', 'like', "%{$search}%")
+                $q->where('name', 'like', "%{$search}%")
                     ->orWhere('company_name', 'like', "%{$search}%");
                 // ->orWhere('phone', 'like', "%{$search}%")
                 // ->orWhere('company_name', 'like', "%{$search}%");
@@ -41,7 +41,7 @@ class LeadService extends BaseService
         $leads = $query->latest()->paginate($perPage ?? 10);
         return [
             'leads' => $leads->items(),
-            'meta' => pagination_meta($leads, 'Search by contact name, company name...'),
+            'meta' => pagination_meta($leads, 'Search by name, company name'),
             'filters' => [
                 'search' => $search,
                 'status' => $status,
