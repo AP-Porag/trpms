@@ -43,13 +43,13 @@ import {
 const breadcrumbs = [{ title: 'Dashboard', href: '/dashboard' }];
 
 export default function Index({
-                                  kpis,
-                                  charts,
-                                  tables,
-                                  quick_actions,
-                                  filters,
-                                  clients,
-                              }) {
+    kpis,
+    charts,
+    tables,
+    quick_actions,
+    filters,
+    clients,
+}) {
     /* ================= FILTER HANDLERS ================= */
     const applyFilters = (newFilters) => {
         router.get(route('dashboard'), newFilters, {
@@ -98,7 +98,6 @@ export default function Index({
     return (
         <AppLayout breadcrumbs={breadcrumbs}>
             <Head title="Dashboard" />
-
             <div className="flex flex-1 flex-col gap-4 rounded-xl p-4">
                 <div className="space-y-6 rounded-xl border bg-background p-5">
                     {/* ================= HEADER ================= */}
@@ -355,12 +354,12 @@ export default function Index({
 /* ================= COMPONENTS ================= */
 
 function KpiCard({
-                     title,
-                     value,
-                     icon,
-                     cardClassName = '',
-                     iconClassName = '',
-                 }) {
+    title,
+    value,
+    icon,
+    cardClassName = '',
+    iconClassName = '',
+}) {
     return (
         <Card className={`rounded-xl border shadow-sm ${cardClassName}`}>
             <CardContent className="p-5">
