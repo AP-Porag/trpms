@@ -5,6 +5,7 @@ namespace App\Services\Client;
 use App\Models\Agreement;
 use App\Models\Client;
 use App\Services\BaseService;
+use App\Utils\GlobalConstant;
 use Illuminate\Http\Request;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -98,16 +99,16 @@ class ClientService extends BaseService
 
     public function update(Client $client, $data): Client
     {
-        // if ($client->category === 'prospect') {
-        //     $client->update([
-        //         'category' => 'client'
-        //     ]);
-        // }
+         if ($client->category === 'prospect') {
+             $client->update([
+                 'category' => GlobalConstant::CLIENT_CATEGORY_CLIENT
+             ]);
+         }
 
 
         if ($client->category === 'target_account' && $data->file('agreements')) {
             $client->update([
-                'category' => 'client'
+                'category' => GlobalConstant::CLIENT_CATEGORY_CLIENT
             ]);
         }
 

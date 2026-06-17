@@ -2,6 +2,7 @@ import { Breadcrumbs } from '@/components/breadcrumbs';
 import { SidebarTrigger } from '@/components/ui/sidebar';
 import { type BreadcrumbItem as BreadcrumbItemType } from '@/types';
 import NotificationDropdown from '@/components/NotificationDropdown';
+import { GlobalSearchTrigger } from '@/components/global-search/GlobalSearchTrigger';
 
 export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: BreadcrumbItemType[] }) {
     return (
@@ -11,7 +12,8 @@ export function AppSidebarHeader({ breadcrumbs = [] }: { breadcrumbs?: Breadcrum
                     <SidebarTrigger className="-ml-1" />
                     <Breadcrumbs breadcrumbs={breadcrumbs} />
                 </div>
-                <div className="">
+                <div className="flex items-center gap-4">
+                    <GlobalSearchTrigger />
                     <NotificationDropdown />
                 </div>
             </div>

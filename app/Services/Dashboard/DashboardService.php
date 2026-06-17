@@ -23,7 +23,7 @@ class DashboardService
                 'client_id' => $clientId,
             ],
 
-            'clients' => Client::select('id', 'name')->get(),
+            'clients' => Client::where('status',GlobalConstant::STATUS_ACTIVE)->where('category',GlobalConstant::CLIENT_CATEGORY_CLIENT)->select('id', 'name')->get(),
 
             'kpis' => $this->getKpis($year, $clientId),
             'charts' => $this->getCharts($year, $clientId),
@@ -40,7 +40,7 @@ class DashboardService
     protected function getKpis($year, $clientId): array
     {
         return [
-            'active_clients' => Client::where('status', GlobalConstant::STATUS_ACTIVE)->count(),
+            'active_clients' => Client::where('status', GlobalConstant::STATUS_ACTIVE)->where('category',GlobalConstant::CLIENT_CATEGORY_CLIENT)->count(),
 
             'active_jobs' => Engagement::where('status', GlobalConstant::STATUS_ACTIVE)
                 ->when($clientId, fn($q) => $q->where('client_id', $clientId))

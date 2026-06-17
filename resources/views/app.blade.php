@@ -5,6 +5,17 @@
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <meta name="csrf-token" content="{{ csrf_token() }}">
 
+        <meta property="og:title" content="Blueprint" />
+        <meta property="og:description" content="Recruitment & Talent Management Platform" />
+        <meta property="og:image" content="https://blueprinttalent.app/images/blueprint-icon.png" />
+        <meta property="og:url" content="https://blueprinttalent.app" />
+        <meta property="og:type" content="website" />
+
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="Blueprint" />
+        <meta name="twitter:description" content="Recruitment & Talent Management Platform" />
+        <meta name="twitter:image" content="https://blueprinttalent.app/images/blueprint-icon.png" />
+
 
         {{-- Inline script to detect system dark mode preference and apply it immediately --}}
         <script>

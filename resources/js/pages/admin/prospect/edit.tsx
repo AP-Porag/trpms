@@ -150,13 +150,13 @@ export default function Edit({ prospect }) {
                         {/* Submit */}
 
                         <div className="flex justify-end gap-2">
-                            <Button
-                                type="button"
-                                onClick={() => router.post(route('prospect.client', prospect.id))}
-                                className="cursor-pointer bg-blue-600 text-white hover:bg-blue-700"
-                            >
-                                Convert to Client
-                            </Button>
+                            {/*<Button*/}
+                            {/*    type="button"*/}
+                            {/*    onClick={() => router.post(route('prospect.client', prospect.id))}*/}
+                            {/*    className="cursor-pointer bg-blue-600 text-white hover:bg-blue-700"*/}
+                            {/*>*/}
+                            {/*    Convert to Client*/}
+                            {/*</Button>*/}
 
                             <Button type="submit" disabled={isSubmitting} className="cursor-pointer">
                                 {isSubmitting ? (

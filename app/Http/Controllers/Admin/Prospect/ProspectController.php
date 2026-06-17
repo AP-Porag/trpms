@@ -79,7 +79,8 @@ class ProspectController extends BaseController
      */
     public function update(ClientRequest $request, Client $prospect)
     {
-        $this->service->update($prospect, $request);
+        $validatedData = $request->validated();
+        $prospect->update($validatedData);
 
         return redirect()
             ->route('prospects.index')

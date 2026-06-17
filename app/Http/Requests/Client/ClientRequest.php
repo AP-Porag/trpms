@@ -72,7 +72,7 @@ class ClientRequest extends BaseRequest
 
             'signed_date' => 'nullable|date',
 
-            'agreements.*' => 'file|max:10240',
+            'agreements.*' => 'file',
 
         ];
     }

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Revenue;
 use App\Http\Controllers\Controller;
 use App\Models\Client;
 use App\Services\Revenue\RevenueReportService;
+use App\Utils\GlobalConstant;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -21,7 +22,9 @@ class RevenueReportController extends Controller
      */
     public function index(Request $request)
     {
-        $clients = Client::select('id', 'name')->get();
+        $clients = Client::where('category',GlobalConstant::CLIENT_CATEGORY_CLIENT)
+            ->where('status',GlobalConstant::STATUS_ACTIVE)
+            ->select('id', 'name')->get();
         $filters = [
             'year' => $request->get('year', now()->year),
             'client_id' => $request->get('client_id'),

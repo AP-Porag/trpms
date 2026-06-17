@@ -156,7 +156,9 @@ class InvoiceController extends Controller
            CLIENTS FOR FILTER
         ========================= */
 
-        $clients = Client::select('id','name','company_name')
+        $clients = Client::where('category', GlobalConstant::CLIENT_CATEGORY_CLIENT)
+            ->where('status', GlobalConstant::STATUS_ACTIVE)
+            ->select('id','name','company_name')
             ->orderBy('name')
             ->get();
 
@@ -233,7 +235,9 @@ class InvoiceController extends Controller
      */
     public function create()
     {
-        $clients = Client::select('id', 'name', 'company_name')
+        $clients = Client::where('category', GlobalConstant::CLIENT_CATEGORY_CLIENT)
+            ->where('status', GlobalConstant::STATUS_ACTIVE)
+            ->select('id', 'name', 'company_name')
             ->orderBy('name')
             ->get();
 

@@ -33,6 +33,7 @@ class EngagementController extends BaseController
     public function create()
     {
         $clients = Client::select('id', 'name', 'company_name')
+            ->where('category', GlobalConstant::CLIENT_CATEGORY_CLIENT)
             ->where('status', GlobalConstant::STATUS_ACTIVE)
             ->orderBy('id', 'desc')
             ->get();
@@ -83,6 +84,7 @@ class EngagementController extends BaseController
             ->findOrFail($id);
 
         $clients = Client::select('id', 'name', 'company_name')
+            ->where('category', GlobalConstant::CLIENT_CATEGORY_CLIENT)
             ->where('status', GlobalConstant::STATUS_ACTIVE)
             ->orderBy('id', 'desc')
             ->get();

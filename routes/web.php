@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\Contact\ContactController;
 use App\Http\Controllers\Admin\Dashboard\DashboardController;
 use App\Http\Controllers\Admin\Department\DepartmentController;
 use App\Http\Controllers\Admin\Event\EventController;
+use App\Http\Controllers\Admin\GlobalSearch\GlobalSearchController;
 use App\Http\Controllers\Admin\Industry\IndustryController;
 use App\Http\Controllers\Admin\Invoice\InvoiceController;
 use App\Http\Controllers\Admin\Note\NoteController;
@@ -58,6 +59,11 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
     Route::get('/dashboard', [DashboardController::class, 'index'])
         ->name('dashboard');
+
+    Route::get(
+        '/global-search',
+        [GlobalSearchController::class, 'search']
+    )->name('global-search');
 
     Route::resource('users', UserController::class);
 
