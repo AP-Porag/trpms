@@ -46,7 +46,7 @@ class DashboardService
                 ->when($clientId, fn($q) => $q->where('client_id', $clientId))
                 ->count(),
 
-            'candidates_in_pipeline' => JobCandidate::count(),
+            'candidates_in_pipeline' => JobCandidate::where('stage', '!=','rejected')->where('stage', '!=','placed')->count(),
 
             'placements_this_month' => JobCandidate::where('stage', 'placed')
                 ->whereYear('placed_at', $year)

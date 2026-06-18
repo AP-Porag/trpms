@@ -109,7 +109,7 @@ class CandidateController extends BaseController
         }
 
         return response()->json(
-            $query->limit(10)->get([
+            $query->get([
                 'id',
                 'first_name',
                 'last_name',

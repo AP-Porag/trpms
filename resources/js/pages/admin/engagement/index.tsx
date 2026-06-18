@@ -43,7 +43,7 @@ export default function Index({ jobs, meta, filters: initialFilters }) {
         {
             key: 'fee_type',
             label: 'Fee Type',
-            render: (row) => <span className="block w-10">{row.fee_type}</span>,
+            render: (row) => <span className="capitalize block w-10">{row.fee_type}</span>,
         },
         {
             key: 'fee_value',
