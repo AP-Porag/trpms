@@ -50,13 +50,13 @@ class DashboardService
 
             'placements_this_month' => JobCandidate::where('stage', 'placed')
                 ->whereYear('placed_at', $year)
-                ->whereMonth('placed_at', now()->month)
+//                ->whereMonth('placed_at', now()->month)
                 ->count(),
 
             'revenue_this_month' => Invoice::where('status', 'paid')
                 ->whereYear('paid_date', $year)
                 ->when($clientId, fn($q) => $q->where('client_id', $clientId))
-                ->whereMonth('paid_date', now()->month)
+//                ->whereMonth('paid_date', now()->month)
                 ->sum('amount'),
         ];
     }
@@ -149,6 +149,7 @@ class DashboardService
     {
         return Invoice::with('client')
             ->where('status', '!=', 'paid')
+            ->where('status', '!=', 'canceled')
             ->latest()
             ->limit(5)
             ->get();
